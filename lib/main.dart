@@ -23,8 +23,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Freelancer',
       debugShowCheckedModeBanner: false,
+//      theme: ThemeData(
+//        primarySwatch: Colors.blue,
+//        textTheme: AppTheme.textTheme,
+//        platform: TargetPlatform.iOS,
+//      ),
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: Colors.red,
+        accentColor: Color(0xFFFEF9EB),
         textTheme: AppTheme.textTheme,
         platform: TargetPlatform.iOS,
       ),

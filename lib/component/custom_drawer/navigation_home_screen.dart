@@ -4,6 +4,7 @@ import 'package:Hogwarts/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'drawer_user_controller.dart';
 import 'home_drawer.dart';
+import 'package:Hogwarts/pages/friend.dart';
 
 class NavigationHomeScreen extends StatefulWidget {
   NavigationHomeScreen({
@@ -57,7 +58,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
     } else if (drawerIndex == DrawerIndex.Finder) {
         screenView = Center(child: Text("DISCOVER"),);
     } else if (drawerIndex == DrawerIndex.Project) {
-        screenView = Center(child: Text("FRIEND"),);
+        screenView = FriendPage();
     } else if (drawerIndex == DrawerIndex.Contact) {
         screenView = Center(child: Text("CONTACT"),);
     } else if (drawerIndex == DrawerIndex.Setting) {
@@ -80,7 +81,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         });
       } else if (drawerIndex == DrawerIndex.Project) {
         setState(() {
-          screenView = Center(child: Text("FRIEND"),);
+          screenView = FriendPage();
         });
       } else if (drawerIndex == DrawerIndex.Contact) {
         setState(() {
