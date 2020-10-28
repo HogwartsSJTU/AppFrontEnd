@@ -12,7 +12,7 @@ class _FriendPageState extends State<FriendPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Colors.blue,
       appBar: AppBar(
         title: Text(
           'Chats',
@@ -21,6 +21,7 @@ class _FriendPageState extends State<FriendPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        backgroundColor: Colors.blue,
         elevation: 0.0,
         actions: <Widget>[
           IconButton(

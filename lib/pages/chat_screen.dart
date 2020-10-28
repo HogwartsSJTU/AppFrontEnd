@@ -73,7 +73,7 @@ class _ChatScreenState extends State<ChatScreen> {
               : Icon(Icons.favorite_border),
           iconSize: 30.0,
           color: message.isLiked
-              ? Theme.of(context).primaryColor
+              ? Colors.red
               : Colors.blueGrey,
           onPressed: () {},
         )
