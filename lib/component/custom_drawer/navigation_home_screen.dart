@@ -1,3 +1,4 @@
+import 'package:Hogwarts/pages/feedback.dart';
 import 'package:Hogwarts/pages/home.dart';
 import 'package:Hogwarts/theme/app_theme.dart';
 
@@ -60,7 +61,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
     } else if (drawerIndex == DrawerIndex.Project) {
         screenView = FriendPage();
     } else if (drawerIndex == DrawerIndex.Contact) {
-        screenView = Center(child: Text("CONTACT"),);
+        screenView = FeedbackScreen();
     } else if (drawerIndex == DrawerIndex.Setting) {
         screenView = Center(child: Text("SETTING"),);
     } else {
@@ -85,7 +86,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         });
       } else if (drawerIndex == DrawerIndex.Contact) {
         setState(() {
-          screenView = Center(child: Text("CONTACT"),);
+          screenView = FeedbackScreen();
         });
       } else if (drawerIndex == DrawerIndex.Setting) {
         setState(() {
