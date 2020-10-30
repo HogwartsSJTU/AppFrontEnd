@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:Hogwarts/pages/profile.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:Hogwarts/theme/app_theme.dart';
 
@@ -166,6 +167,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                     onTap: () {
 //                      if(isLog) navigateToProfile();
 //                      else Navigator.pushNamed(context, "/login");
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(userId: 0)));
                     },
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
