@@ -1,4 +1,3 @@
-import 'package:Hogwarts/pages/feedback.dart';
 import 'package:Hogwarts/pages/home.dart';
 import 'package:Hogwarts/theme/app_theme.dart';
 
@@ -6,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'drawer_user_controller.dart';
 import 'home_drawer.dart';
 import 'package:Hogwarts/pages/friend.dart';
+import 'package:Hogwarts/pages/contact_screen.dart';
+import 'package:Hogwarts/pages/settings_screen.dart';
 
 class NavigationHomeScreen extends StatefulWidget {
   NavigationHomeScreen({
@@ -61,9 +62,9 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
     } else if (drawerIndex == DrawerIndex.Project) {
         screenView = FriendPage();
     } else if (drawerIndex == DrawerIndex.Contact) {
-        screenView = FeedbackScreen();
+        screenView = HelpSection();
     } else if (drawerIndex == DrawerIndex.Setting) {
-        screenView = Center(child: Text("SETTING"),);
+        screenView = SettingsScreen();
     } else {
       //do in your way......
     }
@@ -86,11 +87,11 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         });
       } else if (drawerIndex == DrawerIndex.Contact) {
         setState(() {
-          screenView = FeedbackScreen();
+          screenView = HelpSection();
         });
       } else if (drawerIndex == DrawerIndex.Setting) {
         setState(() {
-          screenView = Center(child: Text("SETTING"),);
+          screenView = SettingsScreen();
         });
       } else {
         //do in your way......
