@@ -35,7 +35,7 @@ class HelpSection extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
-                  height: 100,
+                  height: 105,
                   width: 150,
                   color: Colors.white,
                   child: Column(
@@ -55,7 +55,7 @@ class HelpSection extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
-                  height: 100,
+                  height: 105,
                   width: 150,
                   color: Colors.white,
                   child: Column(
@@ -76,7 +76,7 @@ class HelpSection extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
-                  height: 100,
+                  height: 105,
                   width: 150,
                   color: Colors.white,
                   child: Column(
@@ -93,7 +93,7 @@ class HelpSection extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
-                  height: 100,
+                  height: 105,
                   width: 150,
                   color: Colors.white,
                   child: Column(
