@@ -1,3 +1,4 @@
+import 'package:amap_map_fluttify/amap_map_fluttify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:Hogwarts/theme/app_theme.dart';
@@ -9,6 +10,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
       .then((_) => runApp(MyApp()));
+
+  await enableFluttifyLog(false);
+  await AmapService.instance.init(
+    iosKey: '7a04506d15fdb7585707f7091d715ef4',     //虚假的key，iOS未配置
+    androidKey: '45cffc60503f61d4b99f6f8c5da8e8d5',
+    webApiKey: 'e69c6fddf6ccf8de917f5990deaa9aa2',  //虚假的key，web未配置
+  );
 }
 
 class MyApp extends StatelessWidget {
