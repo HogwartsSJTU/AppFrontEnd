@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:amap_map_fluttify/amap_map_fluttify.dart';
+
 
 class HomePage extends StatefulWidget{
   HomePage({Key key}) : super(key: key);
@@ -9,6 +11,8 @@ class HomePage extends StatefulWidget{
 }
 
 class RecommendedPage extends State<HomePage> {
+
+  AmapController _controller;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +35,11 @@ class RecommendedPage extends State<HomePage> {
           ),
           brightness: Brightness.light,
         ),
-        body: Center(child: Text("HOME"),)
+        body: AmapView(
+          onMapCreated: (controller) async {
+            _controller = controller;
+          },
+        ), //
     );
   }
 }
