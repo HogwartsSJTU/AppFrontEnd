@@ -33,7 +33,7 @@ class RecentChats extends StatelessWidget {
                   ),
                 ),
                 child: Container(
-                  margin: EdgeInsets.only(top: 10.0, bottom: 0.0, right: 20.0),
+                  margin: EdgeInsets.only(top: 10.0, bottom: 0.0, right: 10.0),
                   padding:
                       EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                   decoration: BoxDecoration(
