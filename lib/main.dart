@@ -14,7 +14,8 @@ void main() async {
   await enableFluttifyLog(false);
   await AmapService.instance.init(
     iosKey: '7a04506d15fdb7585707f7091d715ef4',     //虚假的key，iOS未配置
-    androidKey: '55016db318a343ffbad04732acb09b06',
+//    androidKey: '55016db318a343ffbad04732acb09b06', //gdy
+    androidKey: '45cffc60503f61d4b99f6f8c5da8e8d5',
     webApiKey: 'e69c6fddf6ccf8de917f5990deaa9aa2',  //虚假的key，web未配置
   );
 }
