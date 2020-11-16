@@ -1,9 +1,11 @@
+import 'package:Hogwarts/pages/detail.dart';
 import 'package:Hogwarts/pages/login.dart';
 import 'package:Hogwarts/pages/signup.dart';
 import 'package:amap_map_fluttify/amap_map_fluttify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:Hogwarts/theme/app_theme.dart';
+import 'package:Hogwarts/utils/data.dart';
 import 'package:Hogwarts/component/custom_drawer/navigation_home_screen.dart';
 
 // TODO LIST
@@ -44,7 +46,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/home',
       routes: {
-        '/home': (context) => NavigationHomeScreen(),
+        '/home': (context) => NavigationHomeScreen(), //Detail(spot: spot[1]),//
         '/login': (context) => LoginScreen(),
         '/signUp': (context) => SignUpScreen(),
       },
