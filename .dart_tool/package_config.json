@@ -404,6 +404,12 @@
       "languageVersion": "2.1"
     },
     {
+      "name": "shared_preferences",
+      "rootUri": "file:///Users/sqy/.pub-cache/hosted/pub.flutter-io.cn/shared_preferences-0.4.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
       "name": "simple_animations",
       "rootUri": "file:///Users/sqy/.pub-cache/hosted/pub.flutter-io.cn/simple_animations-2.2.3",
       "packageUri": "lib/",
@@ -566,7 +572,7 @@
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2020-11-16T12:57:40.553631Z",
+  "generated": "2020-11-16T13:48:34.818923Z",
   "generator": "pub",
   "generatorVersion": "2.10.2"
 }

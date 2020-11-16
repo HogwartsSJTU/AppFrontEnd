@@ -16,6 +16,7 @@ MERGED from [:foundation_fluttify] /Users/sqy/IdeaProjects/Hogwarts项目/AppFro
 MERGED from [:url_launcher] /Users/sqy/IdeaProjects/Hogwarts项目/AppFrontEnd/build/url_launcher/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-14:12
 MERGED from [:path_provider] /Users/sqy/IdeaProjects/Hogwarts项目/AppFrontEnd/build/path_provider/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:permission_handler] /Users/sqy/IdeaProjects/Hogwarts项目/AppFrontEnd/build/permission_handler/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:shared_preferences] /Users/sqy/IdeaProjects/Hogwarts项目/AppFrontEnd/build/shared_preferences/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.appcompat:appcompat:1.1.0] /Users/sqy/.gradle/caches/transforms-2/files-2.1/56a772d0e147a2bfda48e96bff655148/appcompat-1.1.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.fragment:fragment:1.1.0] /Users/sqy/.gradle/caches/transforms-2/files-2.1/412798c5ff5129715d71e58ff213e3a7/fragment-1.1.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/sqy/.gradle/caches/transforms-2/files-2.1/2b55f4dd1ddfb477bff2667016cc0a25/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
@@ -143,6 +144,8 @@ MERGED from [:path_provider] /Users/sqy/IdeaProjects/Hogwarts项目/AppFrontEnd/
 MERGED from [:path_provider] /Users/sqy/IdeaProjects/Hogwarts项目/AppFrontEnd/build/path_provider/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:permission_handler] /Users/sqy/IdeaProjects/Hogwarts项目/AppFrontEnd/build/permission_handler/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:permission_handler] /Users/sqy/IdeaProjects/Hogwarts项目/AppFrontEnd/build/permission_handler/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:shared_preferences] /Users/sqy/IdeaProjects/Hogwarts项目/AppFrontEnd/build/shared_preferences/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:shared_preferences] /Users/sqy/IdeaProjects/Hogwarts项目/AppFrontEnd/build/shared_preferences/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [androidx.appcompat:appcompat:1.1.0] /Users/sqy/.gradle/caches/transforms-2/files-2.1/56a772d0e147a2bfda48e96bff655148/appcompat-1.1.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.appcompat:appcompat:1.1.0] /Users/sqy/.gradle/caches/transforms-2/files-2.1/56a772d0e147a2bfda48e96bff655148/appcompat-1.1.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.fragment:fragment:1.1.0] /Users/sqy/.gradle/caches/transforms-2/files-2.1/412798c5ff5129715d71e58ff213e3a7/fragment-1.1.0/AndroidManifest.xml:20:5-22:41
