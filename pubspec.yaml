@@ -34,6 +34,7 @@ dependencies:
   simple_animations : 2.2.3
   bubble_tab_indicator: ^0.1.4
   fluttertoast: ^6.0.1
+  smooth_star_rating: ^1.1.1
   amap_map_fluttify: ^0.29.0
 
 dev_dependencies:
@@ -59,6 +60,7 @@ flutter:
     - assets/unlogin.jpg
     - assets/images/
     - assets/
+    - assets/hotel/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
