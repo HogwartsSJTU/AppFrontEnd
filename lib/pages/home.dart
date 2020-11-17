@@ -5,11 +5,18 @@ import 'package:Hogwarts/utils/next_latlng.dart';
 import 'package:decorated_flutter/decorated_flutter.dart';
 import 'package:demo_widgets/demo_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:Hogwarts/component/map_control/amap_controller.x.dart';
 
 final _assetsIcon = AssetImage('https://image.baidu.com/search/detail?ct=503316480&z=0&ipn=d&word=%E5%AE%9A%E4%BD%8D%E5%9B%BE%E6%A0%87&step_word=&hs=2&pn=54&spn=0&di=2200&pi=0&rn=1&tn=baiduimagedetail&is=0%2C0&istype=0&ie=utf-8&oe=utf-8&in=&cl=2&lm=-1&st=undefined&cs=1070168912%2C3072955312&os=434381118%2C2258794648&simid=0%2C0&adpicid=0&lpn=0&ln=952&fr=&fmq=1605341723603_R&fm=&ic=undefined&s=undefined&hd=undefined&latest=undefined&copyright=undefined&se=&sme=&tab=0&width=undefined&height=undefined&face=undefined&ist=&jit=&cg=&bdtype=0&oriquery=&objurl=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01c9505541bb22000001a64b457752.jpg%402o.jpg&fromurl=ippr_z2C%24qAzdH3FAzdH3Fooo_z%26e3Bzv55s_z%26e3Bv54_z%26e3BvgAzdH3Fo56hAzdH3FZNzQ9MDIoOA%3D%3D_z%26e3Bip4s&gsm=37&rpstart=0&rpnum=0&islist=&querylist=&force=undefined');
 
 class HomePage extends StatefulWidget{
-  HomePage({Key key}) : super(key: key);
+  HomePage({
+    this.fromToLocation,
+    this.isNavigate
+  });
+
+  final fromToLocation;
+  final isNavigate;
 
   State<StatefulWidget> createState(){
     return RecommendedPage();
@@ -19,6 +26,12 @@ class HomePage extends StatefulWidget{
 class RecommendedPage extends State<HomePage> {
   AmapController _controller;
   bool set = true;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,6 +64,7 @@ class RecommendedPage extends State<HomePage> {
                   myLocationType: MyLocationType.Rotate,
                 ));
                 _controller?.setMapType(MapType.Standard);
+                _handleSearchRoute();
               },
             ),
           ),
@@ -364,4 +378,38 @@ class RecommendedPage extends State<HomePage> {
       ),
     );
   }
+
+  Future<void> _handleSearchRoute() async {
+    if(!widget.isNavigate) return;
+
+    final fromLat = double.tryParse(widget.fromToLocation._fromLatitudeController.text);
+    final fromLng = double.tryParse(widget.fromToLocation._fromLongitudeController.text);
+    final toLat = double.tryParse(widget.fromToLocation._toLatitudeController.text);
+    final toLng = double.tryParse(widget.fromToLocation._toLongitudeController.text);
+
+    try {
+      _controller.addDriveRoute(
+        from: LatLng(fromLat, fromLng),
+        to: LatLng(toLat, toLng),
+        trafficOption: TrafficOption(show: true),
+      );
+    } catch (e) {
+      L.d(e);
+    }
+  }
+}
+
+class FromToLocation{
+  FromToLocation(
+      this._fromLatitudeController,
+      this._fromLongitudeController,
+      this._toLatitudeController,
+      this._toLongitudeController
+      );
+
+  final _fromLatitudeController;
+  final _fromLongitudeController;
+
+  final _toLatitudeController;
+  final _toLongitudeController;
 }
