@@ -46,7 +46,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       if (emailAddressControl.text == '' ||
           !emailAddressControl.text.contains('@')) {
         emailTextColor = Color(0xDFB0C4DE); //red[300];
-        getAccess = false;
+//        getAccess = false;
       } else {
         emailTextColor = Color(0xFF6CA8F1);
       }
@@ -64,7 +64,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       }
       if (districtControl.text == '' || districtControl.text.length < 6) {
         disTextColor = Color(0xDFB0C4DE);
-        getAccess = false;
+//        getAccess = false;
       } else {
         disTextColor = Color(0xFF6CA8F1);
       }
@@ -91,11 +91,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
     var res = await http.post(Uri.encodeFull(url), headers: {
       "Accept": "application/json"
     }, body: {
-      "email": emailAddress,
+//      "email": emailAddress,
+//      "address": district,
       "password": password,
-      "address": district,
       "phone": phoneNum,
       "name": name,
+      "address": "Shanghai Jiao Tong University"
     });
     _showToast();
     //清空路由堆栈，压入新的主页
@@ -119,7 +120,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           SizedBox(
             width: 12.0,
           ),
-          Text("注册成功"),
+          Text("注册成功 请重新登录"),
         ],
       ),
     );
@@ -450,7 +451,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   physics: AlwaysScrollableScrollPhysics(),
                   padding: EdgeInsets.symmetric(
                     horizontal: 30.0,
-                    vertical: 30.0,
+                    vertical: 80.0,
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

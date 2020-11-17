@@ -1,3 +1,4 @@
+import 'package:Hogwarts/component/hotel_booking/hotel_home_screen.dart';
 import 'package:Hogwarts/pages/home.dart';
 import 'package:Hogwarts/theme/app_theme.dart';
 
@@ -58,7 +59,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
     if (drawerIndex == DrawerIndex.HOME) {
         screenView = HomePage();
     } else if (drawerIndex == DrawerIndex.Finder) {
-        screenView = Center(child: Text("DISCOVER"),);
+        screenView = HotelHomeScreen();
     } else if (drawerIndex == DrawerIndex.Project) {
         screenView = FriendPage();
     } else if (drawerIndex == DrawerIndex.Contact) {
@@ -79,7 +80,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         });
       } else if (drawerIndex == DrawerIndex.Finder) {
         setState(() {
-          screenView = Center(child: Text("DISCOVER"),);
+          screenView = HotelHomeScreen();
         });
       } else if (drawerIndex == DrawerIndex.Project) {
         setState(() {
