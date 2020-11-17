@@ -11,7 +11,6 @@ class Detail extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(spot['name']),
-        backgroundColor: Colors.pink[100],
       ),
       body: ListView(
         children: <Widget>[
