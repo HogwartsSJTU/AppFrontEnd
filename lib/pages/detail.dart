@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-//import 'package:Hogwarts/tag.dart';
-//import 'package:Hogwarts/widgets/recommend.dart';
+import 'package:Hogwarts/component/detail/tag.dart';
+import 'package:Hogwarts/component/detail/comment.dart';
 
 class Detail extends StatelessWidget {
   final spot;
@@ -48,23 +48,23 @@ class Detail extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-//                Row(
-//                  children: <Widget>[
-//                    ShopTag(
-//                      icon: Icons.supervised_user_circle,
-//                      content: spot['count'],
-//                      color: Colors.pink[200],
-//                    ),
-//                    SizedBox(
-//                      width: 10,
-//                    ),
-//                    ShopTag(
-//                      icon: Icons.monetization_on,
-//                      content: spot['price'],
-//                      color: Colors.cyan[200],
-//                    ),
-//                  ],
-//                ),
+                Row(
+                  children: <Widget>[
+                    ShopTag(
+                      icon: Icons.supervised_user_circle,
+                      content: spot['count'],
+                      color: Colors.pink[200],
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    ShopTag(
+                      icon: Icons.bubble_chart,
+                      content: spot['heat'],
+                      color: Colors.cyan[200],
+                    ),
+                  ],
+                ),
                 SizedBox(
                   height: 10,
                 ),
@@ -79,7 +79,7 @@ class Detail extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-//                Recommend(),
+//                Comment(),
                 SizedBox(height: 20)
               ],
             ),
