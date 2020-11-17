@@ -1,4 +1,3 @@
-import 'package:Hogwarts/pages/detail.dart';
 import 'package:Hogwarts/pages/login.dart';
 import 'package:Hogwarts/pages/signup.dart';
 import 'package:amap_map_fluttify/amap_map_fluttify.dart';
@@ -45,7 +44,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/home',
       routes: {
-        '/home': (context) => NavigationHomeScreen(), //Detail(spot: spot[1]),//
+        '/home': (context) => NavigationHomeScreen(),
         '/login': (context) => LoginScreen(),
         '/signUp': (context) => SignUpScreen(),
       },

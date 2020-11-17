@@ -1,4 +1,7 @@
 import 'dart:ui';
+import 'package:Hogwarts/pages/detail.dart';
+import 'package:Hogwarts/utils/data.dart';
+
 import 'calendar_popup_view.dart';
 import 'hotel_list_view.dart';
 import 'model/hotel_list_data.dart';
@@ -120,7 +123,9 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                                               curve: Curves.fastOutSlowIn)));
                               animationController.forward();
                               return HotelListView(
-                                callback: () {},
+                                callback: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => Detail(spot: spot[index])));
+                                },
                                 hotelData: hotelList[index],
                                 animation: animation,
                                 animationController: animationController,

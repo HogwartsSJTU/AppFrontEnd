@@ -1,8 +1,8 @@
 List spot = [
   {
-    "name": "Mango Cream Slushine",
-    "rate": "4.8",
-    "image": "assets/tea1.jpg",
+    "name": "李政道图书馆",
+    "rate": "5",
+    "image": "assets/hotel/hotel_1.jpeg",
     "count": "45",
     "price": "13",
     "profile": "A delicious and refreshing frozen mango ice ceram,in hot weather to create the perfect pulp drink! This cream slushine is made from fresh fruit,ice cubes andcream. It will provide you with refreshing throughout the summer~~",
@@ -13,9 +13,9 @@ List spot = [
     }
   },
   {
-    "name": "Hawthorn Tea",
-    "rate": "4.5",
-    "image": "assets/tea2.jpg",
+    "name": "包玉刚图书馆",
+    "rate": "4",
+    "image": "assets/hotel/hotel_2.jpeg",
     "count": "22",
     "price": "17",
     "profile": "A delicious and refreshing frozen mango ice ceram,in hot weather to create the perfect pulp drink! This cream slushine is made from fresh fruit,ice cubes andcream. It will provide you with refreshing throughout the summer~~",
@@ -26,9 +26,35 @@ List spot = [
     }
   },
   {
-    "name": "Rose Green Tea",
-    "rate": "4.3",
-    "image": "assets/tea3.jpg",
+    "name": "第四餐饮大楼",
+    "rate": "4",
+    "image": "assets/hotel/hotel_3.jpeg",
+    "count": "65",
+    "price": "22",
+    "profile": "A delicious and refreshing frozen mango ice ceram,in hot weather to create the perfect pulp drink! This cream slushine is made from fresh fruit,ice cubes andcream. It will provide you with refreshing throughout the summer~~",
+    "comment": {
+      "image": "assets/user3.jpg",
+      "count": 9,
+      "msg": "Not bad, not bad."
+    }
+  },
+  {
+    "name": "菁菁堂",
+    "rate": "4.5",
+    "image": "assets/hotel/hotel_4.jpeg",
+    "count": "65",
+    "price": "22",
+    "profile": "A delicious and refreshing frozen mango ice ceram,in hot weather to create the perfect pulp drink! This cream slushine is made from fresh fruit,ice cubes andcream. It will provide you with refreshing throughout the summer~~",
+    "comment": {
+      "image": "assets/user3.jpg",
+      "count": 9,
+      "msg": "Not bad, not bad."
+    }
+  },
+  {
+    "name": "甜魔咖啡",
+    "rate": "4.5",
+    "image": "assets/hotel/hotel_5.jpeg",
     "count": "65",
     "price": "22",
     "profile": "A delicious and refreshing frozen mango ice ceram,in hot weather to create the perfect pulp drink! This cream slushine is made from fresh fruit,ice cubes andcream. It will provide you with refreshing throughout the summer~~",

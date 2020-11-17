@@ -35,29 +35,29 @@ class _HomeDrawerState extends State<HomeDrawer> {
   @override
   void initState() {
 //    setDrawerListArray();
-//    getUser();
+    getUser();
     super.initState();
   }
 
-//  getUser() async {
-//    String name = await StorageUtil.getStringItem("username");
-//    String e = await StorageUtil.getStringItem("email");
-//    int role = await StorageUtil.getIntItem("role");
-//    String userIcon = await StorageUtil.getStringItem("userIcon");
-//    if (name != null && e != null && role != null ) {
-//      setState(() {
-//        username = name;
-//        icon = userIcon;
-//        isLog = true;
-//        isManager = (role == 1) ? true : false;
-//      });
-//    } else
-//      setState(() {
-//        username = '点击登录';
-//        isLog = false;
-//      });
-//    print(username);
-//  }
+  getUser() async {
+    String name = await StorageUtil.getStringItem("username");
+    String e = await StorageUtil.getStringItem("email");
+    int role = await StorageUtil.getIntItem("role");
+    String userIcon = await StorageUtil.getStringItem("userIcon");
+    if (name != null && e != null && role != null ) {
+      setState(() {
+        username = name;
+        icon = userIcon;
+        isLog = true;
+        isManager = (role == 1) ? true : false;
+      });
+    } else
+      setState(() {
+        username = '点击登录';
+        isLog = false;
+      });
+    print(username);
+  }
 
   void setDrawerListArray() {
     if(isManager){

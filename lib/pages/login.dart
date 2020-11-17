@@ -63,6 +63,31 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  _showToastSuccess(String message) {
+    Widget toast = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(25.0),
+        color: Colors.black12,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.check),
+          SizedBox(
+            width: 12.0,
+          ),
+          Text(message),
+        ],
+      ),
+    );
+    flutterToast.showToast(
+      child: toast,
+      gravity: ToastGravity.BOTTOM,
+      toastDuration: Duration(seconds: 2),
+    );
+  }
+
   authentication() async {
     try {
       String url = "${Url.url_prefix}/login";
@@ -97,6 +122,8 @@ class _LoginScreenState extends State<LoginScreen> {
         });
         return;
       }
+      print("登录成功");
+      _showToastSuccess("欢迎回来 " + response["user"]["name"].toString());
       Account.saveUserInfo(response["user"]);
       Account.saveToken(response["token"]);
     } catch (e) {
