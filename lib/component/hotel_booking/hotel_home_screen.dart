@@ -124,7 +124,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                               animationController.forward();
                               return HotelListView(
                                 callback: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => Detail(spot: spot[index])));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => Detail(spot: spots[index])));
                                 },
                                 hotelData: hotelList[index],
                                 animation: animation,

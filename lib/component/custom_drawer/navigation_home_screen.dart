@@ -11,9 +11,13 @@ import 'package:Hogwarts/pages/settings_screen.dart';
 
 class NavigationHomeScreen extends StatefulWidget {
   NavigationHomeScreen({
-    this.drawerIndex = DrawerIndex.HOME
+    this.drawerIndex = DrawerIndex.HOME,
+    this.isNavigate = false,
+    this.fromToLocation
   });
 
+  final fromToLocation;
+  final isNavigate;
   final DrawerIndex drawerIndex;
 
   @override
@@ -57,7 +61,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
 
   void setIndex() {
     if (drawerIndex == DrawerIndex.HOME) {
-        screenView = HomePage();
+        screenView = HomePage(isNavigate: widget.isNavigate, fromToLocation: widget.fromToLocation,);
     } else if (drawerIndex == DrawerIndex.Finder) {
         screenView = HotelHomeScreen();
     } else if (drawerIndex == DrawerIndex.Project) {
