@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:Hogwarts/pages/login.dart';
 import 'package:Hogwarts/pages/profile.dart';
+import 'package:Hogwarts/utils/Account.dart';
+import 'package:Hogwarts/utils/StorageUtil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:Hogwarts/theme/app_theme.dart';
 
@@ -32,29 +35,29 @@ class _HomeDrawerState extends State<HomeDrawer> {
   @override
   void initState() {
 //    setDrawerListArray();
-//    getUser();
+    getUser();
     super.initState();
   }
 
-//  getUser() async {
-//    String name = await StorageUtil.getStringItem("username");
-//    String e = await StorageUtil.getStringItem("email");
-//    int role = await StorageUtil.getIntItem("role");
-//    String userIcon = await StorageUtil.getStringItem("userIcon");
-//    if (name != null && e != null && role != null ) {
-//      setState(() {
-//        username = name;
-//        icon = userIcon;
-//        isLog = true;
-//        isManager = (role == 1) ? true : false;
-//      });
-//    } else
-//      setState(() {
-//        username = '点击登录';
-//        isLog = false;
-//      });
-//    print(username);
-//  }
+  getUser() async {
+    String name = await StorageUtil.getStringItem("username");
+    String e = await StorageUtil.getStringItem("email");
+    int role = await StorageUtil.getIntItem("role");
+    String userIcon = await StorageUtil.getStringItem("userIcon");
+    if (name != null && e != null && role != null ) {
+      setState(() {
+        username = name;
+        icon = userIcon;
+        isLog = true;
+        isManager = (role == 1) ? true : false;
+      });
+    } else
+      setState(() {
+        username = '点击登录';
+        isLog = false;
+      });
+    print(username);
+  }
 
   void setDrawerListArray() {
     if(isManager){
@@ -114,23 +117,23 @@ class _HomeDrawerState extends State<HomeDrawer> {
         labelName: '设置',
         icon: Icon(FontAwesomeIcons.chartBar),
       ),
-    ];
+
+  ];
+}
+
+  navigateToProfile() async {
+    int userId = await StorageUtil.getIntItem("uid");
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(userId: userId))).then((value) => updateImage());
   }
-
-//  navigateToProfile() async {
-//    int userId = await StorageUtil.getIntItem("uid");
-//    Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(userId: userId))).then((value) => updateImage());
-//  }
-
-//  updateImage() async {
-//    setState(() {
-//      icon = 'http://freelancer-images.oss-cn-beijing.aliyuncs.com/blank.png';
-//    });
-//    String userIcon = await StorageUtil.getStringItem("userIcon");
-//    setState(() {
-//      icon = userIcon;
-//    });
-//  }
+  updateImage() async {
+    setState(() {
+      icon = 'http://freelancer-images.oss-cn-beijing.aliyuncs.com/blank.png';
+    });
+    String userIcon = await StorageUtil.getStringItem("userIcon");
+    setState(() {
+      icon = userIcon;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,9 +168,9 @@ class _HomeDrawerState extends State<HomeDrawer> {
                   padding: const EdgeInsets.all(16.0),
                   child: InkWell(
                     onTap: () {
-//                      if(isLog) navigateToProfile();
-//                      else Navigator.pushNamed(context, "/login");
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(userId: 0)));
+                      if(isLog) navigateToProfile();
+                      else Navigator.pushNamed(context, "/login");
+//                      Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(userId: 0)));
                     },
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -248,12 +251,12 @@ class _HomeDrawerState extends State<HomeDrawer> {
                   color: isLog? Colors.red : Colors.lightGreen,
                 ),
                 onTap: () {
-//                  Account.delUserInfo();
-//                  !isLog ? Navigator.of(context).push(CupertinoPageRoute(builder: (BuildContext context) => LoginScreen()))
-//                         : Navigator.of(context).pushAndRemoveUntil(
-//                             new MaterialPageRoute(builder: (context)=> NavigationHomeScreen()),
-//                             (route)=>route==null
-//                           );
+                  Account.delUserInfo();
+                  !isLog ? Navigator.of(context).push(CupertinoPageRoute(builder: (BuildContext context) => LoginScreen()))
+                         : Navigator.of(context).pushAndRemoveUntil(
+                             new MaterialPageRoute(builder: (context)=> NavigationHomeScreen()),
+                             (route)=>route==null
+                           );
                 },
               ),
               SizedBox(

@@ -1,9 +1,11 @@
-import 'dart:io';
-
 import 'package:Hogwarts/theme/hotel_app_theme.dart';
+import 'package:Hogwarts/utils/StorageUtil.dart';
 import 'package:flutter/material.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:Hogwarts/utils/config.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 
 class Profile extends StatefulWidget{
@@ -20,13 +22,12 @@ class Profile extends StatefulWidget{
 class _ProfileState extends State<Profile> with TickerProviderStateMixin{
   TabController _tabController;
   final List<Tab> tabs = <Tab>[
-    new Tab(text: "雇主"),
-    new Tab(text: "雇员"),
+    new Tab(text: "游记"),
   ];
   AnimationController animationController;
   FlutterToast flutterToast;
 
-  User user = User(0,'',0,'','','','','','',[],true);
+  User user = User(0,'',0,'','','','',true);
 //  List<Job> employerJobList = [];
 //  List<Job> employeeJobList = [];
   // TODO 这里是空白图片
@@ -41,7 +42,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
     animationController = AnimationController(
         duration: const Duration(milliseconds: 1000), vsync: this);
     flutterToast = FlutterToast(context);
-//    getUser();
+    getUser();
 //    getEmployerJobs();
 //    getEmployeeJobs();
   }
@@ -52,24 +53,25 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
     super.dispose();
   }
 
-//  getUser() async {
-//    //获得用户头像
-//    _image = await StorageUtil.getStringItem("userIcon");
-//    User u;
-//    List<String> skills = [];
-//    String url = "${Url.url_prefix}/getUser?id=" + widget.userId.toString();
-//    String token = await StorageUtil.getStringItem('token');
-//    final res = await http.get(url, headers: {"Accept": "application/json","Authorization": "$token"});
-//    final data = json.decode(res.body);
-//
-//    for(int i = 0; i < data['skills'].length; ++i){
-//      skills.add(data['skills'][i]);
-//    }
-//    u = new User(data['id'], data['name'], data['age'], data['gender'], data['email'], data['address'], data['phone'], data['time'], data['description'], skills, (data['isShow'] == 0)? false : true);
-//    setState(() {
-//      user = u;
-//    });
-//  }
+  getUser() async {
+    //获得用户头像
+    _image = await StorageUtil.getStringItem("userIcon");
+    User u;
+    String url = "${Url.url_prefix}/getUser?id=" + widget.userId.toString();
+
+    print(widget.userId.toString());
+    String token = await StorageUtil.getStringItem('token');
+
+    print(token);
+    final res = await http.get(url, headers: {"Accept": "application/json","Authorization": "$token"});
+    final data = json.decode(res.body);
+    print(data);
+
+    u = new User(data['id'], data['name'], data['age'], data['gender'], data['address'], data['phone'], data['description'], (data['isShow'] == 0)? false : true);
+    setState(() {
+      user = u;
+    });
+  }
 
 //  getEmployerJobs() async {
 //    List<Job> jobs = [];
@@ -181,38 +183,6 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> skillManageList = user.skills.map((skill) => Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7.0, vertical: 4.0),
-      margin: const EdgeInsets.only(right: 6.0, bottom: 8.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15.0),
-        color: Colors.grey.withOpacity(0.3),
-      ),
-      child: Text(skill,style: TextStyle(height: 1,fontSize: 14),),
-    )).toList();
-    skillManageList.add(Container(
-      child: Column(
-        children: [
-          SizedOverflowBox(
-            size: Size(32, 32),
-            alignment: Alignment.center,
-            child: IconButton(
-              // action button
-              icon: new Icon(Icons.add_circle, color: Colors.black54,),
-              padding: const EdgeInsets.all(0),
-              onPressed: () {
-//                _showSimpleDialog();
-              },
-            ),
-          ),
-          SizedBox(
-            height: 3,
-            width: 2,
-            child: Container(),
-          )
-        ],
-      ),
-    ));
 
     return new Scaffold(
         body: CustomScrollView(
@@ -328,7 +298,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
                   children: [
                     ListTile(
                       leading: Icon(Icons.desktop_windows, color: Colors.black),
-                      title: Text("我的项目"),
+                      title: Text("我的游记"),
                       trailing: Icon(Icons.keyboard_arrow_right),
                       onTap: () {
 //                        Navigator.push(context, MaterialPageRoute(builder: (context) => OnesJobManagePage(userId: user.userId,)));
@@ -393,18 +363,6 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
                           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                           child: Row(
                             children: [
-                              Icon(Icons.email, color: Colors.grey),
-                              Padding(
-                                padding: EdgeInsets.only(left: 20),
-                                child: Text(user.email, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),),
-                              )
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                          child: Row(
-                            children: [
                               Icon(Icons.phone, color: Colors.grey),
                               Padding(
                                 padding: EdgeInsets.only(left: 20),
@@ -426,38 +384,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                          child: Row(
-                            children: [
-                              Icon(Icons.watch_later, color: Colors.grey),
-                              Padding(
-                                padding: EdgeInsets.only(left: 20),
-                                child: Text(user.time, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),),
-                              )
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Icon(Icons.local_offer, color: Colors.grey),
-                              Padding(
-                                  padding: EdgeInsets.only(left: 20),
-                                  child: Container(
-                                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 80),
-                                    child: Wrap(
-                                      crossAxisAlignment: WrapCrossAlignment.end,
-                                      children: skillManageList,
-                                    ),
-                                  )
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 16, right: 16, top: 2, bottom: 16),
+                          padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 16),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -506,7 +433,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
                             children: [
                               SizedBox(
                                 width: 100,
-                                child: Text('项目经历',
+                                child: Text('游记展板',
                                   style: TextStyle(
                                       fontSize: 22,
                                       fontWeight: FontWeight.w600
@@ -559,7 +486,25 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
 //                                return jobList(employerJobList, true);
 //                              else
 //                                return jobList(employeeJobList, false);
-                              return Text("not complete.");
+                              return Padding(
+                                padding: EdgeInsets.only(top: 50),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Image(
+                                      image: AssetImage('assets/empty.png'),
+                                      height: 50,
+                                      width: 50,
+                                    ),
+                                    Text("暂无游记", style: TextStyle(fontSize: 18),),
+                                    SizedBox(
+                                      height: 40,
+                                      child: Container(),
+                                    )
+                                  ],
+                                ),
+                              );
                             }).toList(),
                           ),
                         ),
@@ -684,12 +629,9 @@ class User{
       this.name,
       this.age,
       this.gender,
-      this.email,
       this.address,
       this.phone,
-      this.time,
       this.description,
-      this.skills,
       this.recordCanSee
       );
 
@@ -697,11 +639,8 @@ class User{
   String name;
   int age;
   String gender;
-  String email;
   String address;
   String phone;
-  final String time;
   String description;
-  List<String> skills;
   bool recordCanSee;
 }

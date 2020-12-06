@@ -1,3 +1,4 @@
+import 'package:Hogwarts/component/hotel_booking/hotel_home_screen.dart';
 import 'package:Hogwarts/pages/home.dart';
 import 'package:Hogwarts/theme/app_theme.dart';
 
@@ -10,9 +11,13 @@ import 'package:Hogwarts/pages/settings_screen.dart';
 
 class NavigationHomeScreen extends StatefulWidget {
   NavigationHomeScreen({
-    this.drawerIndex = DrawerIndex.HOME
+    this.drawerIndex = DrawerIndex.HOME,
+    this.isNavigate = false,
+    this.fromToLocation
   });
 
+  final fromToLocation;
+  final isNavigate;
   final DrawerIndex drawerIndex;
 
   @override
@@ -56,9 +61,9 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
 
   void setIndex() {
     if (drawerIndex == DrawerIndex.HOME) {
-        screenView = HomePage();
+        screenView = HomePage(isNavigate: widget.isNavigate, fromToLocation: widget.fromToLocation,);
     } else if (drawerIndex == DrawerIndex.Finder) {
-        screenView = Center(child: Text("DISCOVER"),);
+        screenView = HotelHomeScreen();
     } else if (drawerIndex == DrawerIndex.Project) {
         screenView = FriendPage();
     } else if (drawerIndex == DrawerIndex.Contact) {
@@ -79,7 +84,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         });
       } else if (drawerIndex == DrawerIndex.Finder) {
         setState(() {
-          screenView = Center(child: Text("DISCOVER"),);
+          screenView = HotelHomeScreen();
         });
       } else if (drawerIndex == DrawerIndex.Project) {
         setState(() {

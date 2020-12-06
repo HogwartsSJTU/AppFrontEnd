@@ -25,6 +25,7 @@ dependencies:
     sdk: flutter
   demo_widgets: ^0.2.1
   permission_handler: ^5.0.0+hotfix.6
+  shared_preferences: "^0.4.2"
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -33,6 +34,7 @@ dependencies:
   simple_animations : 2.2.3
   bubble_tab_indicator: ^0.1.4
   fluttertoast: ^6.0.1
+  smooth_star_rating: ^1.1.1
   amap_map_fluttify: ^0.29.0
 
 dev_dependencies:
@@ -58,6 +60,7 @@ flutter:
     - assets/unlogin.jpg
     - assets/images/
     - assets/
+    - assets/hotel/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
