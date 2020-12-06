@@ -1,6 +1,12 @@
+import 'package:Hogwarts/component/custom_drawer/navigation_home_screen.dart';
+import 'package:Hogwarts/theme/hotel_app_theme.dart';
+import 'package:Hogwarts/utils/data.dart';
 import 'package:flutter/material.dart';
 import 'package:Hogwarts/component/detail/tag.dart';
 import 'package:Hogwarts/component/detail/comment.dart';
+import 'package:smooth_star_rating/smooth_star_rating.dart';
+import 'home.dart';
+
 
 class Detail extends StatelessWidget {
   final spot;
@@ -12,7 +18,8 @@ class Detail extends StatelessWidget {
       appBar: AppBar(
         title: Text(spot['name']),
       ),
-      body: ListView(
+      body:
+        ListView(
         children: <Widget>[
           ClipRRect(
             borderRadius: BorderRadius.only(bottomLeft: Radius.circular(100)),
@@ -28,22 +35,47 @@ class Detail extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  spot['name'],
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      spot['name'],
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        print(spots[6]["lat"]);
+                        print(spots[6]["lng"]);
+
+                        Navigator.of(context).pushAndRemoveUntil(
+                            new MaterialPageRoute(builder: (context)=> NavigationHomeScreen(isNavigate: true, fromToLocation: FromToLocation(
+                                TextEditingController(text: spots[6]["lat"].toString()),
+                                TextEditingController(text: spots[6]["lng"].toString()),
+                                TextEditingController(text: spot["lat"].toString()),
+                                TextEditingController(text: spot["lng"].toString())
+                            ))),
+                                (route)=>route==null
+                        );
+                      },
+                      icon: Icon(Icons.explore),
+                      color: Colors.blue,
+                    )
+                  ],
                 ),
                 SizedBox(
                   height: 10,
                 ),
-                Row(
-                  children: <Widget>[
-                    Icon(Icons.star, color: Colors.yellow),
-                    Icon(Icons.star, color: Colors.yellow),
-                    Icon(Icons.star, color: Colors.yellow),
-                    Icon(Icons.star, color: Colors.yellow),
-                    Icon(Icons.star, color: Colors.grey[200]),
-                    Text(spot['rate']),
-                  ],
+                SmoothStarRating(
+                  allowHalfRating: true,
+                  starCount: 5,
+                  rating: double.parse(spot["rate"]),
+                  size: 20,
+                  color: HotelAppTheme
+                      .buildLightTheme()
+                      .primaryColor,
+                  borderColor: HotelAppTheme
+                      .buildLightTheme()
+                      .primaryColor,
                 ),
                 SizedBox(
                   height: 10,
