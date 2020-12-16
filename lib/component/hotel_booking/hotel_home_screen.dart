@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:Hogwarts/component/design_course/course_info_screen.dart';
 import 'package:Hogwarts/component/design_course/home_design_course.dart';
+//import 'package:Hogwarts/pages/detail-old.dart';
 import 'package:Hogwarts/pages/detail.dart';
 import 'package:Hogwarts/utils/data.dart';
 
@@ -126,7 +127,8 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                               animationController.forward();
                               return HotelListView(
                                 callback: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => CourseInfoScreen(spot:spots[index])));//Detail(spot: spots[index])
+//                                  Navigator.push(context, MaterialPageRoute(builder: (context) => CourseInfoScreen(spot:spots[index])));//Detail(spot: spots[index])
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => Detail(spot: spots[index])));
                                 },
                                 hotelData: hotelList[index],
                                 animation: animation,
