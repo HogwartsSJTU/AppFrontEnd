@@ -66,6 +66,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         screenView = HotelHomeScreen();
     } else if (drawerIndex == DrawerIndex.Project) {
         screenView = FriendPage();
+//      screenView = UserListScreen();
     } else if (drawerIndex == DrawerIndex.Contact) {
         screenView = HelpSection();
     } else if (drawerIndex == DrawerIndex.Setting) {
@@ -89,6 +90,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
       } else if (drawerIndex == DrawerIndex.Project) {
         setState(() {
           screenView = FriendPage();
+//          screenView =  UserListScreen();
         });
       } else if (drawerIndex == DrawerIndex.Contact) {
         setState(() {

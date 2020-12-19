@@ -57,6 +57,7 @@ class _CourseInfoScreenState extends State<CourseInfoScreen>
       color: DesignCourseAppTheme.nearlyWhite,
       child: Scaffold(
         backgroundColor: Colors.transparent,
+
         body: Stack(
           children: <Widget>[
             Container(),
@@ -64,6 +65,7 @@ class _CourseInfoScreenState extends State<CourseInfoScreen>
               top: -80,
               left: 0,
               child:
+
 //                AspectRatio(
                   ClipRRect(
 //                  aspectRatio: 1.2,
@@ -131,7 +133,6 @@ class _CourseInfoScreenState extends State<CourseInfoScreen>
                                   )
                                 ],
                               )),
-
 //                          Padding(
 //                            padding: const EdgeInsets.only(
 //                                left: 16, right: 16, bottom: 8, top: 16),

@@ -32,32 +32,32 @@ final User greg = User(
 );
 final User james = User(
   id: 2,
-  name: 'James',
+  name: '童童',
   imageUrl: 'assets/images/james.jpg',
 );
 final User john = User(
   id: 3,
-  name: 'John',
+  name: '斌斌',
   imageUrl: 'assets/images/john.jpg',
 );
 final User olivia = User(
   id: 4,
-  name: 'Olivia',
+  name: '郭郭',
   imageUrl: 'assets/images/olivia.jpg',
 );
 final User sam = User(
   id: 5,
-  name: 'Sam',
+  name: '筠',
   imageUrl: 'assets/images/sam.jpg',
 );
 final User sophia = User(
   id: 6,
-  name: 'Sophia',
+  name: '林',
   imageUrl: 'assets/images/sophia.jpg',
 );
 final User steven = User(
   id: 7,
-  name: 'Steven',
+  name: '童童',
   imageUrl: 'assets/images/steven.jpg',
 );
 
@@ -69,21 +69,21 @@ List<Message> chats = [
   Message(
     sender: james,
     time: '5:30 PM',
-    text: 'Hey, how\'s it going? What did you do today?',
+    text: '下周一去霍体打羽毛球吗',
     isLiked: false,
     unread: true,
   ),
   Message(
     sender: olivia,
     time: '4:30 PM',
-    text: 'Hey, how\'s it going? What did you do today?',
+    text: '你的作业做完了吗',
     isLiked: false,
     unread: true,
   ),
   Message(
     sender: john,
     time: '3:30 PM',
-    text: 'Hey, how\'s it going? What did you do today?',
+    text: '昨天的作业咋做啊',
     isLiked: false,
     unread: false,
   ),
