@@ -237,7 +237,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
             children: <Widget>[
               ListTile(
                 title: Text(
-                  isLog? 'Sign Out' : 'Sign In',
+                  isLog? '登出' : '登录',
                   style: TextStyle(
                     fontFamily: AppTheme.fontName,
                     fontWeight: FontWeight.w600,

@@ -8,12 +8,13 @@ import 'package:Hogwarts/utils/config.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:audioplayers/audio_cache.dart';
 
 // TODO 导航待完善
 class Detail extends StatefulWidget {
   final spot;
   const Detail({Key key, this.spot}) : super(key: key);
-
   @override
   State<StatefulWidget> createState() {
     return new _ProfileState();
@@ -33,10 +34,12 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
   double opacity1 = 0.0;
   double opacity2 = 0.0;
   double opacity3 = 0.0;
+  int playstate = 0;
 
   User user = User(0, '', 0, '', '', '', '', true);
   // TODO 这里是空白图片
-  String _image = 'http://freelancer-images.oss-cn-beijing.aliyuncs.com/blank.png';
+  static AudioCache player = AudioCache();
+  AudioPlayer audio ;
 
   @override
   void initState() {
@@ -48,6 +51,22 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
         parent: animationController,
         curve: Interval(0, 1.0, curve: Curves.fastOutSlowIn)));
     setData();
+
+
+  }
+
+  play() async {
+   audio = await player.play('audio.mp3');
+   setState(() {
+      playstate = 1;
+    });
+  }
+
+  pause() async{
+    audio.pause();
+    setState(() {
+      playstate = 0;
+    });
   }
 
   Future<void> setData() async {
@@ -69,6 +88,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
   @override
   void dispose() {
     animationController.dispose();
+//    audioPlayer.release();
     super.dispose();
   }
 
@@ -155,7 +175,17 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                         color: DesignCourseAppTheme.nearlyBlue
                                             .withOpacity(0.7),
                                         size: 24,
-                                      )
+
+                                      ),
+                                      IconButton(
+                                        onPressed: (){
+                                          if(playstate == 0)
+                                            play();
+                                          else
+                                            pause();
+                                        },
+                                        icon: playstate == 1 ? Icon(Icons.pause_circle_filled_outlined) : Icon(Icons.play_circle_fill),
+                                      ),
                                     ],
                                   )),
                             ),
