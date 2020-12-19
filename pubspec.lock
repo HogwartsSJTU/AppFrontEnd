@@ -50,6 +50,27 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.5.0-nullsafety.1"
+  audioplayer:
+    dependency: "direct main"
+    description:
+      name: audioplayer
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.8.1"
+  audioplayer_web:
+    dependency: "direct main"
+    description:
+      name: audioplayer_web
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.7.1"
+  audioplayers:
+    dependency: "direct main"
+    description:
+      name: audioplayers
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.13.7"
   boolean_selector:
     dependency: transitive
     description:
