@@ -15,7 +15,7 @@ class FavoriteContacts extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  'Favorite Contacts',
+                  '最近联系人',
                   style: TextStyle(
                     color: Colors.blueGrey,
                     fontSize: 18.0,

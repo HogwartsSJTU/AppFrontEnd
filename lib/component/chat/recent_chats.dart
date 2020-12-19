@@ -102,7 +102,7 @@ class RecentChats extends StatelessWidget {
                                   ),
                                   alignment: Alignment.center,
                                   child: Text(
-                                    'NEW',
+                                    '新消息',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 12.0,
