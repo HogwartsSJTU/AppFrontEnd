@@ -1,8 +1,10 @@
+import 'package:Hogwarts/component/custom_drawer/navigation_home_screen.dart';
 import 'package:Hogwarts/component/design_course/design_course_app_theme.dart';
 import 'package:Hogwarts/theme/hotel_app_theme.dart';
 import 'package:Hogwarts/utils/StorageUtil.dart';
 import 'package:flutter/material.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
+import 'package:Hogwarts/utils/data.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:Hogwarts/utils/config.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,6 +12,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audio_cache.dart';
+
+import 'home.dart';
 
 // TODO 导航待完善
 class Detail extends StatefulWidget {
@@ -196,24 +200,56 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                             child: ScaleTransition(
                               alignment: Alignment.center,
                               scale: CurvedAnimation(
-                                  parent: animationController, curve: Curves.fastOutSlowIn),
+                                  parent: animationController,
+                                  curve: Curves.fastOutSlowIn),
                               child: Card(
-                                color: DesignCourseAppTheme.nearlyBlue,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(50.0)),
-                                elevation: 10.0,
-                                child: Container(
-                                  width: 60,
-                                  height: 60,
-                                  child: Center(
-                                    child: Icon(
-                                      FontAwesomeIcons.solidPaperPlane, //paperPlane,
-                                      color: DesignCourseAppTheme.nearlyWhite,
-                                      size: 28,
+                                  color: DesignCourseAppTheme.nearlyBlue,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(50.0)),
+                                  elevation: 10.0,
+                                  child: InkWell(
+                                    onTap: () {
+                                      print(spots[6]["lat"]);
+                                      print(spots[6]["lng"]);
+                                      Navigator.of(context).pushAndRemoveUntil(
+                                          new MaterialPageRoute(
+                                              builder: (context) =>
+                                                  NavigationHomeScreen(
+                                                      isNavigate: true,
+                                                      fromToLocation: FromToLocation(
+                                                          TextEditingController(
+                                                              text: spots[6]
+                                                                      ["lat"]
+                                                                  .toString()),
+                                                          TextEditingController(
+                                                              text: spots[6]
+                                                                      ["lng"]
+                                                                  .toString()),
+                                                          TextEditingController(
+                                                              text: widget
+                                                                  .spot["lat"]
+                                                                  .toString()),
+                                                          TextEditingController(
+                                                              text: widget
+                                                                  .spot["lng"]
+                                                                  .toString())))),
+                                          (route) => route == null);
+                                    },
+                                    child: Container(
+                                      width: 60,
+                                      height: 60,
+                                      child: Center(
+                                        child: Icon(
+                                          FontAwesomeIcons
+                                              .solidPaperPlane, //paperPlane,
+                                          color:
+                                              DesignCourseAppTheme.nearlyWhite,
+                                          size: 28,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              ),
+                                  )),
                             ),
                           ),
                         ])))),
@@ -247,8 +283,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                           child: Padding(
                             padding: const EdgeInsets.all(8),
                             child: Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Row(children: <Widget>[
                                   getTimeBoxUI(widget.spot['count'], '打卡'),
@@ -356,10 +391,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                 tabs: tabs,
                                 controller: _tabController,
                               ),
-                              SizedBox(
-                                width: 100,
-                                child: Container()
-                              )
+                              SizedBox(width: 100, child: Container())
                             ],
                           ),
                         ),
