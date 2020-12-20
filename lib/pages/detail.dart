@@ -55,8 +55,6 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
         parent: animationController,
         curve: Interval(0, 1.0, curve: Curves.fastOutSlowIn)));
     setData();
-
-
   }
 
   play() async {
