@@ -42,8 +42,8 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
 
   User user = User(0, '', 0, '', '', '', '', true);
   // TODO 这里是空白图片
-  String _image =
-      'http://freelancer-images.oss-cn-beijing.aliyuncs.com/blank.png';
+  static AudioCache player = AudioCache();
+  AudioPlayer audio ;
 
   @override
   void initState() {
