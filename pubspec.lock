@@ -50,6 +50,27 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.5.0-nullsafety.1"
+  audioplayer:
+    dependency: "direct main"
+    description:
+      name: audioplayer
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.8.1"
+  audioplayer_web:
+    dependency: "direct main"
+    description:
+      name: audioplayer_web
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.7.1"
+  audioplayers:
+    dependency: "direct main"
+    description:
+      name: audioplayers
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.13.7"
   boolean_selector:
     dependency: transitive
     description:
@@ -188,6 +209,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.4.2"
+  flutter_easyrefresh:
+    dependency: "direct main"
+    description:
+      name: flutter_easyrefresh
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.1.7"
   flutter_localizations:
     dependency: transitive
     description: flutter
@@ -481,6 +509,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  sliding_up_panel:
+    dependency: "direct main"
+    description:
+      name: sliding_up_panel
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.2"
   smooth_star_rating:
     dependency: "direct main"
     description:
