@@ -1,3 +1,4 @@
+import 'package:Hogwarts/component/UserInfoEditModal.dart';
 import 'package:Hogwarts/theme/hotel_app_theme.dart';
 import 'package:Hogwarts/utils/StorageUtil.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:Hogwarts/utils/config.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:io';
 
 
 class Profile extends StatefulWidget{
@@ -342,7 +344,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
                               RaisedButton(
                                 onPressed: (){
                                   FocusScope.of(context).requestFocus(FocusNode());
-//                                  showDemoDialog(context: context);
+                                  showDemoDialog(context: context);
                                 },
                                 color: Colors.blue,
                                 textColor: Colors.white,
@@ -520,40 +522,40 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
   }
 
   //TODO 资料更新未传到后端保存
-//  void showDemoDialog({BuildContext context}) {
-//    showDialog<dynamic>(
-//      context: context,
-//      builder: (BuildContext context) => UserInfoEditModal(
-//        userInfo: FoundationInfo(
-//            name: user.name,
-//            gender: user.gender,
-//            age: user.age,
-//            phone: user.phone,
-//            address: user.address,
-//            description: user.description,
-//            image: _image
-//        ),
-//        onApplyClick: (FoundationInfo userInfo, bool ifImageChanged, File newImage) {
-//          setState(() {
-//            user.name = userInfo.name;
-//            user.age = userInfo.age;
-//            user.gender = userInfo.gender;
-//            user.phone = userInfo.phone;
-//            user.address = userInfo.address;
-//            user.description = userInfo.description;
-//            _image = userInfo.image;
-//          });
-//          if(ifImageChanged){
-//            setState(() {
-//              _newImage = newImage;
-//              _ifImageChanged = true;
-//            });
-//          }
-//        },
-//        onCancelClick: () {},
-//      ),
-//    );
-//  }
+  void showDemoDialog({BuildContext context}) {
+    showDialog<dynamic>(
+      context: context,
+      builder: (BuildContext context) => UserInfoEditModal(
+        userInfo: FoundationInfo(
+            name: user.name,
+            gender: user.gender,
+            age: user.age,
+            phone: user.phone,
+            address: user.address,
+            description: user.description,
+            image: _image
+        ),
+        onApplyClick: (FoundationInfo userInfo, bool ifImageChanged, File newImage) {
+          setState(() {
+            user.name = userInfo.name;
+            user.age = userInfo.age;
+            user.gender = userInfo.gender;
+            user.phone = userInfo.phone;
+            user.address = userInfo.address;
+            user.description = userInfo.description;
+            _image = userInfo.image;
+          });
+          if(ifImageChanged){
+            setState(() {
+              _newImage = newImage;
+              _ifImageChanged = true;
+            });
+          }
+        },
+        onCancelClick: () {},
+      ),
+    );
+  }
 
   _showToast() {
     Widget toast = Container(
