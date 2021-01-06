@@ -1,3 +1,5 @@
+//import 'dart:html';
+
 import 'package:Hogwarts/component/custom_drawer/navigation_home_screen.dart';
 import 'package:Hogwarts/component/design_course/design_course_app_theme.dart';
 import 'package:Hogwarts/theme/hotel_app_theme.dart';
@@ -12,6 +14,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audio_cache.dart';
+import 'package:Hogwarts/pages/comment.dart';
 
 import 'home.dart';
 
@@ -25,7 +28,10 @@ class Detail extends StatefulWidget {
   }
 }
 
+
+
 class _ProfileState extends State<Detail> with TickerProviderStateMixin {
+  final commentNum = 5;
   TabController _tabController;
   final List<Tab> tabs = <Tab>[
     new Tab(text: "留言"),
@@ -43,7 +49,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
   User user = User(0, '', 0, '', '', '', '', true);
   // TODO 这里是空白图片
   static AudioCache player = AudioCache();
-  AudioPlayer audio ;
+  AudioPlayer audio;
 
   @override
   void initState() {
@@ -58,13 +64,13 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
   }
 
   play() async {
-   audio = await player.play('audio.mp3');
-   setState(() {
+    audio = await player.play('audio.mp3');
+    setState(() {
       playstate = 1;
     });
   }
 
-  pause() async{
+  pause() async {
     audio.pause();
     setState(() {
       playstate = 0;
@@ -177,16 +183,18 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                         color: DesignCourseAppTheme.nearlyBlue
                                             .withOpacity(0.7),
                                         size: 24,
-
                                       ),
                                       IconButton(
-                                        onPressed: (){
-                                          if(playstate == 0)
+                                        onPressed: () {
+                                          if (playstate == 0)
                                             play();
                                           else
                                             pause();
                                         },
-                                        icon: playstate == 1 ? Icon(Icons.pause_circle_filled_outlined) : Icon(Icons.play_circle_fill),
+                                        icon: playstate == 1
+                                            ? Icon(Icons
+                                                .pause_circle_filled_outlined)
+                                            : Icon(Icons.play_circle_fill),
                                       ),
                                     ],
                                   )),
@@ -482,10 +490,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                 tabs: tabs2,
                                 controller: _tabController,
                               ),
-                              SizedBox(
-                                  width: 100,
-                                  child: Container()
-                              )
+                              SizedBox(width: 100, child: Container())
                             ],
                           ),
                         ),
@@ -500,25 +505,108 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
 //                                return jobList(employeeJobList, false);
                               return Padding(
                                 padding: EdgeInsets.only(top: 50),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Image(
-                                      image: AssetImage('assets/empty.png'),
-                                      height: 50,
-                                      width: 50,
-                                    ),
-                                    Text(
-                                      "暂无评论",
-                                      style: TextStyle(fontSize: 18),
-                                    ),
-                                    SizedBox(
-                                      height: 40,
-                                      child: Container(),
-                                    )
-                                  ],
-                                ),
+                                child: commentNum == 0
+                                    ? Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Image(
+                                            image:
+                                                AssetImage('assets/empty.png'),
+                                            height: 50,
+                                            width: 50,
+                                          ),
+                                          Text(
+                                            "暂无评论",
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                          SizedBox(
+                                            height: 40,
+                                            child: Container(),
+                                          )
+                                        ],
+                                      )
+                                    :
+                                    ListView.separated(
+                                        padding: const EdgeInsets.all(8),
+                                        itemCount: commentNum,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return Container(
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                CircleAvatar(
+                                                  radius: 18.0,
+                                                  backgroundImage: NetworkImage('http://p.qqan.com/up/2020-9/2020941050205581.jpg'),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Container(
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              'lyb',
+                                                              style: TextStyle(
+                                                                color: Colors.grey,
+                                                                fontSize: 17.0,
+                                                                fontWeight: FontWeight.bold,
+                                                              ),
+                                                            ),
+                                                            SizedBox(width: 10.0),
+                                                            Text(
+                                                              widget.spot['rate'],
+                                                              textAlign: TextAlign.left,
+                                                              style: TextStyle(
+                                                                fontWeight: FontWeight.bold,
+                                                                fontSize: 17,
+//                                                         letterSpacing: 0.27,
+                                                                color: DesignCourseAppTheme.grey,
+                                                              ),
+                                                            ),
+                                                            Icon(
+                                                              Icons.star,
+                                                              color: DesignCourseAppTheme.nearlyBlue,
+                                                              size: 22,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                          margin: EdgeInsets.fromLTRB(0, 5, 15, 5),
+                                                          child: Text(
+                                                            '   ' + '文档注释中说,他是每个Widget子类所默认拥有的,用来表示该widget对于element的唯一标识,',
+                                                            style: TextStyle(fontSize: 13),
+                                                          )
+                                                      ),
+                                                      SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      Container(
+                                                        child: Wrap(
+                                                          spacing: 5,
+                                                          runSpacing: 5,
+                                                            children: Boxs()
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                        separatorBuilder:
+                                            (BuildContext context, int index) =>
+                                                Container(height: 10.0, color: Colors.white),
+                                      ),
                               );
                             }).toList(),
                           ),
@@ -550,8 +638,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                         Radius.circular(16.0),
                       ),
                       border: Border.all(
-                          color: DesignCourseAppTheme.grey
-                              .withOpacity(0.2)),
+                          color: DesignCourseAppTheme.grey.withOpacity(0.2)),
                     ),
                     child: Icon(
                       Icons.location_on,
@@ -573,8 +660,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                       ),
                       boxShadow: <BoxShadow>[
                         BoxShadow(
-                            color: DesignCourseAppTheme
-                                .nearlyBlue
+                            color: DesignCourseAppTheme.nearlyBlue
                                 .withOpacity(0.5),
                             offset: const Offset(1.1, 1.1),
                             blurRadius: 10.0),
@@ -588,8 +674,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                           fontWeight: FontWeight.w600,
                           fontSize: 18,
                           letterSpacing: 0.0,
-                          color: DesignCourseAppTheme
-                              .nearlyWhite,
+                          color: DesignCourseAppTheme.nearlyWhite,
                         ),
                       ),
                     ),
@@ -608,24 +693,27 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                       ),
                       boxShadow: <BoxShadow>[
                         BoxShadow(
-                            color: DesignCourseAppTheme
-                                .nearlyBlue
+                            color: DesignCourseAppTheme.nearlyBlue
                                 .withOpacity(0.5),
                             offset: const Offset(1.1, 1.1),
                             blurRadius: 10.0),
                       ],
                     ),
                     child: Center(
-                      child: Text(
-                        '评论',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
-                          letterSpacing: 0.0,
-                          color: DesignCourseAppTheme
-                              .nearlyWhite,
-                        ),
+                      child: TextButton(
+                          child: Text(
+                            '评论',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                              letterSpacing: 0.0,
+                              color: DesignCourseAppTheme.nearlyWhite,
+                            ),
+                          ),
+                          onPressed:  (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => CommentScreen()));
+                          },
                       ),
                     ),
                   ),
@@ -638,6 +726,14 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
     ));
   }
 
+  List<Widget> Boxs() => List.generate(2, (index) {
+    return Container(
+      width: MediaQuery.of(context).size.width*0.24,
+      height: MediaQuery.of(context).size.width*0.24,
+      alignment: Alignment.center,
+      child: Image.network('http://p.qqan.com/up/2020-9/2020941050205581.jpg'),
+    );
+  });
   Widget getTimeBoxUI(String text1, String txt2) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
