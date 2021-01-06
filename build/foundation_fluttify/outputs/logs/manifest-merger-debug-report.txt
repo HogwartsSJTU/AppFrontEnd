@@ -1,0 +1,25 @@
+-- Merging decision tree log ---
+manifest
+ADDED from C:\flutter\.pub-cache\hosted\pub.flutter-io.cn\foundation_fluttify-0.9.10+1\android\src\main\AndroidManifest.xml:1:1-7:12
+INJECTED from C:\flutter\.pub-cache\hosted\pub.flutter-io.cn\foundation_fluttify-0.9.10+1\android\src\main\AndroidManifest.xml:1:1-7:12
+INJECTED from C:\flutter\.pub-cache\hosted\pub.flutter-io.cn\foundation_fluttify-0.9.10+1\android\src\main\AndroidManifest.xml:1:1-7:12
+	package
+		ADDED from C:\flutter\.pub-cache\hosted\pub.flutter-io.cn\foundation_fluttify-0.9.10+1\android\src\main\AndroidManifest.xml:2:9-47
+		INJECTED from C:\flutter\.pub-cache\hosted\pub.flutter-io.cn\foundation_fluttify-0.9.10+1\android\src\main\AndroidManifest.xml
+		INJECTED from C:\flutter\.pub-cache\hosted\pub.flutter-io.cn\foundation_fluttify-0.9.10+1\android\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from C:\flutter\.pub-cache\hosted\pub.flutter-io.cn\foundation_fluttify-0.9.10+1\android\src\main\AndroidManifest.xml:1:11-69
+application
+ADDED from C:\flutter\.pub-cache\hosted\pub.flutter-io.cn\foundation_fluttify-0.9.10+1\android\src\main\AndroidManifest.xml:4:5-6:19
+receiver#me.yohom.foundation_fluttify.FluttifyBroadcastReceiver
+ADDED from C:\flutter\.pub-cache\hosted\pub.flutter-io.cn\foundation_fluttify-0.9.10+1\android\src\main\AndroidManifest.xml:5:9-63
+	android:name
+		ADDED from C:\flutter\.pub-cache\hosted\pub.flutter-io.cn\foundation_fluttify-0.9.10+1\android\src\main\AndroidManifest.xml:5:19-60
+uses-sdk
+INJECTED from C:\flutter\.pub-cache\hosted\pub.flutter-io.cn\foundation_fluttify-0.9.10+1\android\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\flutter\.pub-cache\hosted\pub.flutter-io.cn\foundation_fluttify-0.9.10+1\android\src\main\AndroidManifest.xml
+INJECTED from C:\flutter\.pub-cache\hosted\pub.flutter-io.cn\foundation_fluttify-0.9.10+1\android\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from C:\flutter\.pub-cache\hosted\pub.flutter-io.cn\foundation_fluttify-0.9.10+1\android\src\main\AndroidManifest.xml
+		ADDED from C:\flutter\.pub-cache\hosted\pub.flutter-io.cn\foundation_fluttify-0.9.10+1\android\src\main\AndroidManifest.xml
+		INJECTED from C:\flutter\.pub-cache\hosted\pub.flutter-io.cn\foundation_fluttify-0.9.10+1\android\src\main\AndroidManifest.xml
