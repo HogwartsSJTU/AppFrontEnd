@@ -15,7 +15,6 @@ import 'dart:convert';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:Hogwarts/pages/comment.dart';
-
 import 'home.dart';
 
 // TODO 导航待完善
@@ -373,7 +372,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                       children: <Widget>[
                         Padding(
                           padding: EdgeInsets.only(
-                              top: 16, left: 16, bottom: 4, right: 16),
+                              top: 16, left: 16, bottom: 0, right: 16),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -399,12 +398,12 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                 tabs: tabs,
                                 controller: _tabController,
                               ),
-                              SizedBox(width: 100, child: Container())
+//                              SizedBox(width: 100, child: Container())
                             ],
                           ),
                         ),
                         SizedBox(
-                          height: user.recordCanSee ? 600 : 160,
+                          height: user.recordCanSee ? 500 : 160,
                           child: TabBarView(
                             controller: _tabController,
                             children: tabs.map((Tab tab) {
@@ -413,7 +412,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
 //                              else
 //                                return jobList(employeeJobList, false);
                               return Padding(
-                                padding: EdgeInsets.only(top: 50),
+                                padding: EdgeInsets.only(top: noteNum==0?50:10),
                                 child: noteNum == 0
                                     ? Column(
                                         mainAxisSize: MainAxisSize.min,
@@ -448,8 +447,12 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                           return Container(
                                               height: 100,
                                               width: 300,
+                                              margin: EdgeInsets.only(
+                                                  left: 18.0,
+                                                  right: 18.0,),
                                               decoration: BoxDecoration(
-                                                color: Colors.white,
+                                                color:index%5==0? Color(0xefFEE69C):(index%5==1?Color(0xefffbea8):(index%5==2?Color(0xef83d3ea):(index%5==3?Color(0xef8bedd3):Color(0xeffbd5e0)))),
+//                                              color: Color.fromRGBO(noteColors[0], noteColors[1], noteColors[2], 1),
                                                 borderRadius:
                                                     const BorderRadius.all(
                                                         Radius.circular(10.0)),
@@ -480,6 +483,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                                       Container(
                                                           child: Text(
                                                         '踏破铁鞋无觅处',
+                                                            style: TextStyle(fontSize:20,color: Colors.white),
                                                       ))
                                                     ],
                                                   )));
@@ -792,7 +796,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
 //                                                    textAlign: TextAlign.center,
                                                 ),
                                                 TextButton(
-                                                    onPressed: null,
+                                                    onPressed: ()=>{Navigator.pop(context)},
                                                     child: Text(
                                                       "发布",
                                                       style: TextStyle(
