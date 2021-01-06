@@ -10,7 +10,7 @@ const accessid= 'LTAI4G7PGQy2LBnAzDsMLx8W';
 const accesskey= 'VmwPJ9AAWF7b3y236Dzo1FTzSmWNtZ';
 const host = 'http://freelancer-images.oss-cn-beijing.aliyuncs.com';
 
-String policyText = '{"expiration": "2020-12-01T12:00:00.000Z","conditions": [["content-length-range", 0, 1048576000]]}';
+String policyText = '{"expiration": "2021-12-01T12:00:00.000Z","conditions": [["content-length-range", 0, 1048576000]]}';
 
 class Uploader {
   static Future<String> uploadImage(File _image) async {
@@ -31,7 +31,7 @@ class Uploader {
     String signature = base64.encode(signature_pre);
     //dio的请求配置，这一步非常重要！
     BaseOptions options = new BaseOptions();
-    //options.responseType = ResponseType.plain;  //这个后台返回值dio 默认json 要设置为普通文本
+    options.responseType = ResponseType.plain;  //这个后台返回值dio 默认json 要设置为普通文本
 
     //创建dio对象
     Dio dio = new Dio(options);
@@ -46,7 +46,17 @@ class Uploader {
     });
 
     dio.post(host, data: data);
-
+//    try {
+//      Response response = await dio.post(host, data: data);
+//      print(response.headers);
+//      print(response.data);
+//
+//    } on DioError catch(e) {
+//      print(e.message);
+//      print(e.response.data);
+//      print(e.response.headers);
+//      print(e.response.request);
+//    }
     return name;
   }
 }

@@ -154,7 +154,7 @@ packages:
       name: decorated_flutter
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.18.1+1"
+    version: "0.18.1"
   demo_widgets:
     dependency: "direct main"
     description:
@@ -163,12 +163,12 @@ packages:
     source: hosted
     version: "0.2.1"
   dio:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: dio
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.0.9"
+    version: "3.0.10"
   encrypt:
     dependency: transitive
     description:
