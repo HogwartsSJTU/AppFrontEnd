@@ -39,6 +39,9 @@ dependencies:
   fluttertoast: ^6.0.1
   smooth_star_rating: ^1.1.1
   amap_map_fluttify: ^0.29.0
+  sliding_up_panel: ^1.0.2
+  flutter_easyrefresh: ^2.1.1
+  image_picker: ^0.6.7+4
 
 dev_dependencies:
   flutter_test:
