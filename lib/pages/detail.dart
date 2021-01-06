@@ -21,17 +21,18 @@ import 'home.dart';
 // TODO 导航待完善
 class Detail extends StatefulWidget {
   final spot;
+
   const Detail({Key key, this.spot}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return new _ProfileState();
   }
 }
 
-
-
 class _ProfileState extends State<Detail> with TickerProviderStateMixin {
   final commentNum = 5;
+  final noteNum = 5;
   TabController _tabController;
   final List<Tab> tabs = <Tab>[
     new Tab(text: "留言"),
@@ -47,6 +48,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
   int playstate = 0;
 
   User user = User(0, '', 0, '', '', '', '', true);
+
   // TODO 这里是空白图片
   static AudioCache player = AudioCache();
   AudioPlayer audio;
@@ -247,8 +249,8 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                       height: 60,
                                       child: Center(
                                         child: Icon(
-                                          FontAwesomeIcons
-                                              .solidPaperPlane, //paperPlane,
+                                          FontAwesomeIcons.solidPaperPlane,
+                                          //paperPlane,
                                           color:
                                               DesignCourseAppTheme.nearlyWhite,
                                           size: 28,
@@ -412,25 +414,77 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
 //                                return jobList(employeeJobList, false);
                               return Padding(
                                 padding: EdgeInsets.only(top: 50),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Image(
-                                      image: AssetImage('assets/empty.png'),
-                                      height: 50,
-                                      width: 50,
-                                    ),
-                                    Text(
-                                      "暂无留言",
-                                      style: TextStyle(fontSize: 18),
-                                    ),
-                                    SizedBox(
-                                      height: 40,
-                                      child: Container(),
-                                    )
-                                  ],
-                                ),
+                                child: noteNum == 0
+                                    ? Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Image(
+                                            image:
+                                                AssetImage('assets/empty.png'),
+                                            height: 50,
+                                            width: 50,
+                                          ),
+                                          Text(
+                                            "暂无留言",
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                          SizedBox(
+                                            height: 40,
+                                            child: Container(),
+                                          )
+                                        ],
+                                      )
+                                    : ListView.separated(
+                                        itemCount: noteNum,
+                                        separatorBuilder:
+                                            (BuildContext context, int index) =>
+                                                Container(
+                                                    height: 10.0,
+                                                    color: Colors.white),
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return Container(
+                                              height: 100,
+                                              width: 300,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(10.0)),
+                                                boxShadow: <BoxShadow>[
+                                                  BoxShadow(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.6),
+                                                    offset: const Offset(4, 8),
+                                                    blurRadius: 16,
+                                                  ),
+                                                ],
+                                              ),
+                                              child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 18.0,
+                                                          right: 18.0,
+                                                          top: 12.0,
+                                                          bottom: 12.0),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: <Widget>[
+                                                      Container(
+                                                          child: Text(
+                                                        '踏破铁鞋无觅处',
+                                                      ))
+                                                    ],
+                                                  )));
+                                        },
+                                      ),
                               );
                             }).toList(),
                           ),
@@ -527,8 +581,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                           )
                                         ],
                                       )
-                                    :
-                                    ListView.separated(
+                                    : ListView.separated(
                                         padding: const EdgeInsets.all(8),
                                         itemCount: commentNum,
                                         itemBuilder:
@@ -540,14 +593,17 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                               children: [
                                                 CircleAvatar(
                                                   radius: 18.0,
-                                                  backgroundImage: NetworkImage('http://p.qqan.com/up/2020-9/2020941050205581.jpg'),
+                                                  backgroundImage: NetworkImage(
+                                                      'http://p.qqan.com/up/2020-9/2020941050205581.jpg'),
                                                 ),
                                                 SizedBox(
                                                   width: 10,
                                                 ),
                                                 Expanded(
                                                   child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
                                                       Container(
                                                         child: Row(
@@ -555,46 +611,61 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                                             Text(
                                                               'lyb',
                                                               style: TextStyle(
-                                                                color: Colors.grey,
+                                                                color:
+                                                                    Colors.grey,
                                                                 fontSize: 17.0,
-                                                                fontWeight: FontWeight.bold,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
                                                               ),
                                                             ),
-                                                            SizedBox(width: 10.0),
+                                                            SizedBox(
+                                                                width: 10.0),
                                                             Text(
-                                                              widget.spot['rate'],
-                                                              textAlign: TextAlign.left,
+                                                              widget
+                                                                  .spot['rate'],
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .left,
                                                               style: TextStyle(
-                                                                fontWeight: FontWeight.bold,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
                                                                 fontSize: 17,
 //                                                         letterSpacing: 0.27,
-                                                                color: DesignCourseAppTheme.grey,
+                                                                color:
+                                                                    DesignCourseAppTheme
+                                                                        .grey,
                                                               ),
                                                             ),
                                                             Icon(
                                                               Icons.star,
-                                                              color: DesignCourseAppTheme.nearlyBlue,
+                                                              color:
+                                                                  DesignCourseAppTheme
+                                                                      .nearlyBlue,
                                                               size: 22,
                                                             ),
                                                           ],
                                                         ),
                                                       ),
                                                       Container(
-                                                          margin: EdgeInsets.fromLTRB(0, 5, 15, 5),
+                                                          margin: EdgeInsets
+                                                              .fromLTRB(
+                                                                  0, 5, 15, 5),
                                                           child: Text(
-                                                            '   ' + '文档注释中说,他是每个Widget子类所默认拥有的,用来表示该widget对于element的唯一标识,',
-                                                            style: TextStyle(fontSize: 13),
-                                                          )
-                                                      ),
+                                                            '   ' +
+                                                                '文档注释中说,他是每个Widget子类所默认拥有的,用来表示该widget对于element的唯一标识,',
+                                                            style: TextStyle(
+                                                                fontSize: 13),
+                                                          )),
                                                       SizedBox(
                                                         height: 10,
                                                       ),
                                                       Container(
                                                         child: Wrap(
-                                                          spacing: 5,
-                                                          runSpacing: 5,
-                                                            children: Boxs()
-                                                        ),
+                                                            spacing: 5,
+                                                            runSpacing: 5,
+                                                            children: Boxs()),
                                                       )
                                                     ],
                                                   ),
@@ -605,7 +676,9 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                         },
                                         separatorBuilder:
                                             (BuildContext context, int index) =>
-                                                Container(height: 10.0, color: Colors.white),
+                                                Container(
+                                                    height: 10.0,
+                                                    color: Colors.white),
                                       ),
                               );
                             }).toList(),
@@ -667,15 +740,82 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                       ],
                     ),
                     child: Center(
-                      child: Text(
-                        '留言',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
-                          letterSpacing: 0.0,
-                          color: DesignCourseAppTheme.nearlyWhite,
+                      child: TextButton(
+                        child: Text(
+                          '留言',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                            letterSpacing: 0.0,
+                            color: DesignCourseAppTheme.nearlyWhite,
+                          ),
                         ),
+                        onPressed: () {
+                          showModalBottomSheet(
+//                              shape: RoundedRectangleBorder(
+//                                  borderRadius:
+//                                      BorderRadiusDirectional.circular(10)), //加圆角
+
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (_) {
+                                return SingleChildScrollView(
+//                                    height: 300, //定义高度
+                                    padding: EdgeInsets.only(
+                                        bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom),
+                                    child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: <Widget>[
+                                                //
+                                                const SizedBox(
+                                                  width: 30,
+                                                ),
+                                                Text(
+                                                  "留言板",
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                    color: DesignCourseAppTheme
+                                                        .nearlyBlack,
+                                                  ),
+//                                                    textAlign: TextAlign.center,
+                                                ),
+                                                TextButton(
+                                                    onPressed: null,
+                                                    child: Text(
+                                                      "发布",
+                                                      style: TextStyle(
+                                                          color:
+                                                              DesignCourseAppTheme
+                                                                  .nearlyBlue),
+                                                    ))
+                                              ]),
+                                          Container(
+                                            padding: EdgeInsets.all(18.0),
+                                            child: TextField(
+                                              decoration: InputDecoration(
+                                                border: OutlineInputBorder(),
+                                                contentPadding:
+                                                    EdgeInsets.all(10.0),
+                                                hintText: '你轻轻地来又悄悄地走，不留下点什么吗？',
+                                              ),
+                                              maxLines: 8,
+                                            ),
+                                          ),
+                                        ]));
+                              });
+                        },
                       ),
                     ),
                   ),
@@ -701,19 +841,22 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                     ),
                     child: Center(
                       child: TextButton(
-                          child: Text(
-                            '评论',
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 18,
-                              letterSpacing: 0.0,
-                              color: DesignCourseAppTheme.nearlyWhite,
-                            ),
+                        child: Text(
+                          '评论',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                            letterSpacing: 0.0,
+                            color: DesignCourseAppTheme.nearlyWhite,
                           ),
-                          onPressed:  (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => CommentScreen()));
-                          },
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CommentScreen()));
+                        },
                       ),
                     ),
                   ),
@@ -727,13 +870,15 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
   }
 
   List<Widget> Boxs() => List.generate(2, (index) {
-    return Container(
-      width: MediaQuery.of(context).size.width*0.24,
-      height: MediaQuery.of(context).size.width*0.24,
-      alignment: Alignment.center,
-      child: Image.network('http://p.qqan.com/up/2020-9/2020941050205581.jpg'),
-    );
-  });
+        return Container(
+          width: MediaQuery.of(context).size.width * 0.24,
+          height: MediaQuery.of(context).size.width * 0.24,
+          alignment: Alignment.center,
+          child:
+              Image.network('http://p.qqan.com/up/2020-9/2020941050205581.jpg'),
+        );
+      });
+
   Widget getTimeBoxUI(String text1, String txt2) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
