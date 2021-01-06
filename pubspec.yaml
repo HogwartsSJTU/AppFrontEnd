@@ -41,6 +41,9 @@ dependencies:
   amap_map_fluttify: ^0.29.0
   sliding_up_panel: ^1.0.2
   flutter_easyrefresh: ^2.1.1
+  image_picker: ^0.6.7+12
+  flutter_picker:
+    git: git://github.com/yangyxd/flutter_picker.git
 
 dev_dependencies:
   flutter_test:
