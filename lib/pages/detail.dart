@@ -940,6 +940,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                                     color: DesignCourseAppTheme
                                                         .nearlyBlack,
                                                   ),
+                                                ),
                                                   TextButton(
                                                       onPressed: () => {
                                                         createNote(myNote),
