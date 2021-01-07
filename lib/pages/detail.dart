@@ -88,7 +88,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
   }
 
   play() async {
-    audio = await player.play('audio.mp3');
+    audio = await player.play('record/1.m4a');
     setState(() {
       playstate = 1;
     });
@@ -143,7 +143,8 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
   @override
   void dispose() {
     animationController.dispose();
-//    audioPlayer.release();
+    audio.release();
+//    audio.dispose();
     super.dispose();
   }
 
@@ -579,7 +580,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                               SizedBox(
                                 width: 100,
                                 child: Text(
-                                  lanIndex == 0 ?'景点评价':'Comments',
+                                  lanIndex == 0 ?'景点评价':'Comment',
                                   style: TextStyle(
                                       fontSize: 22,
                                       fontWeight: FontWeight.w600),
