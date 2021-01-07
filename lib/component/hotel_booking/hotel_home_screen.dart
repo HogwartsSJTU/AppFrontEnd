@@ -1,8 +1,10 @@
 import 'dart:ui';
 import 'package:Hogwarts/component/design_course/course_info_screen.dart';
 import 'package:Hogwarts/component/design_course/home_design_course.dart';
+
 //import 'package:Hogwarts/pages/detail-old.dart';
 import 'package:Hogwarts/pages/detail.dart';
+import 'package:Hogwarts/utils/FilterStaticDataType.dart';
 import 'package:Hogwarts/utils/data.dart';
 
 import 'calendar_popup_view.dart';
@@ -24,7 +26,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
   AnimationController animationController;
   List<HotelListData> hotelList = HotelListData.hotelList;
   final ScrollController _scrollController = ScrollController();
-
+  int lanIndex = GlobalSetting.globalSetting.lanIndex;
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now().add(const Duration(days: 5));
 
@@ -54,11 +56,8 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              '浏览',
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w400
-              ),
+              lanIndex == 0 ? '浏览' : 'Discovery',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
             ),
             centerTitle: true,
             flexibleSpace: Container(
@@ -128,7 +127,11 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                               return HotelListView(
                                 callback: () {
 //                                  Navigator.push(context, MaterialPageRoute(builder: (context) => CourseInfoScreen(spot:spots[index])));//Detail(spot: spots[index])
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => Detail(spot: spots[index])));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              Detail(spot: spots[index])));
                                 },
                                 hotelData: hotelList[index],
                                 animation: animation,
@@ -260,7 +263,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            'Choose date',
+                            lanIndex == 0 ? '选择' : 'Choose date',
                             style: TextStyle(
                                 fontWeight: FontWeight.w100,
                                 fontSize: 16,
@@ -377,7 +380,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                     cursorColor: HotelAppTheme.buildLightTheme().primaryColor,
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintText: '玉兰苑...',
+                      hintText: lanIndex == 0 ?'玉兰苑...':'SJTU..',
                     ),
                   ),
                 ),
@@ -451,7 +454,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      '5 POI found',
+                      lanIndex == 0 ? '找到5个结果' : '5 POI found',
                       style: TextStyle(
                         fontWeight: FontWeight.w100,
                         fontSize: 16,
@@ -483,7 +486,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                       child: Row(
                         children: <Widget>[
                           Text(
-                            'Filter',
+                            lanIndex == 0 ? '过滤' : 'Filter',
                             style: TextStyle(
                               fontWeight: FontWeight.w100,
                               fontSize: 16,
@@ -632,6 +635,7 @@ class ContestTabHeader extends SliverPersistentHeaderDelegate {
   ContestTabHeader(
     this.searchUI,
   );
+
   final Widget searchUI;
 
   @override

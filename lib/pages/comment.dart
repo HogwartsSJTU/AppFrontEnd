@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:Hogwarts/utils/FilterStaticDataType.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -21,14 +22,18 @@ class _CommentScreenState extends State<CommentScreen>{
   var ratingValue;
   List images = [];
   var imageNum = 0;
+
+  bool ifImageChanged = false;
+  int lanIndex = GlobalSetting.globalSetting.lanIndex;
+  
   var commentString="";
 //  bool ifImageChanged = false;
 
   String value() {
     if (ratingValue == null) {
-      return '评分：4.5 分';
+      return (lanIndex == 0 ?'评分：4.5 分':'Rate: 4.5');
     } else {
-      return '评分：$ratingValue  分';
+      return lanIndex == 0 ?'评分：$ratingValue  分':'Rate: $ratingValue';
     }
   }
 
@@ -119,7 +124,9 @@ class _CommentScreenState extends State<CommentScreen>{
   Widget build(BuildContext context){
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: Text(' 评论')),
+
+      appBar: AppBar(title: Text(lanIndex == 0 ?'评论':'Comment')),
+
 //      backgroundColor: AppTheme.notWhite.withOpacity(0.5),
       body: SingleChildScrollView(
         child: Column(
@@ -157,7 +164,7 @@ class _CommentScreenState extends State<CommentScreen>{
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   contentPadding: EdgeInsets.all(10.0),
-                  hintText: '请输入你的评论',
+                  hintText: lanIndex == 0 ?'请输入你的评论':'Please enter your comments',
                 ),
                 onChanged: (value){
                   commentString = value;
@@ -197,7 +204,7 @@ class _CommentScreenState extends State<CommentScreen>{
               ),
               child: TextButton(
                   child: Text(
-                    '提交',
+                    lanIndex == 0 ?'提交':'Submit',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
