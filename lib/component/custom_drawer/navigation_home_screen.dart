@@ -107,8 +107,8 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         });
       } else if (drawerIndex == DrawerIndex.Setting) {
         setState(() {
-//          screenView = SettingsScreen();
-          screenView = CommentScreen();
+          screenView = SettingsScreen();
+//          screenView = CommentScreen();
         });
       } else {
         setState(() {
