@@ -10,6 +10,7 @@ import 'package:Hogwarts/utils/config.dart';
 import 'package:Hogwarts/utils/StorageUtil.dart';
 import 'package:http/http.dart' as http;
 import 'package:Hogwarts/theme/app_theme.dart';
+import 'package:Hogwarts/component/OSS_Uploader.dart';
 
 
 class CommentScreen extends StatefulWidget {
@@ -19,8 +20,12 @@ class CommentScreen extends StatefulWidget {
 
 class _CommentScreenState extends State<CommentScreen>{
 
+  var sid = 1;
+  int uid ;
   var ratingValue;
+  var myComment;
   List images = [];
+  List _image = [];
   var imageNum = 0;
 
   bool ifImageChanged = false;
@@ -35,6 +40,55 @@ class _CommentScreenState extends State<CommentScreen>{
     } else {
       return lanIndex == 0 ?'评分：$ratingValue  分':'Rate: $ratingValue';
     }
+  }
+
+  uploadImages() async{
+    for(int i = 0;i<imageNum;i++){
+      String name = await Uploader.uploadImage(images[i]);
+      setState(() {
+        _image.add("http://freelancer-images.oss-cn-beijing.aliyuncs.com/" + name);
+      });
+      print(name);
+    }
+  }
+  createComment(text) async {
+    int _uid = await StorageUtil.getIntItem("uid");
+    uid = _uid;
+    if(ratingValue == null) {
+      setState(() {
+        ratingValue = 4.5;
+      });
+    }
+    for(int i = 0;i<imageNum;i++){
+      String name = await Uploader.uploadImage(images[i]);
+      setState(() {
+        _image.add("http://freelancer-images.oss-cn-beijing.aliyuncs.com/" + name);
+      });
+    }
+//    setState(() {
+//      _image.add("http://p.qqan.com/up/2020-9/2020941050205581.jpg");
+//    });
+    String url = "${Url.url_prefix}/createcomment";
+//    String url = "${Url.url_prefix}/createcomment?uid="+uid.toString()+"&sid="+sid.toString()+"&text="+text+"&grade="+ratingValue;
+//    myComment['uid'] = uid;
+//    myComment['sid'] = sid;
+//    myComment['text'] = text;
+//    myComment['grade'] = ratingValue;
+//    myComment['images'] = _image;
+    var res = await http.post(url,
+        headers: {
+          "content-type": "application/json",
+//          "Authorization": "$token"
+        },
+        body: json.encode({
+          'uid': uid,
+          'sid': sid,
+          'text': text,
+          'grade': ratingValue,
+          "images": _image
+        })
+    );
+    Navigator.of(context).pop();
   }
 
   Timer _countdownTimer;
@@ -94,18 +148,6 @@ class _CommentScreenState extends State<CommentScreen>{
       //child: Image.network('http://p.qqan.com/up/2020-9/2020941050205581.jpg')
     );
   });
-
-  saveAndComplete() async {
-    String token = await StorageUtil.getStringItem('token');
-    var url = "${Url.url_prefix}/saveJob";
-    var response = await http.post(url,
-        headers: {
-          "content-type": "application/json",
-          "Authorization": "$token"
-        },
-//        body: json.encode()
-    );
-  }
 
   @override
   void initState() {
@@ -213,6 +255,10 @@ class _CommentScreenState extends State<CommentScreen>{
                       color: DesignCourseAppTheme.nearlyWhite,
                     ),
                   ),
+                onPressed: (){
+//                    uploadImages();
+                    createComment(commentString);
+                },
               ),
             )
           ],

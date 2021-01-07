@@ -13,6 +13,7 @@ import 'package:Hogwarts/utils/config.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:Hogwarts/pages/comment.dart';
@@ -31,13 +32,17 @@ class Detail extends StatefulWidget {
 }
 
 class _ProfileState extends State<Detail> with TickerProviderStateMixin {
-  var sid = 1;
+
+  var sid  = 1;
+  var uid;
+  String token;
 
   var commentNum = 0;
   List _comment = [];
   List userName = [];
   List userIcon = [];
-  final noteNum = 5;
+  var noteNum = 0;
+  List _note = [];
   String myNote;
   bool hasClocked = false;
 
@@ -84,6 +89,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
     });
     setData();
     getComment();
+    getNote();
   }
 
   play() async {
@@ -127,6 +133,8 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
   }
 
   getComment() async {
+    token = await StorageUtil.getStringItem('token');
+    int _uid = await StorageUtil.getIntItem("uid");
     String url = "${Url.url_prefix}/getComment?sid=" + sid.toString();
     final res = await http.get(url, headers: {"Accept": "application/json"});
     final data = json.decode(res.body);
@@ -136,6 +144,31 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
       for (int i = 0; i < commentNum; i++) {
         getUserInfo(_comment[i]['uid']);
       }
+      uid = _uid;
+    });
+  }
+
+  getNote() async {
+    String url = "${Url.url_prefix}/getNote?sid=" + sid.toString();
+    final res = await http.get(url, headers: {"Accept": "application/json"});
+    final data = json.decode(res.body);
+    setState(() {
+      _note = data;
+      noteNum = _note.length;
+    });
+  }
+
+  createNote(text) async {
+    String url = "${Url.url_prefix}/createnote?uid=" + uid.toString() + "&sid=" +sid.toString() + "&text=" + text;
+    final res = await http.post(url, headers: {
+      "content-type": "application/json",
+      "Authorization": "$token"
+    });
+  }
+
+  updateComment(){
+    setState(() {
+      getComment();
     });
   }
 
@@ -532,7 +565,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                                     children: <Widget>[
                                                       Container(
                                                           child: Text(
-                                                        '踏破铁鞋无觅处',
+                                                        _note[index]['text'],
                                                         style: TextStyle(
                                                             fontSize: 20,
                                                             color:
@@ -714,22 +747,20 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                                           margin: EdgeInsets
                                                               .fromLTRB(
                                                                   0, 5, 15, 5),
-                                                          child: Text(
-                                                            '   ' +
-                                                                _comment[index]
-                                                                    ['text'],
-                                                            style: TextStyle(
-                                                                fontSize: 18),
-                                                          )),
+                                                          child: _comment[index]['text']==null?SizedBox():Text(
+                                                            '   ' + _comment[index]['text'],
+                                                            style: TextStyle(fontSize: 18),
+                                                          )
+                                                      ),
                                                       SizedBox(
                                                         height: 10,
                                                       ),
                                                       Container(
-                                                        child: Wrap(
-                                                            spacing: 5,
-                                                            runSpacing: 5,
-                                                            children:
-                                                                Boxs(index)),
+                                                        child: _comment[index]['images']==null?SizedBox():Wrap(
+                                                          spacing: 5,
+                                                          runSpacing: 5,
+                                                            children: Boxs(index)
+                                                        ),
                                                       )
                                                     ],
                                                   ),
@@ -783,29 +814,43 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                           ? DesignCourseAppTheme.nearlyBlue
                           : Colors.grey,
                       iconSize: 28,
-                      onPressed: () => {
-                        setState(() {
-                          hasClocked = !hasClocked;
-                        }),
-                        showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                                    content: hasClocked
-                                        ? Text(lanIndex == 0
+                      onPressed: () {
+                        if(uid == null){
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                  content: Text("用户未登录"),
+                                  actions: <Widget>[
+                                    new FlatButton(
+                                      child: new Text("确定"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ]));
+                        }else{
+                          setState(() {
+                            hasClocked = !hasClocked;
+                          });
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                  content: hasClocked
+                                      ? Text(lanIndex == 0
                                             ? "打卡成功"
                                             : 'Successful Clock')
-                                        : Text(lanIndex == 0
+                                      : Text(lanIndex == 0
                                             ? "已取消打卡"
                                             : 'Cancel Clock'),
-                                    actions: <Widget>[
-                                      new FlatButton(
-                                        child: new Text(
-                                            lanIndex == 0 ? "确定" : 'OK'),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ]))
+                                  actions: <Widget>[
+                                    new FlatButton(
+                                      child: new Text(lanIndex == 0 ? "确定" : 'OK'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ]));
+                        }
                       },
                     ),
                   ),
@@ -842,15 +887,29 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                           ),
                         ),
                         onPressed: () {
-                          showModalBottomSheet(
+                          if(uid == null) {
+                            showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                    content: Text("用户未登录"),
+                                    actions: <Widget>[
+                                      new FlatButton(
+                                        child: new Text("确定"),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ]));
+                          } else{
+                            showModalBottomSheet(
 //                              shape: RoundedRectangleBorder(
 //                                  borderRadius:
 //                                      BorderRadiusDirectional.circular(10)), //加圆角
 
-                              context: context,
-                              isScrollControlled: true,
-                              builder: (_) {
-                                return SingleChildScrollView(
+                                context: context,
+                                isScrollControlled: true,
+                                builder: (_) {
+                                  return SingleChildScrollView(
 //                                    height: 300, //定义高度
                                     padding: EdgeInsets.only(
                                         bottom: MediaQuery.of(context)
@@ -881,48 +940,48 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                                     color: DesignCourseAppTheme
                                                         .nearlyBlack,
                                                   ),
-//                                                    textAlign: TextAlign.center,
-                                                ),
-                                                TextButton(
-                                                    onPressed: () => {
-                                                          myNote = null,
-                                                          Navigator.pop(context)
-                                                        },
-                                                    child: Text(
-                                                      lanIndex == 0
+                                                  TextButton(
+                                                      onPressed: () => {
+                                                        createNote(myNote),
+                                                        myNote = null,
+                                                        Navigator.pop(context)
+                                                      },
+                                                      child: Text(
+                                                         lanIndex == 0
                                                           ? "发布"
                                                           : 'Submit',
-                                                      style: TextStyle(
-                                                          color:
-                                                              DesignCourseAppTheme
-                                                                  .nearlyBlue),
-                                                    ))
-                                              ]),
-                                          Container(
-                                            padding: EdgeInsets.all(18.0),
-                                            child: TextField(
-                                              decoration: InputDecoration(
-                                                border: OutlineInputBorder(),
-                                                contentPadding:
-                                                    EdgeInsets.all(10.0),
-                                                hintText: lanIndex == 0
+                                                        style: TextStyle(
+                                                            color:
+                                                            DesignCourseAppTheme
+                                                                .nearlyBlue),
+                                                      ))
+                                                ]),
+                                            Container(
+                                              padding: EdgeInsets.all(18.0),
+                                              child: TextField(
+                                                decoration: InputDecoration(
+                                                  border: OutlineInputBorder(),
+                                                  contentPadding:
+                                                  EdgeInsets.all(10.0),
+                                                 hintText: lanIndex == 0
                                                     ? '你轻轻地来又悄悄地走，不留下点什么吗？'
                                                     : "Don't you leave something behind?",
+                                                ),
+                                                maxLines: 8,
+                                                controller: myNote == null
+                                                    ? null
+                                                    : new TextEditingController(
+                                                    text: '$myNote'),
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    myNote = value;
+                                                  });
+                                                },
                                               ),
-                                              maxLines: 8,
-                                              controller: myNote == null
-                                                  ? null
-                                                  : new TextEditingController(
-                                                      text: '$myNote'),
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  myNote = value;
-                                                });
-                                              },
                                             ),
-                                          ),
-                                        ]));
-                              });
+                                          ]));
+                                });
+                          }
                         },
                       ),
                     ),
@@ -960,10 +1019,23 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.push(
+                          if(uid == null) {
+                            showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                    content: Text("用户未登录"),
+                                    actions: <Widget>[
+                                      new FlatButton(
+                                        child: new Text("确定"),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ]));
+                          } else{Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => CommentScreen()));
+                                  builder: (context) => CommentScreen())).then((value)=>updateComment());}
                         },
                       ),
                     ),
