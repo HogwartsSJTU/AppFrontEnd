@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
-import 'utilities/StorageUtil.dart';
+import 'package:Hogwarts/utils//StorageUtil.dart';
 import 'package:http_parser/http_parser.dart';
 import 'dart:async';
 
@@ -31,7 +31,7 @@ class Uploader {
     String signature = base64.encode(signature_pre);
     //dio的请求配置，这一步非常重要！
     BaseOptions options = new BaseOptions();
-    //options.responseType = ResponseType.plain;  //这个后台返回值dio 默认json 要设置为普通文本
+    options.responseType = ResponseType.plain;  //这个后台返回值dio 默认json 要设置为普通文本
 
     //创建dio对象
     Dio dio = new Dio(options);
@@ -46,6 +46,17 @@ class Uploader {
     });
 
     dio.post(host, data: data);
+//    try {
+//      Response response = await dio.post(host, data: data);
+//      print(response.headers);
+//      print(response.data);
+//
+//    } on DioError catch(e) {
+//      print(e.message);
+//      print(e.response.data);
+//      print(e.response.headers);
+//      print(e.response.request);
+//    }
     return name;
   }
 }
