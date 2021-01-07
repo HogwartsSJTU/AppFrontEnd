@@ -31,8 +31,7 @@ class Detail extends StatefulWidget {
 }
 
 class _ProfileState extends State<Detail> with TickerProviderStateMixin {
-
-  var sid  = 1;
+  var sid = 1;
 
   var commentNum = 0;
   List _comment = [];
@@ -80,8 +79,8 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
         parent: animationController,
         curve: Interval(0, 1.0, curve: Curves.fastOutSlowIn)));
     setState(() {
-      tabs[0]=new Tab(text:lanIndex == 0 ?"留言":"Notes");
-      tabs2[0]=new Tab(text:lanIndex == 0 ?"评论":"Comments");
+      tabs[0] = new Tab(text: lanIndex == 0 ? "留言" : "Notes");
+      tabs2[0] = new Tab(text: lanIndex == 0 ? "评论" : "Comments");
     });
     setData();
     getComment();
@@ -134,7 +133,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
     setState(() {
       _comment = data;
       commentNum = _comment.length;
-      for(int i = 0;i < commentNum;i++){
+      for (int i = 0; i < commentNum; i++) {
         getUserInfo(_comment[i]['uid']);
       }
     });
@@ -170,7 +169,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                     child: new Icon(Icons.arrow_back_ios, color: Colors.white),
                   ),
                 ),
-                title: new Text(lanIndex == 0 ?"景点详情":"Details",
+                title: new Text(lanIndex == 0 ? "景点详情" : "Details",
                     style: new TextStyle(
                         color: Colors.white, fontWeight: FontWeight.w400)),
                 backgroundColor: Colors.blue,
@@ -226,12 +225,6 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                       SizedBox(
                                         width: 10,
                                       ),
-                                      Icon(
-                                        Icons.volume_up,
-                                        color: DesignCourseAppTheme.nearlyBlue
-                                            .withOpacity(0.7),
-                                        size: 24,
-                                      ),
                                       IconButton(
                                         onPressed: () {
                                           if (playstate == 0)
@@ -240,9 +233,14 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                             pause();
                                         },
                                         icon: playstate == 1
-                                            ? Icon(Icons
-                                                .pause_circle_filled_outlined)
-                                            : Icon(Icons.play_circle_fill),
+//                                            ? Icon(Icons
+//                                                .pause_circle_filled_outlined)
+//                                            : Icon(Icons.play_circle_fill),
+                                            ? Icon(Icons.volume_up)
+                                            : Icon(Icons.volume_off),
+                                        color: DesignCourseAppTheme.nearlyBlue
+                                            .withOpacity(0.7),
+                                        iconSize: 24,
                                       ),
                                     ],
                                   )),
@@ -340,8 +338,10 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Row(children: <Widget>[
-                                  getTimeBoxUI(widget.spot['count'], lanIndex == 0 ?'打卡':'Count'),
-                                  getTimeBoxUI(widget.spot['heat'], lanIndex == 0 ?'热度':'Heat'),
+                                  getTimeBoxUI(widget.spot['count'],
+                                      lanIndex == 0 ? '打卡' : 'Count'),
+                                  getTimeBoxUI(widget.spot['heat'],
+                                      lanIndex == 0 ? '热度' : 'Heat'),
                                 ]),
                                 Container(
                                   width: 50,
@@ -426,7 +426,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                               SizedBox(
                                 width: 100,
                                 child: Text(
-                                  lanIndex == 0 ?'到此一游':"Sticky",
+                                  lanIndex == 0 ? '到此一游' : "Sticky",
                                   style: TextStyle(
                                       fontSize: 22,
                                       fontWeight: FontWeight.w600),
@@ -439,7 +439,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                 indicatorSize: TabBarIndicatorSize.tab,
                                 indicator: new BubbleTabIndicator(
                                   indicatorHeight: 25.0,
-                                  indicatorColor: Colors.blueAccent,
+                                  indicatorColor: Colors.lightBlueAccent,//blueAccent,
                                   tabBarIndicatorSize: TabBarIndicatorSize.tab,
                                 ),
                                 tabs: tabs,
@@ -474,7 +474,9 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                             width: 50,
                                           ),
                                           Text(
-                                            lanIndex == 0 ?"暂无留言":"No Message",
+                                            lanIndex == 0
+                                                ? "暂无留言"
+                                                : "No Message",
                                             style: TextStyle(fontSize: 18),
                                           ),
                                           SizedBox(
@@ -500,7 +502,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                                 right: 18.0,
                                               ),
                                               decoration: BoxDecoration(
-                                                color: _colors[index%5],
+                                                color: _colors[index % 5],
                                                 borderRadius:
                                                     const BorderRadius.all(
                                                         Radius.circular(10.0)),
@@ -580,7 +582,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                               SizedBox(
                                 width: 100,
                                 child: Text(
-                                  lanIndex == 0 ?'景点评价':'Comment',
+                                  lanIndex == 0 ? '景点评价' : 'Comment',
                                   style: TextStyle(
                                       fontSize: 22,
                                       fontWeight: FontWeight.w600),
@@ -593,7 +595,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                 indicatorSize: TabBarIndicatorSize.tab,
                                 indicator: new BubbleTabIndicator(
                                   indicatorHeight: 25.0,
-                                  indicatorColor: Colors.blueAccent,
+                                  indicatorColor: Colors.lightBlueAccent,
                                   tabBarIndicatorSize: TabBarIndicatorSize.tab,
                                 ),
                                 tabs: tabs2,
@@ -627,7 +629,9 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                             width: 50,
                                           ),
                                           Text(
-                                            lanIndex == 0 ? "暂无评论":'No Comment',
+                                            lanIndex == 0
+                                                ? "暂无评论"
+                                                : 'No Comment',
                                             style: TextStyle(fontSize: 18),
                                           ),
                                           SizedBox(
@@ -649,7 +653,8 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                                 CircleAvatar(
                                                   radius: 18.0,
 //                                                  backgroundImage: NetworkImage('http://p.qqan.com/up/2020-9/2020941050205581.jpg'),
-                                                  backgroundImage: NetworkImage(userIcon[index]),
+                                                  backgroundImage: NetworkImage(
+                                                      userIcon[index]),
                                                 ),
                                                 SizedBox(
                                                   width: 10,
@@ -678,8 +683,12 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                                             SizedBox(
                                                                 width: 10.0),
                                                             Text(
-                                                              _comment[index]['grade'].toString(),
-                                                              textAlign: TextAlign.left,
+                                                              _comment[index]
+                                                                      ['grade']
+                                                                  .toString(),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .left,
                                                               style: TextStyle(
                                                                 fontWeight:
                                                                     FontWeight
@@ -706,19 +715,21 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                                               .fromLTRB(
                                                                   0, 5, 15, 5),
                                                           child: Text(
-                                                            '   ' + _comment[index]['text'],
-                                                            style: TextStyle(fontSize: 18),
-                                                          )
-                                                      ),
+                                                            '   ' +
+                                                                _comment[index]
+                                                                    ['text'],
+                                                            style: TextStyle(
+                                                                fontSize: 18),
+                                                          )),
                                                       SizedBox(
                                                         height: 10,
                                                       ),
                                                       Container(
                                                         child: Wrap(
-                                                          spacing: 5,
-                                                          runSpacing: 5,
-                                                            children: Boxs(index)
-                                                        ),
+                                                            spacing: 5,
+                                                            runSpacing: 5,
+                                                            children:
+                                                                Boxs(index)),
                                                       )
                                                     ],
                                                   ),
@@ -780,11 +791,16 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                             context: context,
                             builder: (context) => AlertDialog(
                                     content: hasClocked
-                                        ? Text(lanIndex == 0 ?"打卡成功":'Successful Clock')
-                                        : Text(lanIndex == 0 ?"已取消打卡":'Cancel Clock'),
+                                        ? Text(lanIndex == 0
+                                            ? "打卡成功"
+                                            : 'Successful Clock')
+                                        : Text(lanIndex == 0
+                                            ? "已取消打卡"
+                                            : 'Cancel Clock'),
                                     actions: <Widget>[
                                       new FlatButton(
-                                        child: new Text(lanIndex == 0 ?"确定":'OK'),
+                                        child: new Text(
+                                            lanIndex == 0 ? "确定" : 'OK'),
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                         },
@@ -816,7 +832,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                     child: Center(
                       child: TextButton(
                         child: Text(
-                          lanIndex == 0 ?'留言':'Note',
+                          lanIndex == 0 ? '留言' : 'Note',
                           textAlign: TextAlign.left,
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
@@ -857,7 +873,9 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                                   width: 30,
                                                 ),
                                                 Text(
-                                                  lanIndex == 0 ?"留言板":'Message Board',
+                                                  lanIndex == 0
+                                                      ? "留言板"
+                                                      : 'Message Board',
                                                   style: TextStyle(
                                                     fontSize: 18,
                                                     color: DesignCourseAppTheme
@@ -871,7 +889,9 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                                           Navigator.pop(context)
                                                         },
                                                     child: Text(
-                                                      lanIndex == 0 ?"发布":'Submit',
+                                                      lanIndex == 0
+                                                          ? "发布"
+                                                          : 'Submit',
                                                       style: TextStyle(
                                                           color:
                                                               DesignCourseAppTheme
@@ -885,7 +905,9 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                                 border: OutlineInputBorder(),
                                                 contentPadding:
                                                     EdgeInsets.all(10.0),
-                                                hintText: lanIndex == 0 ?'你轻轻地来又悄悄地走，不留下点什么吗？':"Don't you leave something behind?",
+                                                hintText: lanIndex == 0
+                                                    ? '你轻轻地来又悄悄地走，不留下点什么吗？'
+                                                    : "Don't you leave something behind?",
                                               ),
                                               maxLines: 8,
                                               controller: myNote == null
@@ -928,7 +950,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                     child: Center(
                       child: TextButton(
                         child: Text(
-                          lanIndex == 0 ?'评论':'Comment',
+                          lanIndex == 0 ? '评论' : 'Comment',
                           textAlign: TextAlign.left,
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
@@ -954,16 +976,17 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
       ],
     ));
   }
-  
-  List<Widget> Boxs(int i) => List.generate(_comment[i]['images'].length, (index) {
-    return Container(
-      width: MediaQuery.of(context).size.width*0.24,
-      height: MediaQuery.of(context).size.width*0.24,
-      alignment: Alignment.center,
+
+  List<Widget> Boxs(int i) =>
+      List.generate(_comment[i]['images'].length, (index) {
+        return Container(
+          width: MediaQuery.of(context).size.width * 0.24,
+          height: MediaQuery.of(context).size.width * 0.24,
+          alignment: Alignment.center,
 //      child: Image.network('http://p.qqan.com/up/2020-9/2020941050205581.jpg'),
-      child: Image.network(_comment[i]['images'][index]),
-    );
-  });
+          child: Image.network(_comment[i]['images'][index]),
+        );
+      });
 
   Widget getTimeBoxUI(String text1, String txt2) {
     return Padding(
