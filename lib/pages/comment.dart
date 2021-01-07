@@ -1,9 +1,14 @@
 import 'dart:io';
 import 'package:Hogwarts/utils/FilterStaticDataType.dart';
+import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:Hogwarts/component/detail/RatingBar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:Hogwarts/component/design_course/design_course_app_theme.dart';
+import 'package:Hogwarts/utils/config.dart';
+import 'package:Hogwarts/utils/StorageUtil.dart';
+import 'package:http/http.dart' as http;
 import 'package:Hogwarts/theme/app_theme.dart';
 
 
@@ -16,10 +21,13 @@ class _CommentScreenState extends State<CommentScreen>{
 
   var ratingValue;
   List images = [];
-  var _image;
   var imageNum = 0;
+
   bool ifImageChanged = false;
   int lanIndex = GlobalSetting.globalSetting.lanIndex;
+  
+  var commentString="";
+//  bool ifImageChanged = false;
 
   String value() {
     if (ratingValue == null) {
@@ -29,15 +37,36 @@ class _CommentScreenState extends State<CommentScreen>{
     }
   }
 
+  Timer _countdownTimer;
+  var _countdownNum = 0;
+  void getPosition(){
+  setState(() {
+    if (_countdownTimer != null) {
+      return;
+    }
+    _countdownTimer =
+    new Timer.periodic(new Duration(seconds: 1), (timer){
+      setState(() {
+        _countdownNum ++;
+      });
+    });
+  });
+
+  /*const timeout = const Duration(seconds: 1);
+  Timer.periodic(timeout, (timer) { //callback function
+  //1s 回调一次
+  print('afterTimer='+DateTime.now().toString());
+
+  timer.cancel();  // 取消定时器*/
+  }
+
+
   Future getImage() async {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
     if(image != null) {
       setState(() {
         images.add(image);
         imageNum++;
-      });
-      setState(() {
-        ifImageChanged = true;
       });
     }
   }
@@ -66,11 +95,38 @@ class _CommentScreenState extends State<CommentScreen>{
     );
   });
 
+  saveAndComplete() async {
+    String token = await StorageUtil.getStringItem('token');
+    var url = "${Url.url_prefix}/saveJob";
+    var response = await http.post(url,
+        headers: {
+          "content-type": "application/json",
+          "Authorization": "$token"
+        },
+//        body: json.encode()
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    //getPosition();
+  }
+
+  @override
+  void dispose() {
+    //_countdownTimer?.cancel();
+    //_countdownTimer = null;
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
       resizeToAvoidBottomInset: false,
+
       appBar: AppBar(title: Text(lanIndex == 0 ?'评论':'Comment')),
+
 //      backgroundColor: AppTheme.notWhite.withOpacity(0.5),
       body: SingleChildScrollView(
         child: Column(
@@ -110,6 +166,9 @@ class _CommentScreenState extends State<CommentScreen>{
                   contentPadding: EdgeInsets.all(10.0),
                   hintText: lanIndex == 0 ?'请输入你的评论':'Please enter your comments',
                 ),
+                onChanged: (value){
+                  commentString = value;
+                },
                 maxLines: 8,
               ),
             ),

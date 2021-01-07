@@ -31,10 +31,17 @@ class Detail extends StatefulWidget {
 }
 
 class _ProfileState extends State<Detail> with TickerProviderStateMixin {
-  final commentNum = 5;
+
+  var sid  = 1;
+
+  var commentNum = 0;
+  List _comment = [];
+  List userName = [];
+  List userIcon = [];
   final noteNum = 5;
   String myNote;
   bool hasClocked = false;
+
   TabController _tabController;
   int lanIndex = GlobalSetting.globalSetting.lanIndex;
   final List<Tab> tabs = <Tab>[
@@ -77,6 +84,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
       tabs2[0]=new Tab(text:lanIndex == 0 ?"评论":"Comments");
     });
     setData();
+    getComment();
   }
 
   play() async {
@@ -106,6 +114,29 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
     await Future<dynamic>.delayed(const Duration(milliseconds: 200));
     setState(() {
       opacity3 = 1.0;
+    });
+  }
+
+  getUserInfo(id) async {
+    String url = "${Url.url_prefix}/getUser?id=" + id.toString();
+    final res = await http.get(url, headers: {"Accept": "application/json"});
+    final data = json.decode(res.body);
+    setState(() {
+      userName.add(data['name']);
+      userIcon.add(data['icon']);
+    });
+  }
+
+  getComment() async {
+    String url = "${Url.url_prefix}/getComment?sid=" + sid.toString();
+    final res = await http.get(url, headers: {"Accept": "application/json"});
+    final data = json.decode(res.body);
+    setState(() {
+      _comment = data;
+      commentNum = _comment.length;
+      for(int i = 0;i < commentNum;i++){
+        getUserInfo(_comment[i]['uid']);
+      }
     });
   }
 
@@ -616,8 +647,8 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                               children: [
                                                 CircleAvatar(
                                                   radius: 18.0,
-                                                  backgroundImage: NetworkImage(
-                                                      'http://p.qqan.com/up/2020-9/2020941050205581.jpg'),
+//                                                  backgroundImage: NetworkImage('http://p.qqan.com/up/2020-9/2020941050205581.jpg'),
+                                                  backgroundImage: NetworkImage(userIcon[index]),
                                                 ),
                                                 SizedBox(
                                                   width: 10,
@@ -632,7 +663,8 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                                         child: Row(
                                                           children: [
                                                             Text(
-                                                              'lyb',
+//                                                              'lyb',
+                                                              userName[index],
                                                               style: TextStyle(
                                                                 color:
                                                                     Colors.grey,
@@ -645,11 +677,8 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                                             SizedBox(
                                                                 width: 10.0),
                                                             Text(
-                                                              widget
-                                                                  .spot['rate'],
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .left,
+                                                              _comment[index]['grade'].toString(),
+                                                              textAlign: TextAlign.left,
                                                               style: TextStyle(
                                                                 fontWeight:
                                                                     FontWeight
@@ -676,19 +705,19 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                                               .fromLTRB(
                                                                   0, 5, 15, 5),
                                                           child: Text(
-                                                            '   ' +
-                                                                '文档注释中说,他是每个Widget子类所默认拥有的,用来表示该widget对于element的唯一标识,',
-                                                            style: TextStyle(
-                                                                fontSize: 13),
-                                                          )),
+                                                            '   ' + _comment[index]['text'],
+                                                            style: TextStyle(fontSize: 18),
+                                                          )
+                                                      ),
                                                       SizedBox(
                                                         height: 10,
                                                       ),
                                                       Container(
                                                         child: Wrap(
-                                                            spacing: 5,
-                                                            runSpacing: 5,
-                                                            children: Boxs()),
+                                                          spacing: 5,
+                                                          runSpacing: 5,
+                                                            children: Boxs(index)
+                                                        ),
                                                       )
                                                     ],
                                                   ),
@@ -924,16 +953,16 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
       ],
     ));
   }
-
-  List<Widget> Boxs() => List.generate(2, (index) {
-        return Container(
-          width: MediaQuery.of(context).size.width * 0.24,
-          height: MediaQuery.of(context).size.width * 0.24,
-          alignment: Alignment.center,
-          child:
-              Image.network('http://p.qqan.com/up/2020-9/2020941050205581.jpg'),
-        );
-      });
+  
+  List<Widget> Boxs(int i) => List.generate(_comment[i]['images'].length, (index) {
+    return Container(
+      width: MediaQuery.of(context).size.width*0.24,
+      height: MediaQuery.of(context).size.width*0.24,
+      alignment: Alignment.center,
+//      child: Image.network('http://p.qqan.com/up/2020-9/2020941050205581.jpg'),
+      child: Image.network(_comment[i]['images'][index]),
+    );
+  });
 
   Widget getTimeBoxUI(String text1, String txt2) {
     return Padding(
