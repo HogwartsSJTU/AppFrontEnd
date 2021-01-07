@@ -1,3 +1,4 @@
+import 'package:Hogwarts/utils/FilterStaticDataType.dart';
 import 'package:Hogwarts/utils/multi_select_item.dart';
 import 'package:flutter/material.dart';
 import 'package:Hogwarts/component/chat/favorite_contacts.dart';
@@ -62,7 +63,7 @@ class FriendPage extends StatefulWidget {
 }
 
 class _FriendPageState extends State<FriendPage> {
-
+  int lanIndex = GlobalSetting.globalSetting.lanIndex;
   @override
   void initState() {
     _selectedAnimals5 = _animals;
@@ -75,7 +76,7 @@ class _FriendPageState extends State<FriendPage> {
       backgroundColor: Colors.blue,
       appBar: AppBar(
         title: Text(
-          '聊天',
+          lanIndex == 0 ? '聊天':'Chat',
           style: TextStyle(
             fontSize: 28.0,
             fontWeight: FontWeight.bold,
@@ -108,7 +109,7 @@ class _FriendPageState extends State<FriendPage> {
                 children: <Widget>[
                   MultiSelectDialogField(
                     items: _items,
-                    title: Text("好友列表"),
+                    title: Text(lanIndex == 0 ?"好友列表":'Contacts'),
                     selectedColor: Colors.blue,
                     decoration: BoxDecoration(
                       color: Colors.blue.withOpacity(0.1),
@@ -123,7 +124,7 @@ class _FriendPageState extends State<FriendPage> {
                       color: Colors.blue,
                     ),
                     buttonText: Text(
-                      "邀请好友组队",
+                      lanIndex == 0 ?"邀请好友组队":'Invite your Friends',
                       style: TextStyle(
                         color: Colors.blue[800],
                         fontSize: 16,
@@ -151,24 +152,24 @@ class _FriendPageState extends State<FriendPage> {
   }
 
   void _alert(){
-    String tmp = "确定和以下好友组队吗?\n\n";
+    String tmp = (lanIndex == 0 ?"确定和以下好友组队吗?\n\n":"Are you sure to team up with the following friends?\n\n");
     for (var i = 0; i < _selectedAnimals.length; i++) {
       tmp += _selectedAnimals[i].name + "\n";
     }
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('组队确认'),
+          title: Text(lanIndex == 0 ?'组队确认':'Team Confirmation'),
           content: Text(tmp),
           actions: <Widget>[
             new FlatButton(
-              child: new Text("取消"),
+              child: new Text(lanIndex == 0 ?"取消":'Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             new FlatButton(
-              child: new Text("确定"),
+              child: new Text(lanIndex == 0 ?"确定":'OK'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
