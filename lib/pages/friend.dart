@@ -55,8 +55,6 @@ List<Animal> _selectedAnimals4 = [];
 List<Animal> _selectedAnimals5 = [];
 final _multiSelectKey = GlobalKey<FormFieldState>();
 
-
-
 class FriendPage extends StatefulWidget {
   @override
   _FriendPageState createState() => _FriendPageState();
@@ -64,10 +62,17 @@ class FriendPage extends StatefulWidget {
 
 class _FriendPageState extends State<FriendPage> {
   int lanIndex = GlobalSetting.globalSetting.lanIndex;
+
   @override
   void initState() {
     _selectedAnimals5 = _animals;
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _selectedAnimals.length=0;
+    super.dispose();
   }
 
   @override
@@ -76,7 +81,7 @@ class _FriendPageState extends State<FriendPage> {
       backgroundColor: Colors.blue,
       appBar: AppBar(
         title: Text(
-          lanIndex == 0 ? '聊天':'Chat',
+          lanIndex == 0 ? '聊天' : 'Chat',
           style: TextStyle(
             fontSize: 28.0,
             fontWeight: FontWeight.bold,
@@ -99,7 +104,8 @@ class _FriendPageState extends State<FriendPage> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: Theme.of(context).accentColor,
+                color: Colors.white,
+                // Color(0xef83d3ea),//Theme.of(context).accentColor,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30.0),
                   topRight: Radius.circular(30.0),
@@ -109,8 +115,9 @@ class _FriendPageState extends State<FriendPage> {
                 children: <Widget>[
                   MultiSelectDialogField(
                     items: _items,
-                    title: Text(lanIndex == 0 ?"好友列表":'Contacts'),
-                    selectedColor: Colors.blue,
+                    title: Text(lanIndex == 0 ? "好友列表" : 'Contacts'),
+                    selectedColor: Color(0xef83d3ea),
+                    // Colors.blue,
                     decoration: BoxDecoration(
                       color: Colors.blue.withOpacity(0.1),
                       borderRadius: BorderRadius.all(Radius.circular(40)),
@@ -124,22 +131,45 @@ class _FriendPageState extends State<FriendPage> {
                       color: Colors.blue,
                     ),
                     buttonText: Text(
-                      lanIndex == 0 ?"邀请好友组队":'Invite your Friends',
+                      lanIndex == 0 ? " 邀请好友组队" : ' Invite your Friends',
                       style: TextStyle(
                         color: Colors.blue[800],
                         fontSize: 16,
                       ),
                     ),
                     onConfirm: (results) {
-                      _selectedAnimals = results;
+                      setState(() {
+                        _selectedAnimals = results;
+                      });
                     },
                   ),
-                  IconButton(
-                    icon: Icon(Icons.check),
-                    iconSize: 30.0,
-                    color: Colors.blue,
-                    onPressed: () { _alert();},
-                  ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+//                        SizedBox(height: 1),
+                        _selectedAnimals.length == 0
+                            ? SizedBox(
+                                height: 1,
+                              )
+                            : TextButton(
+//                            icon: Icon(Icons.check),
+//                            iconSize: 30.0,
+//                            color: Color(0xef83d3ea), //Colors.blue,
+                                child: Text(
+                                  lanIndex == 0 ? '确认组队' : 'Note',
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18,
+                                    letterSpacing: 0.0,
+                                    color:Color(0xef83d3ea),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  _alert();
+                                },
+                              )
+                      ]),
                   FavoriteContacts(),
                   RecentChats(),
                 ],
@@ -151,31 +181,32 @@ class _FriendPageState extends State<FriendPage> {
     );
   }
 
-  void _alert(){
-    String tmp = (lanIndex == 0 ?"确定和以下好友组队吗?\n\n":"Are you sure to team up with the following friends?\n\n");
+  void _alert() {
+    String tmp = (lanIndex == 0
+        ? "确定和以下好友组队吗?\n\n"
+        : "Are you sure to team up with the following friends?\n\n");
     for (var i = 0; i < _selectedAnimals.length; i++) {
       tmp += _selectedAnimals[i].name + "\n";
     }
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text(lanIndex == 0 ?'组队确认':'Team Confirmation'),
-          content: Text(tmp),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text(lanIndex == 0 ?"取消":'Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            new FlatButton(
-              child: new Text(lanIndex == 0 ?"确定":'OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        ));
-
+              title: Text(lanIndex == 0 ? '组队确认' : 'Team Confirmation'),
+              content: Text(tmp),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text(lanIndex == 0 ? "取消" : 'Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                new FlatButton(
+                  child: new Text(lanIndex == 0 ? "确定" : 'OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ));
   }
 }
