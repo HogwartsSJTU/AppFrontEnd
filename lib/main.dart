@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:Hogwarts/theme/app_theme.dart';
 import 'package:Hogwarts/utils/data.dart';
+import 'package:Hogwarts/component/utilities/StorageUtil.dart';
 import 'package:Hogwarts/component/custom_drawer/navigation_home_screen.dart';
 
 // TODO LIST
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
       systemNavigationBarIconBrightness: Brightness.dark,
     ));
     return MaterialApp(
-      title: 'Freelancer',
+      title: 'HogwartsMap',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,

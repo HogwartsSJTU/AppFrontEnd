@@ -1,3 +1,5 @@
+import 'package:Hogwarts/component/utilities/StorageUtil.dart';
+import 'package:Hogwarts/utils/FilterStaticDataType.dart';
 import 'package:flutter/material.dart';
 import 'package:Hogwarts/component/settings/settings_ui.dart';
 
@@ -7,38 +9,38 @@ class LanguagesScreen extends StatefulWidget {
 }
 
 class _LanguagesScreenState extends State<LanguagesScreen> {
-  int languageIndex = 0;
+  int languageIndex = GlobalSetting.globalSetting.lanIndex;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Languages')),
+      appBar: AppBar(title: Text(languageIndex == 0 ? '语言' : 'Languages')),
       body: SettingsList(
         sections: [
           SettingsSection(tiles: [
             SettingsTile(
-              title: "English",
+              title: "简体中文",
               trailing: trailingWidget(0),
               onTap: () {
                 changeLanguage(0);
               },
             ),
             SettingsTile(
-              title: "Spanish",
+              title: "English",
               trailing: trailingWidget(1),
               onTap: () {
                 changeLanguage(1);
               },
             ),
             SettingsTile(
-              title: "Chinese",
+              title: "español", //西班牙语
               trailing: trailingWidget(2),
               onTap: () {
                 changeLanguage(2);
               },
             ),
             SettingsTile(
-              title: "German",
+              title: "Deutsch", //德语
               trailing: trailingWidget(3),
               onTap: () {
                 changeLanguage(3);
@@ -57,6 +59,7 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
   }
 
   void changeLanguage(int index) {
+    GlobalSetting.globalSetting.lanIndex = index;
     setState(() {
       languageIndex = index;
     });

@@ -1,6 +1,7 @@
 import 'package:Hogwarts/component/UserInfoEditModal.dart';
 import 'package:Hogwarts/component/friendApplyModal.dart';
 import 'package:Hogwarts/theme/hotel_app_theme.dart';
+import 'package:Hogwarts/utils/FilterStaticDataType.dart';
 import 'package:Hogwarts/utils/StorageUtil.dart';
 import 'package:flutter/material.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
@@ -25,6 +26,7 @@ class Profile extends StatefulWidget{
 
 class _ProfileState extends State<Profile> with TickerProviderStateMixin{
   TabController _tabController;
+  int lanIndex = GlobalSetting.globalSetting.lanIndex;
   final List<Tab> tabs = <Tab>[
     new Tab(text: "游记"),
   ];
@@ -47,6 +49,9 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
     animationController = AnimationController(
         duration: const Duration(milliseconds: 1000), vsync: this);
     flutterToast = FlutterToast(context);
+    setState(() {
+      tabs[0]=new Tab(text:lanIndex == 0 ?"游记":"TravelNotes");
+    });
     getUser();
 //    getEmployerJobs();
 //    getEmployeeJobs();
@@ -104,7 +109,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
                     child: new Icon(Icons.arrow_back_ios, color: Colors.white),
                   ),
                 ),
-                title: new Text("我的资料",
+                title: new Text(lanIndex == 0 ?"我的资料":'My Information',
                     style: new TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w400
@@ -186,7 +191,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
                                                       color: Colors.white.withOpacity(0.3),
                                                     ),
                                                     child: Text(
-                                                      user.age.toString() + '岁',
+                                                      user.age.toString() + (lanIndex == 0 ?'岁':''),
                                                       style: TextStyle(
                                                           fontSize: 14,
                                                           color: Colors.black
@@ -201,7 +206,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
                                                       color: Colors.white.withOpacity(0.3),
                                                     ),
                                                     child: Text(
-                                                      user.gender == 'M' ? '男' : '女',
+                                                      user.gender == 'M' ? (lanIndex == 0 ?'男':'M') :( lanIndex == 0 ?'女':'F'),
                                                       style: TextStyle(
                                                           fontSize: 14,
                                                           color: Colors.black
@@ -225,7 +230,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
                   children: [
                     ListTile(
                       leading: Icon(Icons.desktop_windows, color: Colors.black),
-                      title: Text("我的游记"),
+                      title: Text(lanIndex == 0 ?"我的游记":'My TravelNotes'),
                       trailing: Icon(Icons.keyboard_arrow_right),
                       onTap: () {
 //                        Navigator.push(context, MaterialPageRoute(builder: (context) => OnesJobManagePage(userId: user.userId,)));
@@ -260,7 +265,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('资料卡',
+                              Text(lanIndex == 0 ?'资料卡':'Card',
                                 style: TextStyle(
                                     fontSize: 22,
                                     fontWeight: FontWeight.w600
@@ -273,7 +278,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
                                 },
                                 color: Colors.blue,
                                 textColor: Colors.white,
-                                child: Text('编辑资料', style: TextStyle(fontWeight: FontWeight.w300, fontSize: 15)),
+                                child: Text(lanIndex == 0 ?'编辑资料':'Edit', style: TextStyle(fontWeight: FontWeight.w300, fontSize: 15)),
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
                                     side: BorderSide(
@@ -360,7 +365,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
                             children: [
                               SizedBox(
                                 width: 100,
-                                child: Text('游记展板',
+                                child: Text(lanIndex == 0 ?'游记展板':'Travels',
                                   style: TextStyle(
                                       fontSize: 22,
                                       fontWeight: FontWeight.w600
@@ -424,7 +429,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
                                       height: 50,
                                       width: 50,
                                     ),
-                                    Text("暂无游记", style: TextStyle(fontSize: 18),),
+                                    Text(lanIndex == 0 ?"暂无游记":'No TravelNote', style: TextStyle(fontSize: 18),),
                                     SizedBox(
                                       height: 40,
                                       child: Container(),

@@ -1,13 +1,15 @@
+import 'package:Hogwarts/utils/FilterStaticDataType.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HelpSection extends StatelessWidget {
+  int lanIndex = GlobalSetting.globalSetting.lanIndex;
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: Text('Contact Us')),
+      appBar: AppBar(title: Text(lanIndex == 0 ?'联系我们':'Contact Us')),
       body: ListView(
         children: <Widget>[
           SizedBox(
@@ -22,7 +24,7 @@ class HelpSection extends StatelessWidget {
             height: 20,
           ),
           Text(
-            'Have an issue or query? \n Feel free to contact us',
+            lanIndex == 0 ?'有任何问题\n请联系我们':'Have an issue or query? \n Feel free to contact us',
             style: TextStyle(fontSize: 22.0, color: Colors.grey[800]),
             textAlign: TextAlign.center,
           ),
@@ -44,7 +46,7 @@ class HelpSection extends StatelessWidget {
                       Icon(Icons.alternate_email,
                           color: Colors.orange, size: 50),
                       Text(
-                        'Write to us:',
+                        lanIndex == 0 ?'写信给我们':'Write to us:',
                         style: TextStyle(color: Colors.orange),
                       ),
                       Text('Hogwarts@sjtu.edu.cn')
@@ -62,7 +64,7 @@ class HelpSection extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Icon(Icons.call, color: Colors.orange, size: 50),
-                      Text('Call us:', style: TextStyle(color: Colors.orange)),
+                      Text(lanIndex == 0 ?'请致电：':'Call us:', style: TextStyle(color: Colors.orange)),
                       Text('13879517488')
                     ],
                   ),
@@ -83,8 +85,8 @@ class HelpSection extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Icon(Icons.help_outline, color: Colors.orange, size: 50),
-                      Text('FAQs', style: TextStyle(color: Colors.orange)),
-                      Text('Frequently Asked Questions',
+                      Text(lanIndex == 0 ?'问题':'FAQs', style: TextStyle(color: Colors.orange)),
+                      Text(lanIndex == 0 ?'常见问题':'Frequently Asked Questions',
                           textAlign: TextAlign.center)
                     ],
                   ),
@@ -100,10 +102,10 @@ class HelpSection extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Icon(Icons.location_on, color: Colors.orange, size: 50),
-                      Text('Locate us:',
+                      Text(lanIndex == 0 ?'地址':'Locate us:',
                           style: TextStyle(color: Colors.orange)),
                       Text(
-                        'Find us out on Our Maps',
+                        lanIndex == 0 ?'请见地图':'Find us out on Our Maps',
                         textAlign: TextAlign.center,
                       )
                     ],

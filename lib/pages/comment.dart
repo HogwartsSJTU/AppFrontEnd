@@ -1,9 +1,16 @@
 import 'dart:io';
+import 'package:Hogwarts/utils/FilterStaticDataType.dart';
+import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:Hogwarts/component/detail/RatingBar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:Hogwarts/component/design_course/design_course_app_theme.dart';
+import 'package:Hogwarts/utils/config.dart';
+import 'package:Hogwarts/utils/StorageUtil.dart';
+import 'package:http/http.dart' as http;
 import 'package:Hogwarts/theme/app_theme.dart';
+import 'package:Hogwarts/component/OSS_Uploader.dart';
 
 
 class CommentScreen extends StatefulWidget {
@@ -13,19 +20,100 @@ class CommentScreen extends StatefulWidget {
 
 class _CommentScreenState extends State<CommentScreen>{
 
+  var sid = 1;
+  int uid ;
   var ratingValue;
+  var myComment;
   List images = [];
-  var _image;
+  List _image = [];
   var imageNum = 0;
+
   bool ifImageChanged = false;
+  int lanIndex = GlobalSetting.globalSetting.lanIndex;
+  
+  var commentString="";
+//  bool ifImageChanged = false;
 
   String value() {
     if (ratingValue == null) {
-      return '评分：4.5 分';
+      return (lanIndex == 0 ?'评分：4.5 分':'Rate: 4.5');
     } else {
-      return '评分：$ratingValue  分';
+      return lanIndex == 0 ?'评分：$ratingValue  分':'Rate: $ratingValue';
     }
   }
+
+  uploadImages() async{
+    for(int i = 0;i<imageNum;i++){
+      String name = await Uploader.uploadImage(images[i]);
+      setState(() {
+        _image.add("http://freelancer-images.oss-cn-beijing.aliyuncs.com/" + name);
+      });
+      print(name);
+    }
+  }
+  createComment(text) async {
+    int _uid = await StorageUtil.getIntItem("uid");
+    uid = _uid;
+    if(ratingValue == null) {
+      setState(() {
+        ratingValue = 4.5;
+      });
+    }
+    for(int i = 0;i<imageNum;i++){
+      String name = await Uploader.uploadImage(images[i]);
+      setState(() {
+        _image.add("http://freelancer-images.oss-cn-beijing.aliyuncs.com/" + name);
+      });
+    }
+//    setState(() {
+//      _image.add("http://p.qqan.com/up/2020-9/2020941050205581.jpg");
+//    });
+    String url = "${Url.url_prefix}/createcomment";
+//    String url = "${Url.url_prefix}/createcomment?uid="+uid.toString()+"&sid="+sid.toString()+"&text="+text+"&grade="+ratingValue;
+//    myComment['uid'] = uid;
+//    myComment['sid'] = sid;
+//    myComment['text'] = text;
+//    myComment['grade'] = ratingValue;
+//    myComment['images'] = _image;
+    var res = await http.post(url,
+        headers: {
+          "content-type": "application/json",
+//          "Authorization": "$token"
+        },
+        body: json.encode({
+          'uid': uid,
+          'sid': sid,
+          'text': text,
+          'grade': ratingValue,
+          "images": _image
+        })
+    );
+    Navigator.of(context).pop();
+  }
+
+  Timer _countdownTimer;
+  var _countdownNum = 0;
+  void getPosition(){
+  setState(() {
+    if (_countdownTimer != null) {
+      return;
+    }
+    _countdownTimer =
+    new Timer.periodic(new Duration(seconds: 1), (timer){
+      setState(() {
+        _countdownNum ++;
+      });
+    });
+  });
+
+  /*const timeout = const Duration(seconds: 1);
+  Timer.periodic(timeout, (timer) { //callback function
+  //1s 回调一次
+  print('afterTimer='+DateTime.now().toString());
+
+  timer.cancel();  // 取消定时器*/
+  }
+
 
   Future getImage() async {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -33,9 +121,6 @@ class _CommentScreenState extends State<CommentScreen>{
       setState(() {
         images.add(image);
         imageNum++;
-      });
-      setState(() {
-        ifImageChanged = true;
       });
     }
   }
@@ -65,10 +150,25 @@ class _CommentScreenState extends State<CommentScreen>{
   });
 
   @override
+  void initState() {
+    super.initState();
+    //getPosition();
+  }
+
+  @override
+  void dispose() {
+    //_countdownTimer?.cancel();
+    //_countdownTimer = null;
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context){
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: const Text('评论')),
+
+      appBar: AppBar(title: Text(lanIndex == 0 ?'评论':'Comment')),
+
 //      backgroundColor: AppTheme.notWhite.withOpacity(0.5),
       body: SingleChildScrollView(
         child: Column(
@@ -106,8 +206,11 @@ class _CommentScreenState extends State<CommentScreen>{
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   contentPadding: EdgeInsets.all(10.0),
-                  hintText: '请输入你的评论',
+                  hintText: lanIndex == 0 ?'请输入你的评论':'Please enter your comments',
                 ),
+                onChanged: (value){
+                  commentString = value;
+                },
                 maxLines: 8,
               ),
             ),
@@ -143,7 +246,7 @@ class _CommentScreenState extends State<CommentScreen>{
               ),
               child: TextButton(
                   child: Text(
-                    '提交',
+                    lanIndex == 0 ?'提交':'Submit',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
@@ -152,6 +255,10 @@ class _CommentScreenState extends State<CommentScreen>{
                       color: DesignCourseAppTheme.nearlyWhite,
                     ),
                   ),
+                onPressed: (){
+//                    uploadImages();
+                    createComment(commentString);
+                },
               ),
             )
           ],
