@@ -92,11 +92,11 @@ class _HomeDrawerState extends State<HomeDrawer> {
         DrawerList(
           index: DrawerIndex.Setting,
           labelName: lanIndex == 0 ? '设置' : 'Setting',
-          icon: Icon(FontAwesomeIcons.chartBar),
+          icon: Icon(Icons.settings),
         ),
         DrawerList(
           index: DrawerIndex.Manage,
-          labelName: '运营管理',
+          labelName:  lanIndex == 0 ? '运营管理':'Admin',
           icon: Icon(FontAwesomeIcons.chartBar),
         ),
       ];
@@ -126,7 +126,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
         DrawerList(
           index: DrawerIndex.Setting,
           labelName: lanIndex == 0 ? '设置' : 'Setting',
-          icon: Icon(FontAwesomeIcons.chartBar),
+          icon: Icon(Icons.settings),
         ),
       ];
   }

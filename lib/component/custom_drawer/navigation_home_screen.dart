@@ -76,8 +76,8 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
 //        screenView = DrawPointScreen();
       screenView = LocationPickerScreen();
     } else if (drawerIndex == DrawerIndex.Setting) {
-//        screenView = SettingsScreen();
-        screenView = CommentScreen();
+        screenView = SettingsScreen();
+//        screenView = CommentScreen();
     } else {
       //do in your way......
     }
