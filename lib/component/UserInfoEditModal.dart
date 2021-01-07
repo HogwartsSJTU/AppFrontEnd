@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:Hogwarts/utils/FilterStaticDataType.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,7 @@ class _UserInfoEditModalState extends State<UserInfoEditModal>
   final picker = ImagePicker();
   var _image;
   bool ifImageChanged = false;
-
+  int lanIndex = GlobalSetting.globalSetting.lanIndex;
   @override
   void initState() {
     animationController = AnimationController(
@@ -131,7 +132,7 @@ class _UserInfoEditModalState extends State<UserInfoEditModal>
                                   Padding(
                                     padding: EdgeInsets.symmetric(vertical: 15),
                                     child: Text(
-                                      '编辑资料',
+                                      lanIndex == 0 ?'编辑资料':'Edit',
                                       style: TextStyle(
                                         fontSize: 22,
                                         color: Colors.white
@@ -178,7 +179,7 @@ class _UserInfoEditModalState extends State<UserInfoEditModal>
                                                 padding: EdgeInsets.all(0),
                                                 icon: Icon(Icons.camera, size: 30, color: Colors.orangeAccent,),
                                                 onPressed: getImage,
-                                                tooltip: '选择头像',
+                                                tooltip: lanIndex == 0 ?'选择头像':'Choose Avatar',
                                               ),
                                             )
                                         ),
@@ -191,7 +192,7 @@ class _UserInfoEditModalState extends State<UserInfoEditModal>
                                             child: SizedBox(
                                               width: 80,
                                               child: Text(
-                                                '昵称',
+                                                lanIndex == 0 ? '昵称':'Name',
                                                 style: TextStyle(
                                                     fontSize: 20,
                                                     color: Colors.black54
@@ -231,7 +232,7 @@ class _UserInfoEditModalState extends State<UserInfoEditModal>
                                                   cursorColor: HexColor('#54D3C2'),
                                                   decoration: InputDecoration(
                                                     border: InputBorder.none,
-                                                    hintText: 'User Name',
+                                                    hintText: lanIndex == 0 ?'用户名':'User Name',
                                                   ),
                                                 ),
                                               ),
@@ -251,7 +252,7 @@ class _UserInfoEditModalState extends State<UserInfoEditModal>
                                                   child: SizedBox(
                                                     width: 65,
                                                     child: Text(
-                                                      '性别',
+                                                      lanIndex == 0 ?'性别':'Gender',
                                                       style: TextStyle(
                                                           fontSize: 20,
                                                           color: Colors.black54
@@ -265,8 +266,8 @@ class _UserInfoEditModalState extends State<UserInfoEditModal>
                                                 textSize: 14.0,
                                                 iWidth: 80,
                                                 iHeight: 30,
-                                                textOn: '男性',
-                                                textOff: '女性',
+                                                textOn: lanIndex == 0 ?'男性':'Male',
+                                                textOff: lanIndex == 0 ?'女性':'Female',
                                                 colorOn: Colors.blueAccent,
                                                 colorOff: Colors.pinkAccent,
                                                 iconOn: FontAwesomeIcons.mars,
@@ -289,7 +290,7 @@ class _UserInfoEditModalState extends State<UserInfoEditModal>
                                                   child: SizedBox(
                                                     width: 65,
                                                     child: Text(
-                                                      '年龄',
+                                                      lanIndex == 0 ?'年龄':'Age',
                                                       style: TextStyle(
                                                           fontSize: 20,
                                                           color: Colors.black54
@@ -328,7 +329,7 @@ class _UserInfoEditModalState extends State<UserInfoEditModal>
                                                             Row(
                                                               children: [
                                                                 Text(userInfo.age.toString(), style: TextStyle(fontSize: 18)),
-                                                                Text(" 岁", style: TextStyle(fontSize: 17),)
+                                                                Text(lanIndex == 0 ?" 岁":'', style: TextStyle(fontSize: 17),)
                                                               ],
                                                             )
                                                           ],
@@ -350,7 +351,7 @@ class _UserInfoEditModalState extends State<UserInfoEditModal>
                                             child: SizedBox(
                                               width: 80,
                                               child: Text(
-                                                '电话',
+                                                lanIndex == 0 ?'电话':'Tele',
                                                 style: TextStyle(
                                                     fontSize: 20,
                                                     color: Colors.black54
@@ -390,7 +391,7 @@ class _UserInfoEditModalState extends State<UserInfoEditModal>
                                                   cursorColor: HexColor('#54D3C2'),
                                                   decoration: InputDecoration(
                                                     border: InputBorder.none,
-                                                    hintText: 'Phone Number',
+                                                    hintText: lanIndex == 0 ?'电话号码':'Phone Number',
                                                   ),
                                                 ),
                                               ),
@@ -406,7 +407,7 @@ class _UserInfoEditModalState extends State<UserInfoEditModal>
                                             child: SizedBox(
                                               width: 80,
                                               child: Text(
-                                                '地址',
+                                                lanIndex == 0 ?'地址':'Address',
                                                 style: TextStyle(
                                                     fontSize: 20,
                                                     color: Colors.black54
@@ -446,7 +447,7 @@ class _UserInfoEditModalState extends State<UserInfoEditModal>
                                                   cursorColor: HexColor('#54D3C2'),
                                                   decoration: InputDecoration(
                                                     border: InputBorder.none,
-                                                    hintText: 'Address',
+                                                    hintText: lanIndex == 0 ?'地址':'Address',
                                                   ),
                                                 ),
                                               ),
@@ -461,7 +462,7 @@ class _UserInfoEditModalState extends State<UserInfoEditModal>
                                         Padding(
                                           padding: EdgeInsets.only(left: 16, top: 8),
                                           child: Text(
-                                            '个人描述',
+                                            lanIndex == 0 ?'个人描述':'Description',
                                             style: TextStyle(
                                                 fontSize: 20,
                                                 color: Colors.black54
@@ -499,7 +500,7 @@ class _UserInfoEditModalState extends State<UserInfoEditModal>
                                                 cursorColor: HexColor('#54D3C2'),
                                                 decoration: InputDecoration(
                                                   border: InputBorder.none,
-                                                  hintText: 'Description',
+                                                  hintText: lanIndex == 0 ?'介绍一下你自己吧~':'Description',
                                                 ),
                                               ),
                                             ),
@@ -541,7 +542,7 @@ class _UserInfoEditModalState extends State<UserInfoEditModal>
                                     },
                                     child: Center(
                                       child: Text(
-                                        'Apply',
+                                        lanIndex == 0 ?'保存': 'Apply',
                                         style: TextStyle(
                                             fontWeight: FontWeight.w500,
                                             fontSize: 18,
@@ -607,7 +608,7 @@ class _UserInfoEditModalState extends State<UserInfoEditModal>
         ]),
         selecteds: [userInfo.age - 1],
         hideHeader: false,
-        title: Text("选择年龄"),
+        title: Text(lanIndex == 0 ?"选择年龄":'Choose Age'),
         selectedTextStyle: TextStyle(color: Colors.blue),
         onConfirm: (Picker picker, List value) {
           setState(() {
