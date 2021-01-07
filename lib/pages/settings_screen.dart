@@ -1,6 +1,6 @@
 import 'package:Hogwarts/component/custom_drawer/home_drawer.dart';
 import 'package:Hogwarts/component/custom_drawer/navigation_home_screen.dart';
-import 'package:Hogwarts/component/utilities/StorageUtil.dart';
+import 'package:Hogwarts/utils/StorageUtil.dart';
 import 'package:Hogwarts/utils/FilterStaticDataType.dart';
 import 'package:flutter/material.dart';
 import 'package:Hogwarts/component/settings/settings_ui.dart';

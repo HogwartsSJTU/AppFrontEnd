@@ -1,8 +1,10 @@
+import 'package:Hogwarts/utils/FilterStaticDataType.dart';
 import 'package:flutter/material.dart';
 import 'package:Hogwarts/component/chat/message_model.dart';
 import 'package:Hogwarts/pages/chat_screen.dart';
 
 class RecentChats extends StatelessWidget {
+  int lanIndex= GlobalSetting.globalSetting.lanIndex;
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -97,12 +99,12 @@ class RecentChats extends StatelessWidget {
                                   width: 40.0,
                                   height: 20.0,
                                   decoration: BoxDecoration(
-                                    color: Colors.red,
+                                    color: Color(0xefffbea8),//Colors.red,
                                     borderRadius: BorderRadius.circular(30.0),
                                   ),
                                   alignment: Alignment.center,
                                   child: Text(
-                                    '新消息',
+                                    lanIndex==0?'新消息':'New',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 12.0,

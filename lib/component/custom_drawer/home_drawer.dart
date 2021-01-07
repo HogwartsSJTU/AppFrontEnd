@@ -92,6 +92,11 @@ class _HomeDrawerState extends State<HomeDrawer> {
         DrawerList(
           index: DrawerIndex.Setting,
           labelName: lanIndex == 0 ? '设置' : 'Setting',
+          icon: Icon(Icons.settings),
+        ),
+        DrawerList(
+          index: DrawerIndex.Manage,
+          labelName:  lanIndex == 0 ? '运营管理':'Admin',
           icon: Icon(FontAwesomeIcons.chartBar),
         ),
       ];
@@ -121,7 +126,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
         DrawerList(
           index: DrawerIndex.Setting,
           labelName: lanIndex == 0 ? '设置' : 'Setting',
-          icon: Icon(FontAwesomeIcons.chartBar),
+          icon: Icon(Icons.settings),
         ),
       ];
   }
@@ -443,7 +448,14 @@ class _HomeDrawerState extends State<HomeDrawer> {
   }
 }
 
-enum DrawerIndex { HOME, Finder, Project, Contact, Setting }
+enum DrawerIndex {
+  HOME,
+  Finder,
+  Project,
+  Contact,
+  Setting,
+  Manage
+}
 
 class DrawerList {
   DrawerList({
