@@ -10,7 +10,7 @@ const accessid= 'LTAI4G7PGQy2LBnAzDsMLx8W';
 const accesskey= 'VmwPJ9AAWF7b3y236Dzo1FTzSmWNtZ';
 const host = 'http://freelancer-images.oss-cn-beijing.aliyuncs.com';
 
-String policyText = '{"expiration": "2020-12-01T12:00:00.000Z","conditions": [["content-length-range", 0, 1048576000]]}';
+String policyText = '{"expiration": "2021-12-01T12:00:00.000Z","conditions": [["content-length-range", 0, 1048576000]]}';
 
 class Uploader {
   static Future<String> uploadImage(File _image) async {
@@ -46,7 +46,6 @@ class Uploader {
     });
 
     dio.post(host, data: data);
-
     return name;
   }
 }
