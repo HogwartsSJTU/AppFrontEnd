@@ -72,7 +72,8 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
 
   // TODO 这里是空白图片
   static AudioCache player = AudioCache();
-  AudioPlayer audio;
+//  static AudioPlayer audio = new AudioPalyer();
+  AudioPlayer audioPlayer = AudioPlayer();
 
   @override
   void initState() {
@@ -87,20 +88,21 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
       tabs[0] = new Tab(text: lanIndex == 0 ? "留言" : "Notes");
       tabs2[0] = new Tab(text: lanIndex == 0 ? "评论" : "Comments");
     });
+    sid = widget.spot['id'];
     setData();
     getComment();
     getNote();
   }
 
   play() async {
-    audio = await player.play('record/1.m4a');
-    setState(() {
+    int result = await audioPlayer.play(widget.spot['audio']);
+    if(result == 1) setState(() {
       playstate = 1;
     });
   }
 
   pause() async {
-    audio.pause();
+    audioPlayer.pause();
     setState(() {
       playstate = 0;
     });
@@ -137,7 +139,8 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
     int _uid = await StorageUtil.getIntItem("uid");
     String url = "${Url.url_prefix}/getComment?sid=" + sid.toString();
     final res = await http.get(url, headers: {"Accept": "application/json"});
-    final data = json.decode(res.body);
+//    final data = json.decode(res.body);
+    final data = jsonDecode(Utf8Decoder().convert(res.bodyBytes));
     setState(() {
       _comment = data;
       commentNum = _comment.length;
@@ -151,7 +154,8 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
   getNote() async {
     String url = "${Url.url_prefix}/getNote?sid=" + sid.toString();
     final res = await http.get(url, headers: {"Accept": "application/json"});
-    final data = json.decode(res.body);
+//    final data = json.decode(res.body);
+    final data = jsonDecode(Utf8Decoder().convert(res.bodyBytes));
     setState(() {
       _note = data;
       noteNum = _note.length;
@@ -175,7 +179,8 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
   @override
   void dispose() {
     animationController.dispose();
-    audio.release();
+    audioPlayer.release();
+//    audio.release();
 //    audio.dispose();
     super.dispose();
   }
@@ -214,7 +219,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                         height: 270,
                         decoration: new BoxDecoration(
                             image: DecorationImage(
-                                image: AssetImage(widget.spot['image']),
+                                image: NetworkImage(widget.spot['image']),
                                 fit: BoxFit.cover,
                                 colorFilter: new ColorFilter.mode(
                                     Colors.grey.withOpacity(0.7),
@@ -371,21 +376,21 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Row(children: <Widget>[
-                                  getTimeBoxUI(widget.spot['count'],
+                                  getTimeBoxUI(widget.spot['count'].toString(),
                                       lanIndex == 0 ? '打卡' : 'Count'),
-                                  getTimeBoxUI(widget.spot['heat'],
+                                  getTimeBoxUI(widget.spot['heat'].toString(),
                                       lanIndex == 0 ? '热度' : 'Heat'),
                                 ]),
                                 Container(
-                                  width: 50,
+                                  width: 60,
                                   child: Row(
                                     children: <Widget>[
                                       Text(
-                                        widget.spot['rate'],
+                                        widget.spot['rate'].toString(),
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
                                           fontWeight: FontWeight.w200,
-                                          fontSize: 22,
+                                          fontSize: 20,
                                           letterSpacing: 0.27,
                                           color: DesignCourseAppTheme.grey,
                                         ),
