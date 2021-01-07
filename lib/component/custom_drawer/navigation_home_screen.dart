@@ -1,8 +1,10 @@
 import 'package:Hogwarts/component/hotel_booking/hotel_home_screen.dart';
+import 'package:Hogwarts/pages/admin.dart';
 import 'package:Hogwarts/pages/drawpoint_example.dart';
 import 'package:Hogwarts/pages/home.dart';
 import 'package:Hogwarts/pages/locationpicker_example.dart';
 import 'package:Hogwarts/theme/app_theme.dart';
+import 'package:Hogwarts/utils/comment.dart';
 
 import 'package:flutter/material.dart';
 import 'drawer_user_controller.dart';
@@ -74,7 +76,8 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
 //        screenView = DrawPointScreen();
       screenView = LocationPickerScreen();
     } else if (drawerIndex == DrawerIndex.Setting) {
-        screenView = SettingsScreen();
+//        screenView = SettingsScreen();
+        screenView = CommentScreen();
     } else {
       //do in your way......
     }
@@ -104,9 +107,13 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         });
       } else if (drawerIndex == DrawerIndex.Setting) {
         setState(() {
-          screenView = SettingsScreen();
+//          screenView = SettingsScreen();
+          screenView = CommentScreen();
         });
       } else {
+        setState(() {
+          screenView = AdminPage();
+        });
         //do in your way......
       }
     }

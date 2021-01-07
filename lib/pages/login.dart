@@ -97,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
         "phone": telePhone,
         "password": password,
       });
-      var response = json.decode(res.body);
+      var response = jsonDecode(Utf8Decoder().convert(res.bodyBytes));
       if(response['message'] == "登录失败,密码错误"){
         _showToast("用户名或密码错误");
         setState(() {

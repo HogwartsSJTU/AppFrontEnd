@@ -88,6 +88,11 @@ class _HomeDrawerState extends State<HomeDrawer> {
           labelName: '设置',
           icon: Icon(FontAwesomeIcons.chartBar),
         ),
+        DrawerList(
+          index: DrawerIndex.Manage,
+          labelName: '运营管理',
+          icon: Icon(FontAwesomeIcons.chartBar),
+        ),
       ];
     }
     else drawerList = <DrawerList>[
@@ -400,7 +405,8 @@ enum DrawerIndex {
   Finder,
   Project,
   Contact,
-  Setting
+  Setting,
+  Manage
 }
 
 class DrawerList {

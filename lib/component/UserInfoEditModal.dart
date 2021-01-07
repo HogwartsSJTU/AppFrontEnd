@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:Hogwarts/component/LiteSwitch.dart';
 import 'package:Hogwarts/component/OSS_Uploader.dart';
 import 'package:Hogwarts/utils//config.dart';
-import 'utilities/StorageUtil.dart';
+import 'package:Hogwarts/utils//StorageUtil.dart';
 import 'package:Hogwarts/theme/hotel_app_theme.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';

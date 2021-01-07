@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:Hogwarts/theme/hotel_app_theme.dart';
+import 'package:Hogwarts/utils/MyFloatButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_easyrefresh/material_footer.dart';
@@ -74,144 +76,262 @@ class _LocationPickerState extends State<LocationPicker>
   // 页数
   int _page = 1;
 
+  //定时器组队
+  Timer _countdownTimer;
+  var _countdownNum = 0;
+  void getPosition() {
+    setState(() {
+      if (_countdownTimer != null) {
+        return;
+      }
+      _countdownTimer =
+      new Timer.periodic(new Duration(seconds: 1), (timer) {
+        setState(() {
+          _countdownNum ++;
+        });
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final minPanelHeight = MediaQuery.of(context).size.height * 0.4;
+    final minPanelHeight = 40.0;
     final maxPanelHeight = MediaQuery.of(context).size.height * 0.7;
     return SlidingUpPanel(
-      controller: _panelController,
-      parallaxEnabled: true,
-      parallaxOffset: 0.5,
-      minHeight: minPanelHeight,
-      maxHeight: maxPanelHeight,
-      borderRadius: BorderRadius.circular(8),
-      onPanelSlide: (double pos) => setState(() {
-        _fabHeight = pos * (maxPanelHeight - minPanelHeight) * .5 + 16;
-      }),
-      body: Column(
-        children: <Widget>[
-          Flexible(
-            child: Stack(
-              children: <Widget>[
-                AmapView(
-                  zoomLevel: widget.zoomLevel,
-                  zoomGesturesEnabled: widget.zoomGesturesEnabled,
-                  showZoomControl: widget.showZoomControl,
-                  onMapMoveEnd: (move) async {
-                    if (_moveByUser) {
-                      // 地图移动结束, 显示跳动动画
-                      _jumpController
-                          .forward()
-                          .then((it) => _jumpController.reverse());
-                      _search(move.latLng);
-                    }
-                    _moveByUser = true;
-                    // 保存当前地图中心点数据
-                    _currentCenterCoordinate = move.latLng;
-                  },
-                  onMapCreated: (controller) async {
-                    _controller = controller;
-                    if (await widget.requestPermission()) {
-                      await _showMyLocation();
-                      _search(await _controller.getLocation());
-                    } else {
-                      debugPrint('权限请求被拒绝!');
-                    }
-                  },
-                ),
-                // 中心指示器
-                Center(
-                  child: AnimatedBuilder(
-                    animation: _tween,
-                    builder: (context, child) {
-                      return Transform.translate(
-                        offset: Offset(
-                          _tween.value.dx,
-                          _tween.value.dy - _iconSize / 2,
-                        ),
-                        child: child,
-                      );
+        controller: _panelController,
+        parallaxEnabled: true,
+        parallaxOffset: 0.5,
+        minHeight: minPanelHeight,
+        maxHeight: maxPanelHeight,
+        borderRadius: BorderRadius.circular(16),
+        onPanelSlide: (double pos) => setState(() {
+              _fabHeight = pos * (maxPanelHeight - minPanelHeight) * .5;
+            }),
+        body: Column(
+          children: <Widget>[
+            Flexible(
+              child: Stack(
+                children: <Widget>[
+                  AmapView(
+                    zoomLevel: widget.zoomLevel,
+                    zoomGesturesEnabled: widget.zoomGesturesEnabled,
+                    showZoomControl: widget.showZoomControl,
+                    onMapMoveEnd: (move) async {
+                      if (_moveByUser) {
+                        // 地图移动结束, 显示跳动动画
+                        _jumpController
+                            .forward()
+                            .then((it) => _jumpController.reverse());
+                        _search(move.latLng);
+                      }
+                      _moveByUser = true;
+                      // 保存当前地图中心点数据
+                      _currentCenterCoordinate = move.latLng;
                     },
-                    child: widget.centerIndicator ??
-                       Image(
-                         image: AssetImage('assets/test_icon.png'),
-                       ),
+                    onMapCreated: (controller) async {
+                      _controller = controller;
+                      if (await widget.requestPermission()) {
+                        await _showMyLocation();
+                        _search(await _controller.getLocation());
+                      } else {
+                        debugPrint('权限请求被拒绝!');
+                      }
+                    },
                   ),
-                ),
-                // 定位按钮
-                Positioned(
-                  right: 16.0,
-                  bottom: _fabHeight,
-                  child: FloatingActionButton(
-                    child: StreamBuilder<bool>(
-                      stream: _onMyLocation.stream,
-                      initialData: true,
-                      builder: (context, snapshot) {
-                        return Icon(
-                          Icons.gps_fixed,
-                          color: snapshot.data
-                              ? Theme.of(context).primaryColor
-                              : Colors.black54,
+                  // 中心指示器
+                  Center(
+                    child: AnimatedBuilder(
+                      animation: _tween,
+                      builder: (context, child) {
+                        return Transform.translate(
+                          offset: Offset(
+                            _tween.value.dx,
+                            _tween.value.dy - _iconSize / 2,
+                          ),
+                          child: child,
+                        );
+                      },
+                      child: widget.centerIndicator ??
+                          Image(
+                            image: AssetImage('assets/test_icon.png'),
+                          ),
+                    ),
+                  ),
+                  // 定位按钮
+//                  Positioned(
+//                    right: 16.0,
+//                    bottom: _fabHeight + 16.0 + 40,
+//                    child: FloatingActionButton(
+//                      child: Icon(
+//                        Icons.gps_fixed,
+//                        color: Theme.of(context).primaryColor,
+//                      ),
+//                      onPressed: _showMyLocation,
+//                      backgroundColor: Colors.white,
+//                    ),
+//                  ),
+                  Positioned(
+                    right: 16.0,
+                    bottom: _fabHeight + 16.0 + 70,
+                    child: SizedBox(
+                      height: 52,
+                      width: 52,
+                      child: MyFloatButton(),
+                    )
+                  ),
+//                Positioned(
+//                  bottom: _fabHeight,
+//                  child: Container(
+//                    decoration: BoxDecoration(
+//                      borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+//                      boxShadow: <BoxShadow>[
+//                        BoxShadow(
+//                          color: Colors.grey.withOpacity(0.6),
+//                          offset: const Offset(4, 4),
+//                          blurRadius: 16,
+//                        ),
+//                      ],
+//                    ),
+//
+//                    child: SizedBox(
+//                      height: 32,
+//                      width: MediaQuery.of(context).size.width,
+//                      child: Container(
+//                        color: HotelAppTheme.buildLightTheme()
+//                            .backgroundColor,
+//                        child: Center(
+//                          child: Icon(Icons.keyboard_arrow_up),
+//                        ),
+//                      )
+//                    )
+//                  ),
+//                )
+                ],
+              ),
+            ),
+            // 用来抵消panel的最小高度
+//          SizedBox(height: minPanelHeight - 40),
+          ],
+        ),
+//        renderPanelSheet: false,
+        panelBuilder: (ScrollController sc) => StreamBuilder<List<PoiInfo>>(
+              stream: _poiStream.stream,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final data = snapshot.data;
+                  return EasyRefresh(
+                    footer: MaterialFooter(),
+                    onLoad: widget.enableLoadMore ? _handleLoadMore : null,
+                    child: ListView.builder(
+                      padding: EdgeInsets.zero,
+                      controller: sc,
+                      shrinkWrap: true,
+                      itemCount: data.length,
+                      itemBuilder: (context, index) {
+                        final poi = data[index].poi;
+                        final selected = data[index].selected;
+                        return GestureDetector(
+                          onTap: () {
+                            // 遍历数据列表, 设置当前被选中的数据项
+                            for (int i = 0; i < data.length; i++) {
+                              data[i].selected = i == index;
+                            }
+                            // 如果索引是0, 说明是当前位置, 更新这个数据
+                            _onMyLocation.add(index == 0);
+                            // 刷新数据
+                            _poiStream.add(data);
+                            // 设置地图中心点
+                            _setCenterCoordinate(poi.latLng);
+                            // 回调
+                            if (widget.onItemSelected != null) {
+                              widget.onItemSelected(data[index]);
+                            }
+                          },
+                          child: widget.poiItemBuilder(poi, selected),
                         );
                       },
                     ),
-                    onPressed: _showMyLocation,
-                    backgroundColor: Colors.white,
-                  ),
-                ),
-              ],
+                  );
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
+        collapsed: Container(
+          decoration: BoxDecoration(
+            color: Colors.blueGrey,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(16.0),
+                topRight: Radius.circular(16.0)),
+          ),
+//          margin: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 0.0),
+          child: Center(
+            child: Text(
+              "探索周边",
+              style: TextStyle(color: Colors.white),
             ),
           ),
-          // 用来抵消panel的最小高度
-          SizedBox(height: minPanelHeight),
-        ],
-      ),
-      panelBuilder: (scrollController) {
-        return StreamBuilder<List<PoiInfo>>(
-          stream: _poiStream.stream,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final data = snapshot.data;
-              return EasyRefresh(
-                footer: MaterialFooter(),
-                onLoad: widget.enableLoadMore ? _handleLoadMore : null,
-                child: ListView.builder(
-                  padding: EdgeInsets.zero,
-                  controller: scrollController,
-                  shrinkWrap: true,
-                  itemCount: data.length,
-                  itemBuilder: (context, index) {
-                    final poi = data[index].poi;
-                    final selected = data[index].selected;
-                    return GestureDetector(
-                      onTap: () {
-                        // 遍历数据列表, 设置当前被选中的数据项
-                        for (int i = 0; i < data.length; i++) {
-                          data[i].selected = i == index;
-                        }
-                        // 如果索引是0, 说明是当前位置, 更新这个数据
-                        _onMyLocation.add(index == 0);
-                        // 刷新数据
-                        _poiStream.add(data);
-                        // 设置地图中心点
-                        _setCenterCoordinate(poi.latLng);
-                        // 回调
-                        if (widget.onItemSelected != null) {
-                          widget.onItemSelected(data[index]);
-                        }
-                      },
-                      child: widget.poiItemBuilder(poi, selected),
-                    );
-                  },
-                ),
-              );
-            } else {
-              return Center(child: CircularProgressIndicator());
-            }
-          },
+        )
+//            Column(
+//              children: [
+//              SizedBox(
+//                height: 32,
+//                width: MediaQuery.of(context).size.width,
+//                child: Container(
+//                  color: HotelAppTheme.buildLightTheme()
+//                      .backgroundColor,
+//                  child: Center(
+//                    child: Icon(Icons.keyboard_arrow_up),
+//                  ),
+//                )
+//            ),
+//                StreamBuilder<List<PoiInfo>>(
+//                  stream: _poiStream.stream,
+//                  builder: (context, snapshot) {
+//                    if (snapshot.hasData) {
+//                      final data = snapshot.data;
+//                      return EasyRefresh(
+//                        footer: MaterialFooter(),
+//                        onLoad: widget.enableLoadMore ? _handleLoadMore : null,
+//                        child: ListView.builder(
+//                          padding: EdgeInsets.zero,
+////                      controller: scrollController,
+//                          shrinkWrap: true,
+//                          itemCount: data.length,
+//                          itemBuilder: (context, index) {
+//                            final poi = data[index].poi;
+//                            final selected = data[index].selected;
+//                            return GestureDetector(
+//                              onTap: () {
+//                                // 遍历数据列表, 设置当前被选中的数据项
+//                                for (int i = 0; i < data.length; i++) {
+//                                  data[i].selected = i == index;
+//                                }
+//                                // 如果索引是0, 说明是当前位置, 更新这个数据
+//                                _onMyLocation.add(index == 0);
+//                                // 刷新数据
+//                                _poiStream.add(data);
+//                                // 设置地图中心点
+//                                _setCenterCoordinate(poi.latLng);
+//                                // 回调
+//                                if (widget.onItemSelected != null) {
+//                                  widget.onItemSelected(data[index]);
+//                                }
+//                              },
+//                              child: widget.poiItemBuilder(poi, selected),
+//                            );
+//                          },
+//                        ),
+//                      );
+//                    } else {
+//                      return Center(child: CircularProgressIndicator());
+//                    }
+//                  },
+//                ),
+//              ],
+//            )
+
         );
-      },
-    );
   }
 
   Future<void> _search(LatLng location) async {
@@ -250,7 +370,7 @@ class _LocationPickerState extends State<LocationPicker>
 
 mixin _BLoCMixin on State<LocationPicker> {
   // poi流
-  final _poiStream = StreamController<List<PoiInfo>>();
+  final _poiStream = StreamController<List<PoiInfo>>.broadcast();
 
   // 是否在我的位置
   final _onMyLocation = StreamController<bool>();

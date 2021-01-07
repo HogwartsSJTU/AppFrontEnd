@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
-import 'utilities/StorageUtil.dart';
+import 'package:Hogwarts/utils//StorageUtil.dart';
 import 'package:http_parser/http_parser.dart';
 import 'dart:async';
 
