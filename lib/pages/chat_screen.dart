@@ -1,3 +1,4 @@
+import 'package:Hogwarts/utils/FilterStaticDataType.dart';
 import 'package:flutter/material.dart';
 import 'package:Hogwarts/component/chat/message_model.dart';
 import 'package:Hogwarts/component/chat/user_model.dart';
@@ -12,6 +13,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  int lanIndex= GlobalSetting.globalSetting.lanIndex;
   _buildMessage(Message message, bool isMe) {
     final Container msg = Container(
       margin: isMe
@@ -72,9 +74,9 @@ class _ChatScreenState extends State<ChatScreen> {
               ? Icon(Icons.favorite)
               : Icon(Icons.favorite_border),
           iconSize: 30.0,
-          color: message.isLiked
-              ? Colors.red
-              : Colors.blueGrey,
+          color: !message.isLiked
+              ? Color(0xeffbd5e0)
+              : Color(0xefffbea8),//Colors.blueGrey,
           onPressed: () {},
         )
       ],
@@ -99,7 +101,7 @@ class _ChatScreenState extends State<ChatScreen> {
               textCapitalization: TextCapitalization.sentences,
               onChanged: (value) {},
               decoration: InputDecoration.collapsed(
-                hintText: 'Send a message...',
+                hintText: lanIndex==0?'发送消息..':'Send a message...',
               ),
             ),
           ),

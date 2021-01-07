@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Hogwarts/pages/login.dart';
 import 'package:Hogwarts/pages/profile.dart';
 import 'package:Hogwarts/utils/Account.dart';
+import 'package:Hogwarts/utils/FilterStaticDataType.dart';
 import 'package:Hogwarts/utils/StorageUtil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:Hogwarts/theme/app_theme.dart';
@@ -13,9 +14,13 @@ import 'dart:math';
 import 'drawer_animation.dart';
 import 'navigation_home_screen.dart';
 
-
 class HomeDrawer extends StatefulWidget {
-  const HomeDrawer({Key key, this.screenIndex, this.iconAnimationController, this.callBackIndex}) : super(key: key);
+  const HomeDrawer(
+      {Key key,
+      this.screenIndex,
+      this.iconAnimationController,
+      this.callBackIndex})
+      : super(key: key);
 
   final AnimationController iconAnimationController;
   final DrawerIndex screenIndex;
@@ -31,6 +36,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
   bool isLog = false;
   bool isManager = false;
   String icon = 'assets/unlogin.jpg';
+  int lanIndex = GlobalSetting.globalSetting.lanIndex;
 
   @override
   void initState() {
@@ -44,7 +50,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
     String e = await StorageUtil.getStringItem("email");
     int role = await StorageUtil.getIntItem("role");
     String userIcon = await StorageUtil.getStringItem("userIcon");
-    if (name != null && e != null && role != null ) {
+    if (name != null && e != null && role != null) {
       setState(() {
         username = name;
         icon = userIcon;
@@ -53,78 +59,85 @@ class _HomeDrawerState extends State<HomeDrawer> {
       });
     } else
       setState(() {
-        username = '点击登录';
+        username =( lanIndex == 0 ? '点击登录' : 'Log In');
         isLog = false;
       });
     print(username);
   }
 
   void setDrawerListArray() {
-    if(isManager){
+    if (isManager) {
       drawerList = <DrawerList>[
         DrawerList(
           index: DrawerIndex.HOME,
-          labelName: '主页',
+          labelName: lanIndex == 0 ? '主页' : 'Home',
           icon: Icon(Icons.home),
         ),
         DrawerList(
           index: DrawerIndex.Finder,
-          labelName: '浏览',
+          labelName: lanIndex == 0 ? '浏览' : 'Discovery',
           icon: Icon(Icons.local_library),
         ),
         DrawerList(
           index: DrawerIndex.Project,
-          labelName: '通讯录',
+          labelName: lanIndex == 0 ? '通讯录' : 'Friends',
           icon: Icon(Icons.desktop_mac),
         ),
         DrawerList(
           index: DrawerIndex.Contact,
-          labelName: '联系我们',
+          labelName: lanIndex == 0 ? '联系我们' : 'Contact us',
           isAssetsImage: true,
           imageName: 'assets/images/supportIcon.png',
         ),
         DrawerList(
           index: DrawerIndex.Setting,
-          labelName: '设置',
+          labelName: lanIndex == 0 ? '设置' : 'Setting',
+          icon: Icon(FontAwesomeIcons.chartBar),
+        ),
+        DrawerList(
+          index: DrawerIndex.Manage,
+          labelName: '运营管理',
           icon: Icon(FontAwesomeIcons.chartBar),
         ),
       ];
-    }
-    else drawerList = <DrawerList>[
-      DrawerList(
-        index: DrawerIndex.HOME,
-        labelName: '主页',
-        icon: Icon(Icons.home),
-      ),
-      DrawerList(
-        index: DrawerIndex.Finder,
-        labelName: '浏览',
-        icon: Icon(Icons.local_library),
-      ),
-      DrawerList(
-        index: DrawerIndex.Project,
-        labelName: '通讯录',
-        icon: Icon(Icons.desktop_mac),
-      ),
-      DrawerList(
-        index: DrawerIndex.Contact,
-        labelName: '联系我们',
-        isAssetsImage: true,
-        imageName: 'assets/images/supportIcon.png',
-      ),
-      DrawerList(
-        index: DrawerIndex.Setting,
-        labelName: '设置',
-        icon: Icon(FontAwesomeIcons.chartBar),
-      ),
-
-  ];
-}
+    } else
+      drawerList = <DrawerList>[
+        DrawerList(
+          index: DrawerIndex.HOME,
+          labelName: lanIndex == 0 ? '主页' : 'Home',
+          icon: Icon(Icons.home),
+        ),
+        DrawerList(
+          index: DrawerIndex.Finder,
+          labelName: lanIndex == 0 ? '浏览' : 'Discovery',
+          icon: Icon(Icons.local_library),
+        ),
+        DrawerList(
+          index: DrawerIndex.Project,
+          labelName: lanIndex == 0 ? '通讯录' : 'Friends',
+          icon: Icon(Icons.desktop_mac),
+        ),
+        DrawerList(
+          index: DrawerIndex.Contact,
+          labelName: lanIndex == 0 ? '联系我们' : 'Contact us',
+          isAssetsImage: true,
+          imageName: 'assets/images/supportIcon.png',
+        ),
+        DrawerList(
+          index: DrawerIndex.Setting,
+          labelName: lanIndex == 0 ? '设置' : 'Setting',
+          icon: Icon(FontAwesomeIcons.chartBar),
+        ),
+      ];
+  }
 
   navigateToProfile() async {
     int userId = await StorageUtil.getIntItem("uid");
-    Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(userId: userId))).then((value) => updateImage());
+    Navigator.push(context,
+            MaterialPageRoute(builder: (context) => Profile(userId: userId)))
+        .then((value) => {updateImage(), updateLan()});
   }
+
   updateImage() async {
     setState(() {
       icon = 'http://freelancer-images.oss-cn-beijing.aliyuncs.com/blank.png';
@@ -133,6 +146,14 @@ class _HomeDrawerState extends State<HomeDrawer> {
     setState(() {
       icon = userIcon;
     });
+  }
+
+  updateLan() {
+    setState(() {
+      lanIndex = GlobalSetting.globalSetting.lanIndex;
+    });
+    print(lanIndex);
+    setDrawerListArray();
   }
 
   @override
@@ -168,8 +189,10 @@ class _HomeDrawerState extends State<HomeDrawer> {
                   padding: const EdgeInsets.all(16.0),
                   child: InkWell(
                     onTap: () {
-                      if(isLog) navigateToProfile();
-                      else Navigator.pushNamed(context, "/login");
+                      if (isLog)
+                        navigateToProfile();
+                      else
+                        Navigator.pushNamed(context, "/login");
 //                      Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(userId: 0)));
                     },
                     child: Row(
@@ -180,24 +203,35 @@ class _HomeDrawerState extends State<HomeDrawer> {
                           animation: widget.iconAnimationController,
                           builder: (BuildContext context, Widget child) {
                             return ScaleTransition(
-                              scale: AlwaysStoppedAnimation<double>(1.0 - (widget.iconAnimationController.value) * 0.2),
+                              scale: AlwaysStoppedAnimation<double>(1.0 -
+                                  (widget.iconAnimationController.value) * 0.2),
                               child: RotationTransition(
-                                turns: AlwaysStoppedAnimation<double>(Tween<double>(begin: 0.0, end: 24.0)
-                                    .animate(CurvedAnimation(parent: widget.iconAnimationController, curve: Curves.fastOutSlowIn))
-                                    .value /
-                                    360),
+                                turns: AlwaysStoppedAnimation<double>(
+                                    Tween<double>(begin: 0.0, end: 24.0)
+                                            .animate(CurvedAnimation(
+                                                parent: widget
+                                                    .iconAnimationController,
+                                                curve: Curves.fastOutSlowIn))
+                                            .value /
+                                        360),
                                 child: Container(
                                   height: 120,
                                   width: 120,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     boxShadow: <BoxShadow>[
-                                      BoxShadow(color: AppTheme.grey.withOpacity(0.6), offset: const Offset(2.0, 4.0), blurRadius: 8),
+                                      BoxShadow(
+                                          color: AppTheme.grey.withOpacity(0.6),
+                                          offset: const Offset(2.0, 4.0),
+                                          blurRadius: 8),
                                     ],
                                   ),
                                   child: new CircleAvatar(
-                                    backgroundImage: !isLog ? AssetImage(icon) : NetworkImage(icon),
-                                    backgroundColor: Colors.grey.withOpacity(0.01),
+                                    backgroundImage: !isLog
+                                        ? AssetImage(icon)
+                                        : NetworkImage(icon),
+                                    backgroundColor:
+                                        Colors.grey.withOpacity(0.01),
                                   ),
                                 ),
                               ),
@@ -205,9 +239,8 @@ class _HomeDrawerState extends State<HomeDrawer> {
                           },
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(left: 6),
-                          child: description()
-                        ),
+                            padding: const EdgeInsets.only(left: 6),
+                            child: description()),
                       ],
                     ),
                   ),
@@ -237,7 +270,9 @@ class _HomeDrawerState extends State<HomeDrawer> {
             children: <Widget>[
               ListTile(
                 title: Text(
-                  isLog? 'Sign Out' : 'Sign In',
+                  isLog
+                      ? (lanIndex == 0 ? '登出' : 'LogOut')
+                      : (lanIndex == 0 ? '登录' : 'LogIn'),
                   style: TextStyle(
                     fontFamily: AppTheme.fontName,
                     fontWeight: FontWeight.w600,
@@ -248,15 +283,17 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 ),
                 trailing: Icon(
                   Icons.power_settings_new,
-                  color: isLog? Colors.red : Colors.lightGreen,
+                  color: isLog ? Colors.red : Colors.lightGreen,
                 ),
                 onTap: () {
                   Account.delUserInfo();
-                  !isLog ? Navigator.of(context).push(CupertinoPageRoute(builder: (BuildContext context) => LoginScreen()))
-                         : Navigator.of(context).pushAndRemoveUntil(
-                             new MaterialPageRoute(builder: (context)=> NavigationHomeScreen()),
-                             (route)=>route==null
-                           );
+                  !isLog
+                      ? Navigator.of(context).push(CupertinoPageRoute(
+                          builder: (BuildContext context) => LoginScreen()))
+                      : Navigator.of(context).pushAndRemoveUntil(
+                          new MaterialPageRoute(
+                              builder: (context) => NavigationHomeScreen()),
+                          (route) => route == null);
                 },
               ),
               SizedBox(
@@ -270,37 +307,39 @@ class _HomeDrawerState extends State<HomeDrawer> {
   }
 
   Widget description() {
-    if(isLog) return Text(
-      username,
-      style: TextStyle(
-        fontWeight: FontWeight.w600,
-        color: AppTheme.white,
-        fontSize: 22,
-      ),
-    );
-    else return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        color: Colors.white.withOpacity(0.2),
-      ),
-      child: Text(
-        "点击登录",
+    if (isLog)
+      return Text(
+        username,
         style: TextStyle(
           fontWeight: FontWeight.w600,
           color: AppTheme.white,
           fontSize: 22,
         ),
-      ),
-    );
+      );
+    else
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          color: Colors.white.withOpacity(0.2),
+        ),
+        child: Text(
+          lanIndex == 0 ? "点击登录" : 'Log In',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            color: AppTheme.white,
+            fontSize: 22,
+          ),
+        ),
+      );
   }
 
   onBottom(Widget child) => Positioned.fill(
-    child: Align(
-      alignment: Alignment.bottomCenter,
-      child: child,
-    ),
-  );
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: child,
+        ),
+      );
 
   Widget inkwell(DrawerList listData) {
     return Material(
@@ -339,9 +378,15 @@ class _HomeDrawerState extends State<HomeDrawer> {
                       ? Container(
                           width: 24,
                           height: 24,
-                          child: Image.asset(listData.imageName, color: widget.screenIndex == listData.index ? Colors.blue : AppTheme.nearlyBlack),
+                          child: Image.asset(listData.imageName,
+                              color: widget.screenIndex == listData.index
+                                  ? Colors.blue
+                                  : AppTheme.nearlyBlack),
                         )
-                      : Icon(listData.icon.icon, color: widget.screenIndex == listData.index ? Colors.blue : AppTheme.nearlyBlack),
+                      : Icon(listData.icon.icon,
+                          color: widget.screenIndex == listData.index
+                              ? Colors.blue
+                              : AppTheme.nearlyBlack),
                   const Padding(
                     padding: EdgeInsets.all(4.0),
                   ),
@@ -350,7 +395,9 @@ class _HomeDrawerState extends State<HomeDrawer> {
                     style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 16,
-                      color: widget.screenIndex == listData.index ? Colors.blue : AppTheme.nearlyBlack,
+                      color: widget.screenIndex == listData.index
+                          ? Colors.blue
+                          : AppTheme.nearlyBlack,
                     ),
                     textAlign: TextAlign.left,
                   ),
@@ -363,11 +410,17 @@ class _HomeDrawerState extends State<HomeDrawer> {
                     builder: (BuildContext context, Widget child) {
                       return Transform(
                         transform: Matrix4.translationValues(
-                            (MediaQuery.of(context).size.width * 0.75 - 64) * (1.0 - widget.iconAnimationController.value - 1.0), 0.0, 0.0),
+                            (MediaQuery.of(context).size.width * 0.75 - 64) *
+                                (1.0 -
+                                    widget.iconAnimationController.value -
+                                    1.0),
+                            0.0,
+                            0.0),
                         child: Padding(
                           padding: EdgeInsets.only(top: 8, bottom: 8),
                           child: Container(
-                            width: MediaQuery.of(context).size.width * 0.75 - 64,
+                            width:
+                                MediaQuery.of(context).size.width * 0.75 - 64,
                             height: 46,
                             decoration: BoxDecoration(
                               color: Colors.blue.withOpacity(0.2),
@@ -400,7 +453,8 @@ enum DrawerIndex {
   Finder,
   Project,
   Contact,
-  Setting
+  Setting,
+  Manage
 }
 
 class DrawerList {

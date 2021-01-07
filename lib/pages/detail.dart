@@ -1,17 +1,28 @@
+//import 'dart:html';
+
+import 'package:Hogwarts/component/custom_drawer/navigation_home_screen.dart';
 import 'package:Hogwarts/component/design_course/design_course_app_theme.dart';
 import 'package:Hogwarts/theme/hotel_app_theme.dart';
+import 'package:Hogwarts/utils/FilterStaticDataType.dart';
 import 'package:Hogwarts/utils/StorageUtil.dart';
 import 'package:flutter/material.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
+import 'package:Hogwarts/utils/data.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:Hogwarts/utils/config.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:async';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:Hogwarts/pages/comment.dart';
+import 'home.dart';
 
 // TODO 导航待完善
 class Detail extends StatefulWidget {
   final spot;
+
   const Detail({Key key, this.spot}) : super(key: key);
 
   @override
@@ -21,7 +32,22 @@ class Detail extends StatefulWidget {
 }
 
 class _ProfileState extends State<Detail> with TickerProviderStateMixin {
+
+  var sid  = 1;
+  var uid;
+  String token;
+
+  var commentNum = 0;
+  List _comment = [];
+  List userName = [];
+  List userIcon = [];
+  var noteNum = 0;
+  List _note = [];
+  String myNote;
+  bool hasClocked = false;
+
   TabController _tabController;
+  int lanIndex = GlobalSetting.globalSetting.lanIndex;
   final List<Tab> tabs = <Tab>[
     new Tab(text: "留言"),
   ];
@@ -33,10 +59,20 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
   double opacity1 = 0.0;
   double opacity2 = 0.0;
   double opacity3 = 0.0;
+  int playstate = 0;
 
   User user = User(0, '', 0, '', '', '', '', true);
+  static const _colors = <Color>[
+    Color(0xefFEE69C),
+    Color(0xefffbea8),
+    Color(0xef83d3ea),
+    Color(0xef8bedd3),
+    Color(0xeffbd5e0)
+  ];
+
   // TODO 这里是空白图片
-  String _image = 'http://freelancer-images.oss-cn-beijing.aliyuncs.com/blank.png';
+  static AudioCache player = AudioCache();
+  AudioPlayer audio;
 
   @override
   void initState() {
@@ -47,7 +83,27 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
     animation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
         parent: animationController,
         curve: Interval(0, 1.0, curve: Curves.fastOutSlowIn)));
+    setState(() {
+      tabs[0] = new Tab(text: lanIndex == 0 ? "留言" : "Notes");
+      tabs2[0] = new Tab(text: lanIndex == 0 ? "评论" : "Comments");
+    });
     setData();
+    getComment();
+    getNote();
+  }
+
+  play() async {
+    audio = await player.play('record/1.m4a');
+    setState(() {
+      playstate = 1;
+    });
+  }
+
+  pause() async {
+    audio.pause();
+    setState(() {
+      playstate = 0;
+    });
   }
 
   Future<void> setData() async {
@@ -66,9 +122,61 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
     });
   }
 
+  getUserInfo(id) async {
+    String url = "${Url.url_prefix}/getUser?id=" + id.toString();
+    final res = await http.get(url, headers: {"Accept": "application/json"});
+    final data = json.decode(res.body);
+    setState(() {
+      userName.add(data['name']);
+      userIcon.add(data['icon']);
+    });
+  }
+
+  getComment() async {
+    token = await StorageUtil.getStringItem('token');
+    int _uid = await StorageUtil.getIntItem("uid");
+    String url = "${Url.url_prefix}/getComment?sid=" + sid.toString();
+    final res = await http.get(url, headers: {"Accept": "application/json"});
+    final data = json.decode(res.body);
+    setState(() {
+      _comment = data;
+      commentNum = _comment.length;
+      for (int i = 0; i < commentNum; i++) {
+        getUserInfo(_comment[i]['uid']);
+      }
+      uid = _uid;
+    });
+  }
+
+  getNote() async {
+    String url = "${Url.url_prefix}/getNote?sid=" + sid.toString();
+    final res = await http.get(url, headers: {"Accept": "application/json"});
+    final data = json.decode(res.body);
+    setState(() {
+      _note = data;
+      noteNum = _note.length;
+    });
+  }
+
+  createNote(text) async {
+    String url = "${Url.url_prefix}/createnote?uid=" + uid.toString() + "&sid=" +sid.toString() + "&text=" + text;
+    final res = await http.post(url, headers: {
+      "content-type": "application/json",
+      "Authorization": "$token"
+    });
+  }
+
+  updateComment(){
+    setState(() {
+      getComment();
+    });
+  }
+
   @override
   void dispose() {
     animationController.dispose();
+    audio.release();
+//    audio.dispose();
     super.dispose();
   }
 
@@ -94,7 +202,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                     child: new Icon(Icons.arrow_back_ios, color: Colors.white),
                   ),
                 ),
-                title: new Text("景点详情",
+                title: new Text(lanIndex == 0 ? "景点详情" : "Details",
                     style: new TextStyle(
                         color: Colors.white, fontWeight: FontWeight.w400)),
                 backgroundColor: Colors.blue,
@@ -150,12 +258,23 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                       SizedBox(
                                         width: 10,
                                       ),
-                                      Icon(
-                                        Icons.volume_up,
+                                      IconButton(
+                                        onPressed: () {
+                                          if (playstate == 0)
+                                            play();
+                                          else
+                                            pause();
+                                        },
+                                        icon: playstate == 1
+//                                            ? Icon(Icons
+//                                                .pause_circle_filled_outlined)
+//                                            : Icon(Icons.play_circle_fill),
+                                            ? Icon(Icons.volume_up)
+                                            : Icon(Icons.volume_off),
                                         color: DesignCourseAppTheme.nearlyBlue
                                             .withOpacity(0.7),
-                                        size: 24,
-                                      )
+                                        iconSize: 24,
+                                      ),
                                     ],
                                   )),
                             ),
@@ -166,24 +285,56 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                             child: ScaleTransition(
                               alignment: Alignment.center,
                               scale: CurvedAnimation(
-                                  parent: animationController, curve: Curves.fastOutSlowIn),
+                                  parent: animationController,
+                                  curve: Curves.fastOutSlowIn),
                               child: Card(
-                                color: DesignCourseAppTheme.nearlyBlue,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(50.0)),
-                                elevation: 10.0,
-                                child: Container(
-                                  width: 60,
-                                  height: 60,
-                                  child: Center(
-                                    child: Icon(
-                                      FontAwesomeIcons.solidPaperPlane, //paperPlane,
-                                      color: DesignCourseAppTheme.nearlyWhite,
-                                      size: 28,
+                                  color: DesignCourseAppTheme.nearlyBlue,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(50.0)),
+                                  elevation: 10.0,
+                                  child: InkWell(
+                                    onTap: () {
+                                      print(spots[6]["lat"]);
+                                      print(spots[6]["lng"]);
+                                      Navigator.of(context).pushAndRemoveUntil(
+                                          new MaterialPageRoute(
+                                              builder: (context) =>
+                                                  NavigationHomeScreen(
+                                                      isNavigate: true,
+                                                      fromToLocation: FromToLocation(
+                                                          TextEditingController(
+                                                              text: spots[6]
+                                                                      ["lat"]
+                                                                  .toString()),
+                                                          TextEditingController(
+                                                              text: spots[6]
+                                                                      ["lng"]
+                                                                  .toString()),
+                                                          TextEditingController(
+                                                              text: widget
+                                                                  .spot["lat"]
+                                                                  .toString()),
+                                                          TextEditingController(
+                                                              text: widget
+                                                                  .spot["lng"]
+                                                                  .toString())))),
+                                          (route) => route == null);
+                                    },
+                                    child: Container(
+                                      width: 60,
+                                      height: 60,
+                                      child: Center(
+                                        child: Icon(
+                                          FontAwesomeIcons.solidPaperPlane,
+                                          //paperPlane,
+                                          color:
+                                              DesignCourseAppTheme.nearlyWhite,
+                                          size: 28,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              ),
+                                  )),
                             ),
                           ),
                         ])))),
@@ -217,12 +368,13 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                           child: Padding(
                             padding: const EdgeInsets.all(8),
                             child: Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Row(children: <Widget>[
-                                  getTimeBoxUI(widget.spot['count'], '打卡'),
-                                  getTimeBoxUI(widget.spot['heat'], '热度'),
+                                  getTimeBoxUI(widget.spot['count'],
+                                      lanIndex == 0 ? '打卡' : 'Count'),
+                                  getTimeBoxUI(widget.spot['heat'],
+                                      lanIndex == 0 ? '热度' : 'Heat'),
                                 ]),
                                 Container(
                                   width: 50,
@@ -300,14 +452,14 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                       children: <Widget>[
                         Padding(
                           padding: EdgeInsets.only(
-                              top: 16, left: 16, bottom: 4, right: 16),
+                              top: 16, left: 16, bottom: 0, right: 16),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               SizedBox(
                                 width: 100,
                                 child: Text(
-                                  '到此一游',
+                                  lanIndex == 0 ? '到此一游' : "Sticky",
                                   style: TextStyle(
                                       fontSize: 22,
                                       fontWeight: FontWeight.w600),
@@ -320,21 +472,18 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                 indicatorSize: TabBarIndicatorSize.tab,
                                 indicator: new BubbleTabIndicator(
                                   indicatorHeight: 25.0,
-                                  indicatorColor: Colors.blueAccent,
+                                  indicatorColor: Colors.lightBlueAccent,//blueAccent,
                                   tabBarIndicatorSize: TabBarIndicatorSize.tab,
                                 ),
                                 tabs: tabs,
                                 controller: _tabController,
                               ),
-                              SizedBox(
-                                width: 100,
-                                child: Container()
-                              )
+                              SizedBox(width: 100, child: Container())
                             ],
                           ),
                         ),
                         SizedBox(
-                          height: user.recordCanSee ? 600 : 160,
+                          height: user.recordCanSee ? 500 : 160,
                           child: TabBarView(
                             controller: _tabController,
                             children: tabs.map((Tab tab) {
@@ -343,26 +492,89 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
 //                              else
 //                                return jobList(employeeJobList, false);
                               return Padding(
-                                padding: EdgeInsets.only(top: 50),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Image(
-                                      image: AssetImage('assets/empty.png'),
-                                      height: 50,
-                                      width: 50,
-                                    ),
-                                    Text(
-                                      "暂无留言",
-                                      style: TextStyle(fontSize: 18),
-                                    ),
-                                    SizedBox(
-                                      height: 40,
-                                      child: Container(),
-                                    )
-                                  ],
-                                ),
+                                padding: EdgeInsets.only(
+                                    top: noteNum == 0 ? 50 : 10),
+                                child: noteNum == 0
+                                    ? Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Image(
+                                            image:
+                                                AssetImage('assets/empty.png'),
+                                            height: 50,
+                                            width: 50,
+                                          ),
+                                          Text(
+                                            lanIndex == 0
+                                                ? "暂无留言"
+                                                : "No Message",
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                          SizedBox(
+                                            height: 40,
+                                            child: Container(),
+                                          )
+                                        ],
+                                      )
+                                    : ListView.separated(
+                                        itemCount: noteNum,
+                                        separatorBuilder:
+                                            (BuildContext context, int index) =>
+                                                Container(
+                                                    height: 10.0,
+                                                    color: Colors.white),
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return Container(
+                                              height: 100,
+                                              width: 300,
+                                              margin: EdgeInsets.only(
+                                                left: 18.0,
+                                                right: 18.0,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: _colors[index % 5],
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(10.0)),
+                                                boxShadow: <BoxShadow>[
+                                                  BoxShadow(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.6),
+                                                    offset: const Offset(4, 8),
+                                                    blurRadius: 16,
+                                                  ),
+                                                ],
+                                              ),
+                                              child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 18.0,
+                                                          right: 18.0,
+                                                          top: 12.0,
+                                                          bottom: 12.0),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: <Widget>[
+                                                      Container(
+                                                          child: Text(
+                                                        _note[index]['text'],
+                                                        style: TextStyle(
+                                                            fontSize: 20,
+                                                            color:
+                                                                Colors.white),
+                                                      ))
+                                                    ],
+                                                  )));
+                                        },
+                                      ),
                               );
                             }).toList(),
                           ),
@@ -403,7 +615,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                               SizedBox(
                                 width: 100,
                                 child: Text(
-                                  '景点评价',
+                                  lanIndex == 0 ? '景点评价' : 'Comment',
                                   style: TextStyle(
                                       fontSize: 22,
                                       fontWeight: FontWeight.w600),
@@ -416,16 +628,13 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                 indicatorSize: TabBarIndicatorSize.tab,
                                 indicator: new BubbleTabIndicator(
                                   indicatorHeight: 25.0,
-                                  indicatorColor: Colors.blueAccent,
+                                  indicatorColor: Colors.lightBlueAccent,
                                   tabBarIndicatorSize: TabBarIndicatorSize.tab,
                                 ),
                                 tabs: tabs2,
                                 controller: _tabController,
                               ),
-                              SizedBox(
-                                  width: 100,
-                                  child: Container()
-                              )
+                              SizedBox(width: 100, child: Container())
                             ],
                           ),
                         ),
@@ -440,25 +649,132 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
 //                                return jobList(employeeJobList, false);
                               return Padding(
                                 padding: EdgeInsets.only(top: 50),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Image(
-                                      image: AssetImage('assets/empty.png'),
-                                      height: 50,
-                                      width: 50,
-                                    ),
-                                    Text(
-                                      "暂无评论",
-                                      style: TextStyle(fontSize: 18),
-                                    ),
-                                    SizedBox(
-                                      height: 40,
-                                      child: Container(),
-                                    )
-                                  ],
-                                ),
+                                child: commentNum == 0
+                                    ? Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Image(
+                                            image:
+                                                AssetImage('assets/empty.png'),
+                                            height: 50,
+                                            width: 50,
+                                          ),
+                                          Text(
+                                            lanIndex == 0
+                                                ? "暂无评论"
+                                                : 'No Comment',
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                          SizedBox(
+                                            height: 40,
+                                            child: Container(),
+                                          )
+                                        ],
+                                      )
+                                    : ListView.separated(
+                                        padding: const EdgeInsets.all(8),
+                                        itemCount: commentNum,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return Container(
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                CircleAvatar(
+                                                  radius: 18.0,
+//                                                  backgroundImage: NetworkImage('http://p.qqan.com/up/2020-9/2020941050205581.jpg'),
+                                                  backgroundImage: NetworkImage(
+                                                      userIcon[index]),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Container(
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+//                                                              'lyb',
+                                                              userName[index],
+                                                              style: TextStyle(
+                                                                color:
+                                                                    Colors.grey,
+                                                                fontSize: 17.0,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                                width: 10.0),
+                                                            Text(
+                                                              _comment[index]
+                                                                      ['grade']
+                                                                  .toString(),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .left,
+                                                              style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 17,
+//                                                         letterSpacing: 0.27,
+                                                                color:
+                                                                    DesignCourseAppTheme
+                                                                        .grey,
+                                                              ),
+                                                            ),
+                                                            Icon(
+                                                              Icons.star,
+                                                              color:
+                                                                  DesignCourseAppTheme
+                                                                      .nearlyBlue,
+                                                              size: 22,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                          margin: EdgeInsets
+                                                              .fromLTRB(
+                                                                  0, 5, 15, 5),
+                                                          child: _comment[index]['text']==null?SizedBox():Text(
+                                                            '   ' + _comment[index]['text'],
+                                                            style: TextStyle(fontSize: 18),
+                                                          )
+                                                      ),
+                                                      SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      Container(
+                                                        child: _comment[index]['images']==null?SizedBox():Wrap(
+                                                          spacing: 5,
+                                                          runSpacing: 5,
+                                                            children: Boxs(index)
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                        separatorBuilder:
+                                            (BuildContext context, int index) =>
+                                                Container(
+                                                    height: 10.0,
+                                                    color: Colors.white),
+                                      ),
                               );
                             }).toList(),
                           ),
@@ -490,13 +806,52 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                         Radius.circular(16.0),
                       ),
                       border: Border.all(
-                          color: DesignCourseAppTheme.grey
-                              .withOpacity(0.2)),
+                          color: DesignCourseAppTheme.grey.withOpacity(0.2)),
                     ),
-                    child: Icon(
-                      Icons.location_on,
-                      color: DesignCourseAppTheme.nearlyBlue,
-                      size: 28,
+                    child: IconButton(
+                      icon: Icon(Icons.location_on),
+                      color: hasClocked
+                          ? DesignCourseAppTheme.nearlyBlue
+                          : Colors.grey,
+                      iconSize: 28,
+                      onPressed: () {
+                        if(uid == null){
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                  content: Text("用户未登录"),
+                                  actions: <Widget>[
+                                    new FlatButton(
+                                      child: new Text("确定"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ]));
+                        }else{
+                          setState(() {
+                            hasClocked = !hasClocked;
+                          });
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                  content: hasClocked
+                                      ? Text(lanIndex == 0
+                                            ? "打卡成功"
+                                            : 'Successful Clock')
+                                      : Text(lanIndex == 0
+                                            ? "已取消打卡"
+                                            : 'Cancel Clock'),
+                                  actions: <Widget>[
+                                    new FlatButton(
+                                      child: new Text(lanIndex == 0 ? "确定" : 'OK'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ]));
+                        }
+                      },
                     ),
                   ),
                 ),
@@ -513,24 +868,122 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                       ),
                       boxShadow: <BoxShadow>[
                         BoxShadow(
-                            color: DesignCourseAppTheme
-                                .nearlyBlue
+                            color: DesignCourseAppTheme.nearlyBlue
                                 .withOpacity(0.5),
                             offset: const Offset(1.1, 1.1),
                             blurRadius: 10.0),
                       ],
                     ),
                     child: Center(
-                      child: Text(
-                        '留言',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
-                          letterSpacing: 0.0,
-                          color: DesignCourseAppTheme
-                              .nearlyWhite,
+                      child: TextButton(
+                        child: Text(
+                          lanIndex == 0 ? '留言' : 'Note',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                            letterSpacing: 0.0,
+                            color: DesignCourseAppTheme.nearlyWhite,
+                          ),
                         ),
+                        onPressed: () {
+                          if(uid == null) {
+                            showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                    content: Text("用户未登录"),
+                                    actions: <Widget>[
+                                      new FlatButton(
+                                        child: new Text("确定"),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ]));
+                          } else{
+                            showModalBottomSheet(
+//                              shape: RoundedRectangleBorder(
+//                                  borderRadius:
+//                                      BorderRadiusDirectional.circular(10)), //加圆角
+
+                                context: context,
+                                isScrollControlled: true,
+                                builder: (_) {
+                                  return SingleChildScrollView(
+//                                    height: 300, //定义高度
+                                    padding: EdgeInsets.only(
+                                        bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom),
+                                    child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: <Widget>[
+                                                //
+                                                const SizedBox(
+                                                  width: 30,
+                                                ),
+                                                Text(
+                                                  lanIndex == 0
+                                                      ? "留言板"
+                                                      : 'Message Board',
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                    color: DesignCourseAppTheme
+                                                        .nearlyBlack,
+                                                  ),
+                                                ),
+                                                  TextButton(
+                                                      onPressed: () => {
+                                                        createNote(myNote),
+                                                        myNote = null,
+                                                        Navigator.pop(context)
+                                                      },
+                                                      child: Text(
+                                                         lanIndex == 0
+                                                          ? "发布"
+                                                          : 'Submit',
+                                                        style: TextStyle(
+                                                            color:
+                                                            DesignCourseAppTheme
+                                                                .nearlyBlue),
+                                                      ))
+                                                ]),
+                                            Container(
+                                              padding: EdgeInsets.all(18.0),
+                                              child: TextField(
+                                                decoration: InputDecoration(
+                                                  border: OutlineInputBorder(),
+                                                  contentPadding:
+                                                  EdgeInsets.all(10.0),
+                                                 hintText: lanIndex == 0
+                                                    ? '你轻轻地来又悄悄地走，不留下点什么吗？'
+                                                    : "Don't you leave something behind?",
+                                                ),
+                                                maxLines: 8,
+                                                controller: myNote == null
+                                                    ? null
+                                                    : new TextEditingController(
+                                                    text: '$myNote'),
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    myNote = value;
+                                                  });
+                                                },
+                                              ),
+                                            ),
+                                          ]));
+                                });
+                          }
+                        },
                       ),
                     ),
                   ),
@@ -548,24 +1001,43 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                       ),
                       boxShadow: <BoxShadow>[
                         BoxShadow(
-                            color: DesignCourseAppTheme
-                                .nearlyBlue
+                            color: DesignCourseAppTheme.nearlyBlue
                                 .withOpacity(0.5),
                             offset: const Offset(1.1, 1.1),
                             blurRadius: 10.0),
                       ],
                     ),
                     child: Center(
-                      child: Text(
-                        '评论',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
-                          letterSpacing: 0.0,
-                          color: DesignCourseAppTheme
-                              .nearlyWhite,
+                      child: TextButton(
+                        child: Text(
+                          lanIndex == 0 ? '评论' : 'Comment',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                            letterSpacing: 0.0,
+                            color: DesignCourseAppTheme.nearlyWhite,
+                          ),
                         ),
+                        onPressed: () {
+                          if(uid == null) {
+                            showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                    content: Text("用户未登录"),
+                                    actions: <Widget>[
+                                      new FlatButton(
+                                        child: new Text("确定"),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ]));
+                          } else{Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CommentScreen())).then((value)=>updateComment());}
+                        },
                       ),
                     ),
                   ),
@@ -577,6 +1049,17 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
       ],
     ));
   }
+
+  List<Widget> Boxs(int i) =>
+      List.generate(_comment[i]['images'].length, (index) {
+        return Container(
+          width: MediaQuery.of(context).size.width * 0.24,
+          height: MediaQuery.of(context).size.width * 0.24,
+          alignment: Alignment.center,
+//      child: Image.network('http://p.qqan.com/up/2020-9/2020941050205581.jpg'),
+          child: Image.network(_comment[i]['images'][index]),
+        );
+      });
 
   Widget getTimeBoxUI(String text1, String txt2) {
     return Padding(

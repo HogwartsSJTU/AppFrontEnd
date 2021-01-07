@@ -1,3 +1,7 @@
+import 'package:Hogwarts/component/custom_drawer/home_drawer.dart';
+import 'package:Hogwarts/component/custom_drawer/navigation_home_screen.dart';
+import 'package:Hogwarts/utils/StorageUtil.dart';
+import 'package:Hogwarts/utils/FilterStaticDataType.dart';
 import 'package:flutter/material.dart';
 import 'package:Hogwarts/component/settings/settings_ui.dart';
 
@@ -11,48 +15,69 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   bool lockInBackground = true;
   bool notificationsEnabled = true;
+  int lanIndex = GlobalSetting.globalSetting.lanIndex;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('设置')),
+      appBar: AppBar(title: Text(lanIndex == 0 ? '设置' : 'Setting')),
       body: SettingsList(
         // backgroundColor: Colors.orange,
         sections: [
           SettingsSection(
-            title: '基本',
+            title: lanIndex == 0 ? '基本' : 'Base',
             // titleTextStyle: TextStyle(fontSize: 30),
             tiles: [
               SettingsTile(
-                title: '语言',
-                subtitle: '中文',
+                title: lanIndex == 0 ? '语言' : 'Language',
+                subtitle: lanIndex == 0 ? '中文' : 'English',
                 leading: Icon(Icons.language),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => LanguagesScreen()));
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(
+                          builder: (BuildContext context) => LanguagesScreen()))
+                      .then((value) => {
+                            this.setState(() {
+                              lanIndex = GlobalSetting.globalSetting.lanIndex;
+                            }),
+                            Navigator.of(context).pushAndRemoveUntil(
+                                new MaterialPageRoute(
+                                    builder: (context) => NavigationHomeScreen(
+                                          drawerIndex: DrawerIndex.Setting,
+                                        )),
+                                (route) => route == null)
+                          });
                 },
               ),
               SettingsTile(
-                title: '环境',
-                subtitle: '白昼',
+                title: lanIndex == 0 ? '环境' : 'Environment',
+                subtitle: lanIndex == 0 ? '白昼' : 'Day',
                 leading: Icon(Icons.cloud_queue),
                 onTap: () => print('e'),
               ),
             ],
           ),
           SettingsSection(
-            title: '账户',
+            title: lanIndex == 0 ? '账户' : 'Account',
             tiles: [
-              SettingsTile(title: '电话', leading: Icon(Icons.phone)),
-              SettingsTile(title: '邮箱', leading: Icon(Icons.email)),
-              SettingsTile(title: '退出登录', leading: Icon(Icons.exit_to_app)),
+              SettingsTile(
+                  title: lanIndex == 0 ? '电话' : 'Telephone',
+                  leading: Icon(Icons.phone)),
+              SettingsTile(
+                  title: lanIndex == 0 ? '邮箱' : 'Email',
+                  leading: Icon(Icons.email)),
+              SettingsTile(
+                  title: lanIndex == 0 ? '退出登录' : 'Logout',
+                  leading: Icon(Icons.exit_to_app)),
             ],
           ),
           SettingsSection(
-            title: '安全',
+            title: lanIndex == 0 ? '安全' : 'Security',
             tiles: [
               SettingsTile.switchTile(
-                title: '允许后台运行',
+                title: lanIndex == 0
+                    ? '允许后台运行'
+                    : 'Allow running in the background',
                 leading: Icon(Icons.phonelink_lock),
                 switchValue: lockInBackground,
                 onToggle: (bool value) {
@@ -63,18 +88,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
               ),
               SettingsTile.switchTile(
-                  title: '使用指纹',
+                  title: lanIndex == 0 ? '使用指纹' : 'Using Fingerprints',
                   leading: Icon(Icons.fingerprint),
                   onToggle: (bool value) {},
                   switchValue: false),
               SettingsTile.switchTile(
-                title: '修改密码',
+                title: lanIndex == 0 ? '修改密码' : 'Change Password',
                 leading: Icon(Icons.lock),
                 switchValue: true,
                 onToggle: (bool value) {},
               ),
               SettingsTile.switchTile(
-                title: '允许通知',
+                title: lanIndex == 0 ? '允许通知' : 'Allow Notification',
                 enabled: notificationsEnabled,
                 leading: Icon(Icons.notifications_active),
                 switchValue: true,
@@ -83,10 +108,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
           SettingsSection(
-            title: '其他',
+            title: lanIndex == 0 ? '其他' : 'Others',
             tiles: [
               SettingsTile(
-                  title: '服务项', leading: Icon(Icons.description)),
+                  title: lanIndex == 0 ? '服务项' : 'Services',
+                  leading: Icon(Icons.description)),
               SettingsTile(
                   title: 'Open source licenses',
                   leading: Icon(Icons.collections_bookmark)),
@@ -105,7 +131,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 Text(
-                  'Version: 2.4.0 (287)',
+                  lanIndex == 0 ? '版本号：2.4.0 （287）' : 'Version: 2.4.0 (287)',
                   style: TextStyle(color: Color(0xFF777777)),
                 ),
               ],

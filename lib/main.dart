@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:Hogwarts/theme/app_theme.dart';
 import 'package:Hogwarts/utils/data.dart';
+import 'package:Hogwarts/utils/StorageUtil.dart';
 import 'package:Hogwarts/component/custom_drawer/navigation_home_screen.dart';
 
 // TODO LIST
@@ -18,7 +19,8 @@ void main() async {
   await AmapService.instance.init(
     iosKey: '7a04506d15fdb7585707f7091d715ef4',     //虚假的key，iOS未配置
 //    androidKey: '55016db318a343ffbad04732acb09b06', //gdy
-    androidKey: '4be70ed29d5114f7c1a464f256008888',
+//    androidKey: '4be70ed29d5114f7c1a464f256008888', //xtc
+    androidKey: '45cffc60503f61d4b99f6f8c5da8e8d5', //sqy
     webApiKey: 'e69c6fddf6ccf8de917f5990deaa9aa2',  //虚假的key，web未配置
   );
 }
@@ -34,7 +36,7 @@ class MyApp extends StatelessWidget {
       systemNavigationBarIconBrightness: Brightness.dark,
     ));
     return MaterialApp(
-      title: 'Freelancer',
+      title: 'HogwartsMap',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
