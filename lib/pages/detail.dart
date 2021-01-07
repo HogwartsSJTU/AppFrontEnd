@@ -3,6 +3,7 @@
 import 'package:Hogwarts/component/custom_drawer/navigation_home_screen.dart';
 import 'package:Hogwarts/component/design_course/design_course_app_theme.dart';
 import 'package:Hogwarts/theme/hotel_app_theme.dart';
+import 'package:Hogwarts/utils/FilterStaticDataType.dart';
 import 'package:Hogwarts/utils/StorageUtil.dart';
 import 'package:flutter/material.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
@@ -35,6 +36,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
   String myNote;
   bool hasClocked = false;
   TabController _tabController;
+  int lanIndex = GlobalSetting.globalSetting.lanIndex;
   final List<Tab> tabs = <Tab>[
     new Tab(text: "留言"),
   ];
@@ -49,6 +51,13 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
   int playstate = 0;
 
   User user = User(0, '', 0, '', '', '', '', true);
+  static const _colors = <Color>[
+    Color(0xefFEE69C),
+    Color(0xefffbea8),
+    Color(0xef83d3ea),
+    Color(0xef8bedd3),
+    Color(0xeffbd5e0)
+  ];
 
   // TODO 这里是空白图片
   static AudioCache player = AudioCache();
@@ -63,6 +72,10 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
     animation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
         parent: animationController,
         curve: Interval(0, 1.0, curve: Curves.fastOutSlowIn)));
+    setState(() {
+      tabs[0]=new Tab(text:lanIndex == 0 ?"留言":"Notes");
+      tabs2[0]=new Tab(text:lanIndex == 0 ?"评论":"Comments");
+    });
     setData();
   }
 
@@ -125,7 +138,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                     child: new Icon(Icons.arrow_back_ios, color: Colors.white),
                   ),
                 ),
-                title: new Text("景点详情",
+                title: new Text(lanIndex == 0 ?"景点详情":"Details",
                     style: new TextStyle(
                         color: Colors.white, fontWeight: FontWeight.w400)),
                 backgroundColor: Colors.blue,
@@ -295,8 +308,8 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Row(children: <Widget>[
-                                  getTimeBoxUI(widget.spot['count'], '打卡'),
-                                  getTimeBoxUI(widget.spot['heat'], '热度'),
+                                  getTimeBoxUI(widget.spot['count'], lanIndex == 0 ?'打卡':'Count'),
+                                  getTimeBoxUI(widget.spot['heat'], lanIndex == 0 ?'热度':'Heat'),
                                 ]),
                                 Container(
                                   width: 50,
@@ -381,7 +394,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                               SizedBox(
                                 width: 100,
                                 child: Text(
-                                  '到此一游',
+                                  lanIndex == 0 ?'到此一游':"Sticky",
                                   style: TextStyle(
                                       fontSize: 22,
                                       fontWeight: FontWeight.w600),
@@ -400,7 +413,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                 tabs: tabs,
                                 controller: _tabController,
                               ),
-//                              SizedBox(width: 100, child: Container())
+                              SizedBox(width: 100, child: Container())
                             ],
                           ),
                         ),
@@ -429,7 +442,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                             width: 50,
                                           ),
                                           Text(
-                                            "暂无留言",
+                                            lanIndex == 0 ?"暂无留言":"No Message",
                                             style: TextStyle(fontSize: 18),
                                           ),
                                           SizedBox(
@@ -455,18 +468,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                                 right: 18.0,
                                               ),
                                               decoration: BoxDecoration(
-                                                color: index % 5 == 0
-                                                    ? Color(0xefFEE69C)
-                                                    : (index % 5 == 1
-                                                        ? Color(0xefffbea8)
-                                                        : (index % 5 == 2
-                                                            ? Color(0xef83d3ea)
-                                                            : (index % 5 == 3
-                                                                ? Color(
-                                                                    0xef8bedd3)
-                                                                : Color(
-                                                                    0xeffbd5e0)))),
-//                                              color: Color.fromRGBO(noteColors[0], noteColors[1], noteColors[2], 1),
+                                                color: _colors[index%5],
                                                 borderRadius:
                                                     const BorderRadius.all(
                                                         Radius.circular(10.0)),
@@ -546,7 +548,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                               SizedBox(
                                 width: 100,
                                 child: Text(
-                                  '景点评价',
+                                  lanIndex == 0 ?'景点评价':'Comments',
                                   style: TextStyle(
                                       fontSize: 22,
                                       fontWeight: FontWeight.w600),
@@ -593,7 +595,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                             width: 50,
                                           ),
                                           Text(
-                                            "暂无评论",
+                                            lanIndex == 0 ? "暂无评论":'No Comment',
                                             style: TextStyle(fontSize: 18),
                                           ),
                                           SizedBox(
@@ -748,11 +750,11 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                             context: context,
                             builder: (context) => AlertDialog(
                                     content: hasClocked
-                                        ? Text("打卡成功")
-                                        : Text("已取消打卡"),
+                                        ? Text(lanIndex == 0 ?"打卡成功":'Successful Clock')
+                                        : Text(lanIndex == 0 ?"已取消打卡":'Cancel Clock'),
                                     actions: <Widget>[
                                       new FlatButton(
-                                        child: new Text("确定"),
+                                        child: new Text(lanIndex == 0 ?"确定":'OK'),
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                         },
@@ -784,7 +786,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                     child: Center(
                       child: TextButton(
                         child: Text(
-                          '留言',
+                          lanIndex == 0 ?'留言':'Note',
                           textAlign: TextAlign.left,
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
@@ -825,7 +827,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                                   width: 30,
                                                 ),
                                                 Text(
-                                                  "留言板",
+                                                  lanIndex == 0 ?"留言板":'Message Board',
                                                   style: TextStyle(
                                                     fontSize: 18,
                                                     color: DesignCourseAppTheme
@@ -839,7 +841,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                                           Navigator.pop(context)
                                                         },
                                                     child: Text(
-                                                      "发布",
+                                                      lanIndex == 0 ?"发布":'Submit',
                                                       style: TextStyle(
                                                           color:
                                                               DesignCourseAppTheme
@@ -853,7 +855,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                                 border: OutlineInputBorder(),
                                                 contentPadding:
                                                     EdgeInsets.all(10.0),
-                                                hintText: '你轻轻地来又悄悄地走，不留下点什么吗？',
+                                                hintText: lanIndex == 0 ?'你轻轻地来又悄悄地走，不留下点什么吗？':"Don't you leave something behind?",
                                               ),
                                               maxLines: 8,
                                               controller: myNote == null
@@ -896,7 +898,7 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                     child: Center(
                       child: TextButton(
                         child: Text(
-                          '评论',
+                          lanIndex == 0 ?'评论':'Comment',
                           textAlign: TextAlign.left,
                           style: TextStyle(
                             fontWeight: FontWeight.w600,

@@ -1,3 +1,4 @@
+import 'package:Hogwarts/utils/FilterStaticDataType.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController passwordControl = TextEditingController();
 
   String get password => passwordControl.text;
-
+  int lanIndex = GlobalSetting.globalSetting.lanIndex;
   @override
   void initState() {
     super.initState();
@@ -99,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
       });
       var response = json.decode(res.body);
       if(response['message'] == "登录失败,密码错误"){
-        _showToast("用户名或密码错误");
+        _showToast( lanIndex == 0 ?"用户名或密码错误":'Wrong username or password');
         setState(() {
           phoneTextColor = Color(0xDFB0C4DE);
           passwordControl.text = "";
@@ -107,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
       if(response['message'] == "登录失败,用户不存在"){
-        _showToast("该账户还未注册");
+        _showToast(lanIndex == 0 ?"该账户还未注册":'The account is not yet registered');
         setState(() {
           telePhoneControl.text = "";
           passwordControl.text = "";
@@ -115,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
       if(response['user']['role'] == -1){
-        _showToast("该账户已被禁用");
+        _showToast(lanIndex == 0 ?"该账户已被禁用":'The account has been disabled');
         setState(() {
           phoneTextColor = Color(0xDFB0C4DE);
           passTextColor = Color(0xDFB0C4DE);
@@ -123,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
       print("登录成功");
-      _showToastSuccess("欢迎回来 " + response["user"]["name"].toString());
+      _showToastSuccess(lanIndex == 0 ?"欢迎回来 ":"Welcome back" + response["user"]["name"].toString());
       Account.saveUserInfo(response["user"]);
       Account.saveToken(response["token"]);
     } catch (e) {
@@ -141,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          '手机',
+          lanIndex == 0 ?'手机':'Telephone',
           style: kLabelStyle,
         ),
         SizedBox(height: 10.0),
@@ -174,7 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Icons.phone,
                 color: Colors.white,
               ),
-              hintText: '输入手机号',
+              hintText: lanIndex == 0 ?'输入手机号':'Enter your Phone number',
               hintStyle: kHintTextStyle,
             ),
           ),
@@ -188,7 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          '密码',
+          lanIndex == 0 ?'密码':'Password',
           style: kLabelStyle,
         ),
         SizedBox(height: 10.0),
@@ -221,7 +222,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Icons.lock,
                 color: Colors.white,
               ),
-              hintText: '请输入密码',
+              hintText: lanIndex == 0 ?'请输入密码':'Enter your Password',
               hintStyle: kHintTextStyle,
             ),
           ),
@@ -237,7 +238,7 @@ class _LoginScreenState extends State<LoginScreen> {
 //        onPressed: () => print('Forgot Password Button Pressed'),
         padding: EdgeInsets.only(right: 0.0),
         child: Text(
-          '忘记密码?',
+          lanIndex == 0 ?'忘记密码?':'Forget Password?',
           style: kLabelStyle,
         ),
       ),
@@ -263,7 +264,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           Text(
-            '记住我',
+            lanIndex == 0 ?'记住我':'Remember Me',
             style: kLabelStyle,
           ),
         ],
@@ -289,7 +290,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         color: Colors.white,
         child: Text(
-          '登录',
+          lanIndex == 0 ?'登录':'Log In',
           style: TextStyle(
             color: Color(0xFF527DAA),
             letterSpacing: 1.5,
@@ -306,7 +307,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Column(
       children: <Widget>[
         Text(
-          '- OR -',
+          lanIndex == 0 ?'- 或 -':'- OR -',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w400,
@@ -378,7 +379,7 @@ class _LoginScreenState extends State<LoginScreen> {
         text: TextSpan(
           children: [
             TextSpan(
-              text: '没有账号? ',
+              text: lanIndex == 0 ?'没有账号? ':'Don\'t have an Account?',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18.0,
@@ -386,7 +387,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             TextSpan(
-              text: '注册',
+              text: lanIndex == 0 ?'注册':'Sign Up',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18.0,
@@ -437,7 +438,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        '登录',
+                        lanIndex == 0 ?'登录':'Sign In',
                         key: Key('signin'),
                         style: TextStyle(
                           color: Colors.white,

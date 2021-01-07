@@ -1,3 +1,4 @@
+import 'package:Hogwarts/utils/FilterStaticDataType.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,7 +21,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Color phoneTextColor = Color(0xFF6CA8F1);
   Color disTextColor = Color(0xFF6CA8F1);
   Color nameTextColor = Color(0xFF6CA8F1);
-
+  int lanIndex = GlobalSetting.globalSetting.lanIndex;
   TextEditingController emailAddressControl = TextEditingController();
 
   String get emailAddress => emailAddressControl.text;
@@ -120,7 +121,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           SizedBox(
             width: 12.0,
           ),
-          Text("注册成功 请重新登录"),
+          Text(lanIndex == 0 ?"注册成功 请重新登录":'Registration successful, please login again'),
         ],
       ),
     );
@@ -136,7 +137,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          '邮箱',
+          lanIndex == 0 ?'邮箱':'Email',
           style: kLabelStyle,
         ),
         SizedBox(height: 10.0),
@@ -168,7 +169,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Icons.email,
                 color: Colors.white,
               ),
-              hintText: '输入邮箱',
+              hintText: lanIndex == 0 ?'输入邮箱':'Enter your Email',
               hintStyle: kHintTextStyle,
             ),
           ),
@@ -182,7 +183,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          '昵称',
+          lanIndex == 0 ?'昵称':'Name',
           style: kLabelStyle,
         ),
         SizedBox(height: 10.0),
@@ -214,7 +215,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Icons.perm_identity,
                 color: Colors.white,
               ),
-              hintText: '输入昵称',
+              hintText: lanIndex == 0 ?'输入昵称':'Enter your Name',
               hintStyle: kHintTextStyle,
             ),
           ),
@@ -228,7 +229,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          '地址',
+          lanIndex == 0 ?'地址':'Address',
           style: kLabelStyle,
         ),
         SizedBox(height: 10.0),
@@ -260,7 +261,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Icons.add_location,
                 color: Colors.white,
               ),
-              hintText: '输入地址',
+              hintText: lanIndex == 0 ?'输入地址':'Enter your Address',
               hintStyle: kHintTextStyle,
             ),
           ),
@@ -274,7 +275,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          '密码',
+          lanIndex == 0 ?'密码':'Password',
           style: kLabelStyle,
         ),
         SizedBox(height: 10.0),
@@ -306,7 +307,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Icons.lock,
                 color: Colors.white,
               ),
-              hintText: '输入密码',
+              hintText: lanIndex == 0 ?'输入密码':'Enter your Password',
               hintStyle: kHintTextStyle,
             ),
           ),
@@ -320,7 +321,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          '手机号',
+          lanIndex == 0 ?'手机号':'Telephone',
           style: kLabelStyle,
         ),
         SizedBox(height: 10.0),
@@ -351,7 +352,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Icons.phone,
                 color: Colors.white,
               ),
-              hintText: '输入手机号',
+              hintText: lanIndex == 0 ?'输入手机号':'Enter your Phone number',
               hintStyle: kHintTextStyle,
             ),
           ),
@@ -375,7 +376,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
         color: Colors.white,
         child: Text(
-          '注册',
+          lanIndex == 0 ?'注册':'Create Account',
           style: TextStyle(
             color: Color(0xFF527DAA),
             letterSpacing: 1.5,
@@ -398,7 +399,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         text: TextSpan(
           children: [
             TextSpan(
-              text: '已有账户? ',
+              text: lanIndex == 0 ?'已有账户? ':'Already have an Account?',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18.0,
@@ -406,7 +407,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
             ),
             TextSpan(
-              text: '登录',
+              text: lanIndex == 0 ?'登录':'Sign In',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18.0,
@@ -457,7 +458,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        '注册',
+                        lanIndex == 0 ?'注册':'Create Account',
                         style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'OpenSans',
