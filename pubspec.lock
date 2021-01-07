@@ -71,6 +71,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.13.7"
+  badges:
+    dependency: "direct main"
+    description:
+      name: badges
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.6"
   boolean_selector:
     dependency: transitive
     description:
@@ -148,13 +155,20 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.0"
+  date_format:
+    dependency: "direct main"
+    description:
+      name: date_format
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.9"
   decorated_flutter:
     dependency: transitive
     description:
       name: decorated_flutter
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.18.1+1"
+    version: "0.18.1"
   demo_widgets:
     dependency: "direct main"
     description:
@@ -163,12 +177,12 @@ packages:
     source: hosted
     version: "0.2.1"
   dio:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: dio
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.0.9"
+    version: "3.0.10"
   encrypt:
     dependency: transitive
     description:
@@ -630,6 +644,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.2.19-nullsafety.2"
+  toggle_switch:
+    dependency: "direct main"
+    description:
+      name: toggle_switch
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.8"
   typed_data:
     dependency: transitive
     description:
@@ -637,6 +658,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.3.0-nullsafety.3"
+  unicorndial:
+    dependency: "direct main"
+    description:
+      name: unicorndial
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.5"
   url_launcher:
     dependency: transitive
     description:

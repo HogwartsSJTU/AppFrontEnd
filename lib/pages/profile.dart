@@ -1,4 +1,5 @@
 import 'package:Hogwarts/component/UserInfoEditModal.dart';
+import 'package:Hogwarts/component/friendApplyModal.dart';
 import 'package:Hogwarts/theme/hotel_app_theme.dart';
 import 'package:Hogwarts/utils/FilterStaticDataType.dart';
 import 'package:Hogwarts/utils/StorageUtil.dart';
@@ -9,6 +10,7 @@ import 'package:Hogwarts/utils/config.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
+import 'package:badges/badges.dart';
 
 
 class Profile extends StatefulWidget{
@@ -32,6 +34,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
   FlutterToast flutterToast;
 
   User user = User(0,'',0,'','','','',true);
+  List<int> friendApply = [];
 //  List<Job> employerJobList = [];
 //  List<Job> employeeJobList = [];
   // TODO 这里是空白图片
@@ -70,127 +73,25 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
     String token = await StorageUtil.getStringItem('token');
 
     print(token);
-    final res = await http.get(url, headers: {"Accept": "application/json","Authorization": "$token"});
-    final data = json.decode(res.body);
-    print(data);
+    final res = await http.get(url, headers: {"Authorization": "$token"});
 
+//    final data = json.decode(res.body); //中文乱码
+    var data = jsonDecode(Utf8Decoder().convert(res.bodyBytes));
+    print(data);
+    List<int> apply = [];
+    for(int j = 0; j < data['apply'].length; ++j){
+      apply.add(data['apply'][j]);
+    }
+    print(apply);
     u = new User(data['id'], data['name'], data['age'], data['gender'], data['address'], data['phone'], data['description'], (data['isShow'] == 0)? false : true);
     setState(() {
       user = u;
+      friendApply = apply;
     });
   }
 
-//  getEmployerJobs() async {
-//    List<Job> jobs = [];
-//    var response = [];
-//    String url = '${Url.url_prefix}/getEmployerJob?userId=' + widget.userId.toString();
-//    print("我的信息页获得雇主项目  " + widget.userId.toString());
-//    String token = await StorageUtil.getStringItem('token');
-//    final res = await http.get(url, headers: {"Accept": "application/json","Authorization": "$token"});
-//    final data = json.decode(res.body);
-//    response = data;
-//    for(int i = 0; i < response.length; ++i){
-//      if(response[i]['state'] == 2){
-//        List<String> skills = [];
-//        for(int j = 0; j < response[i]['skills'].length; ++j){
-//          skills.add(response[i]['skills'][j].toString());
-//        }
-//        jobs.add(Job(response[i]['id'], response[i]['title'], response[i]['description'], skills, response[i]['employeeRate'], response[i]['employerRate'], response[i]['finishTime']));
-//      }
-//    }
-//    setState(() {
-//      employerJobList = jobs;
-//    });
-//  }
-//
-//  getEmployeeJobs() async {
-//    List<Job> jobs = [];
-//    var response = [];
-//    String url = '${Url.url_prefix}/getEmployeeJob?userId=' + widget.userId.toString();
-//    String token = await StorageUtil.getStringItem('token');
-//    final res = await http.get(url, headers: {"Accept": "application/json","Authorization": "$token"});
-//    final data = json.decode(res.body);
-//    response = data;
-//    for(int i = 0; i < response.length; ++i){
-//      if(response[i]['state'] == 2){
-//        List<String> skills = [];
-//        for(int j = 0; j < response[i]['skills'].length; ++j){
-//          skills.add(response[i]['skills'][j].toString());
-//        }
-//        jobs.add(Job(response[i]['id'], response[i]['title'], response[i]['description'], skills, response[i]['employeeRate'], response[i]['employerRate'], response[i]['finishTime']));
-//      }
-//    }
-//    setState(() {
-//      employeeJobList = jobs;
-//    });
-//  }
-//
-//  Widget jobList(List<Job> jobList, bool isEmployer){
-//    if(!user.recordCanSee){
-//      return Center(
-//        child: Column(
-//          mainAxisSize: MainAxisSize.min,
-//          children: [
-//            Icon(Icons.visibility_off, size: 50,),
-//            Text("已设置查阅权限", style: TextStyle(fontSize: 18),),
-//            SizedBox(
-//              height: 40,
-//              child: Container(),
-//            )
-//          ],
-//        ),
-//      );
-//    }
-//    else if(jobList.length == 0){
-//      return Padding(
-//        padding: EdgeInsets.only(top: 50),
-//        child: Column(
-//          mainAxisSize: MainAxisSize.min,
-//          crossAxisAlignment: CrossAxisAlignment.center,
-//          children: [
-//            Image(
-//              image: AssetImage('assets/empty.png'),
-//              height: 50,
-//              width: 50,
-//            ),
-//            Text("暂无完成记录", style: TextStyle(fontSize: 18),),
-//            SizedBox(
-//              height: 40,
-//              child: Container(),
-//            )
-//          ],
-//        ),
-//      );
-//    }
-//    else return ListView.builder(
-//        itemCount: jobList.length,
-//        padding: const EdgeInsets.only(top: 8),
-//        scrollDirection: Axis.vertical,
-//        itemBuilder: (BuildContext context, int index) {
-//          final int count =
-//          jobList.length > 10 ? 10 : jobList.length;
-//          final Animation<double> animation =
-//          Tween<double>(begin: 0.0, end: 1.0).animate(
-//              CurvedAnimation(
-//                  parent: animationController,
-//                  curve: Interval(
-//                      (1 / count) * index, 1.0,
-//                      curve: Curves.fastOutSlowIn)));
-//          animationController.forward();
-//          return PersonRateJobItem(
-//            callback: () {Navigator.push(context, MaterialPageRoute(builder: (context) => ProjDetails(jobList[index].projectId)));},
-//            jobData: jobList[index],
-//            isEmployer: isEmployer,
-//            animation: animation,
-//            animationController: animationController,
-//          );
-//        },
-//      );
-//  }
-
   @override
   Widget build(BuildContext context) {
-
     return new Scaffold(
         body: CustomScrollView(
           slivers: <Widget>[
@@ -215,10 +116,34 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
                     )
                 ),
                 actions: <Widget>[
-                  new IconButton(
-                      icon: new Icon(Icons.mail),
-                      color: Colors.white,
-                      onPressed: () {}
+                  friendApply.length > 0 ?
+                  InkWell(
+                    onTap: (){showApplyDialog(context: context);},
+                    child: SizedBox(
+                      width: 50,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Badge(
+                            badgeContent: Text(friendApply.length.toString()),
+//                            position: BadgePosition.bottomEnd(bottom: 10.0, end: 10.0),
+                            child: Icon(Icons.mail, color: Colors.white,),
+                          ),
+                          Expanded(child: Container())
+                        ],
+                      ),
+                    )
+                  )
+                      :
+                  SizedBox(
+                    width: 50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.mail, color: Colors.white,),
+                        Expanded(child: Container())
+                      ],
+                    ),
                   )
                 ],
                 backgroundColor: Colors.blue,
@@ -526,6 +451,16 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
     );
   }
 
+  void showApplyDialog({BuildContext context}) {
+    showDialog<dynamic>(
+      context: context,
+      builder: (BuildContext context) => ApplyModal(
+        apply: friendApply,
+        onCancelClick: () {},
+      ),
+    );
+  }
+
   //TODO 资料更新未传到后端保存
   void showDemoDialog({BuildContext context}) {
     showDialog<dynamic>(
@@ -588,46 +523,6 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
     );
   }
 
-//  saveSkills(skills) async {
-//    try {
-//      String url = "${Url.url_prefix}/updateSkills?userId=" + user.userId.toString();
-//      String token = await StorageUtil.getStringItem('token');
-//      var res = await http.post(Uri.encodeFull(url),
-//          headers: {"content-type": "application/json","Authorization": "$token"},
-//          body:  json.encode(skills));
-//      var response = json.decode(res.body);
-//      if (response != null) {
-//        print("update skills success");
-//      }
-//    } catch (e) {
-//      print(e);
-//    }
-//  }
-//
-//  _showSimpleDialog() {
-//    onSkillChange(var skills) {
-//      setState(() {
-//        user.skills = skills;
-//      });
-//      saveSkills(skills);
-//      Navigator.pop(context);
-//      _showToast();
-//    }
-//
-//    showDialog(
-//        barrierDismissible: false,
-//        context: context,
-//        builder: (context) => SimpleDialog(title: Text('编辑您的专业技能'),
-//            // 这里传入一个选择器列表即可
-//            children: [
-//              SkillDialog(
-//                skillChoose: user.skills,
-//                onSkillChanged: onSkillChange,
-//              ),
-//            ]
-//        )
-//    );
-//  }
 }
 
 class User{
@@ -639,7 +534,7 @@ class User{
       this.address,
       this.phone,
       this.description,
-      this.recordCanSee
+      this.recordCanSee,
       );
 
   final int userId;

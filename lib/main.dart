@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:Hogwarts/theme/app_theme.dart';
 import 'package:Hogwarts/utils/data.dart';
-import 'package:Hogwarts/component/utilities/StorageUtil.dart';
+import 'package:Hogwarts/utils/StorageUtil.dart';
 import 'package:Hogwarts/component/custom_drawer/navigation_home_screen.dart';
 
 // TODO LIST

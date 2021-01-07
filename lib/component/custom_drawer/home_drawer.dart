@@ -94,6 +94,11 @@ class _HomeDrawerState extends State<HomeDrawer> {
           labelName: lanIndex == 0 ? '设置' : 'Setting',
           icon: Icon(FontAwesomeIcons.chartBar),
         ),
+        DrawerList(
+          index: DrawerIndex.Manage,
+          labelName: '运营管理',
+          icon: Icon(FontAwesomeIcons.chartBar),
+        ),
       ];
     } else
       drawerList = <DrawerList>[
@@ -443,7 +448,14 @@ class _HomeDrawerState extends State<HomeDrawer> {
   }
 }
 
-enum DrawerIndex { HOME, Finder, Project, Contact, Setting }
+enum DrawerIndex {
+  HOME,
+  Finder,
+  Project,
+  Contact,
+  Setting,
+  Manage
+}
 
 class DrawerList {
   DrawerList({

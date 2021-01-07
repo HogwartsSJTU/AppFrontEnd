@@ -28,6 +28,10 @@ PODS:
     - AMapFoundation-NO-IDFA (~> 1.6.4)
   - AMapSearch-NO-IDFA (7.3.0):
     - AMapFoundation-NO-IDFA (~> 1.6.3)
+  - audioplayer (0.0.1):
+    - Flutter
+  - audioplayers (0.0.1):
+    - Flutter
   - core_location_fluttify (0.0.1):
     - Flutter
     - foundation_fluttify
@@ -36,6 +40,8 @@ PODS:
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
   - foundation_fluttify (0.0.1):
+    - Flutter
+  - image_picker (0.0.1):
     - Flutter
   - path_provider (0.0.1):
     - Flutter
@@ -56,9 +62,12 @@ DEPENDENCIES:
   - amap_location_fluttify (from `.symlinks/plugins/amap_location_fluttify/ios`)
   - amap_map_fluttify (from `.symlinks/plugins/amap_map_fluttify/ios`)
   - amap_search_fluttify (from `.symlinks/plugins/amap_search_fluttify/ios`)
+  - audioplayer (from `.symlinks/plugins/audioplayer/ios`)
+  - audioplayers (from `.symlinks/plugins/audioplayers/ios`)
   - core_location_fluttify (from `.symlinks/plugins/core_location_fluttify/ios`)
   - Flutter (from `Flutter`)
   - foundation_fluttify (from `.symlinks/plugins/foundation_fluttify/ios`)
+  - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - sensors (from `.symlinks/plugins/sensors/ios`)
@@ -83,12 +92,18 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/amap_map_fluttify/ios"
   amap_search_fluttify:
     :path: ".symlinks/plugins/amap_search_fluttify/ios"
+  audioplayer:
+    :path: ".symlinks/plugins/audioplayer/ios"
+  audioplayers:
+    :path: ".symlinks/plugins/audioplayers/ios"
   core_location_fluttify:
     :path: ".symlinks/plugins/core_location_fluttify/ios"
   Flutter:
     :path: Flutter
   foundation_fluttify:
     :path: ".symlinks/plugins/foundation_fluttify/ios"
+  image_picker:
+    :path: ".symlinks/plugins/image_picker/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
   permission_handler:
@@ -111,10 +126,13 @@ SPEC CHECKSUMS:
   AMapFoundation-NO-IDFA: 68a24362b110b8e0a3677605d0fd36bdf521f2bb
   AMapLocation-NO-IDFA: 2a3edfee336b38481b892e1ecc85df0f6b365851
   AMapSearch-NO-IDFA: 85555dc9ba312949d39a259baa4ef4e0619fa944
+  audioplayer: 0584f31a697e4b0bbad405ae7903d7a93585e784
+  audioplayers: 84f968cea3f2deab00ec4f8ff53358b3c0b3992c
   core_location_fluttify: 9466a411ea7d22c6349c7e6a767ae4623f01eb1d
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   foundation_fluttify: 0c45145e3fad1fb99188e4979daed5b24cd9b278
+  image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   permission_handler: eac8e15b4a1a3fba55b761d19f3f4e6b005d15b6
   sensors: 84eb7a30e47a649e4172b71d6e81be614c280336
