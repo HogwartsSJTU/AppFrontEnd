@@ -32,6 +32,8 @@ class Detail extends StatefulWidget {
 class _ProfileState extends State<Detail> with TickerProviderStateMixin {
   final commentNum = 5;
   final noteNum = 5;
+  String myNote;
+  bool hasClocked = false;
   TabController _tabController;
   final List<Tab> tabs = <Tab>[
     new Tab(text: "留言"),
@@ -412,7 +414,8 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
 //                              else
 //                                return jobList(employeeJobList, false);
                               return Padding(
-                                padding: EdgeInsets.only(top: noteNum==0?50:10),
+                                padding: EdgeInsets.only(
+                                    top: noteNum == 0 ? 50 : 10),
                                 child: noteNum == 0
                                     ? Column(
                                         mainAxisSize: MainAxisSize.min,
@@ -448,10 +451,21 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                               height: 100,
                                               width: 300,
                                               margin: EdgeInsets.only(
-                                                  left: 18.0,
-                                                  right: 18.0,),
+                                                left: 18.0,
+                                                right: 18.0,
+                                              ),
                                               decoration: BoxDecoration(
-                                                color:index%5==0? Color(0xefFEE69C):(index%5==1?Color(0xefffbea8):(index%5==2?Color(0xef83d3ea):(index%5==3?Color(0xef8bedd3):Color(0xeffbd5e0)))),
+                                                color: index % 5 == 0
+                                                    ? Color(0xefFEE69C)
+                                                    : (index % 5 == 1
+                                                        ? Color(0xefffbea8)
+                                                        : (index % 5 == 2
+                                                            ? Color(0xef83d3ea)
+                                                            : (index % 5 == 3
+                                                                ? Color(
+                                                                    0xef8bedd3)
+                                                                : Color(
+                                                                    0xeffbd5e0)))),
 //                                              color: Color.fromRGBO(noteColors[0], noteColors[1], noteColors[2], 1),
                                                 borderRadius:
                                                     const BorderRadius.all(
@@ -483,7 +497,10 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                                       Container(
                                                           child: Text(
                                                         '踏破铁鞋无觅处',
-                                                            style: TextStyle(fontSize:20,color: Colors.white),
+                                                        style: TextStyle(
+                                                            fontSize: 20,
+                                                            color:
+                                                                Colors.white),
                                                       ))
                                                     ],
                                                   )));
@@ -717,10 +734,31 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                       border: Border.all(
                           color: DesignCourseAppTheme.grey.withOpacity(0.2)),
                     ),
-                    child: Icon(
-                      Icons.location_on,
-                      color: DesignCourseAppTheme.nearlyBlue,
-                      size: 28,
+                    child: IconButton(
+                      icon: Icon(Icons.location_on),
+                      color: hasClocked
+                          ? DesignCourseAppTheme.nearlyBlue
+                          : Colors.grey,
+                      iconSize: 28,
+                      onPressed: () => {
+                        setState(() {
+                          hasClocked = !hasClocked;
+                        }),
+                        showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                    content: hasClocked
+                                        ? Text("打卡成功")
+                                        : Text("已取消打卡"),
+                                    actions: <Widget>[
+                                      new FlatButton(
+                                        child: new Text("确定"),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ]))
+                      },
                     ),
                   ),
                 ),
@@ -796,7 +834,10 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
 //                                                    textAlign: TextAlign.center,
                                                 ),
                                                 TextButton(
-                                                    onPressed: ()=>{Navigator.pop(context)},
+                                                    onPressed: () => {
+                                                          myNote = null,
+                                                          Navigator.pop(context)
+                                                        },
                                                     child: Text(
                                                       "发布",
                                                       style: TextStyle(
@@ -815,6 +856,15 @@ class _ProfileState extends State<Detail> with TickerProviderStateMixin {
                                                 hintText: '你轻轻地来又悄悄地走，不留下点什么吗？',
                                               ),
                                               maxLines: 8,
+                                              controller: myNote == null
+                                                  ? null
+                                                  : new TextEditingController(
+                                                      text: '$myNote'),
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  myNote = value;
+                                                });
+                                              },
                                             ),
                                           ),
                                         ]));
