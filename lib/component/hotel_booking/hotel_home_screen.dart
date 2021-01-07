@@ -6,7 +6,7 @@ import 'package:Hogwarts/component/design_course/home_design_course.dart';
 import 'package:Hogwarts/pages/detail.dart';
 import 'package:Hogwarts/utils/FilterStaticDataType.dart';
 import 'package:Hogwarts/utils/data.dart';
-
+import 'dart:convert';
 import 'calendar_popup_view.dart';
 import 'hotel_list_view.dart';
 import 'model/hotel_list_data.dart';
@@ -15,6 +15,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'filters_screen.dart';
 import 'package:Hogwarts/theme/hotel_app_theme.dart';
+import 'package:Hogwarts/utils/config.dart';
+import 'package:Hogwarts/utils/StorageUtil.dart';
+import 'package:http/http.dart' as http;
 
 class HotelHomeScreen extends StatefulWidget {
   @override
@@ -24,22 +27,51 @@ class HotelHomeScreen extends StatefulWidget {
 class _HotelHomeScreenState extends State<HotelHomeScreen>
     with TickerProviderStateMixin {
   AnimationController animationController;
-  List<HotelListData> hotelList = HotelListData.hotelList;
+//  List<HotelListData> hotelList = HotelListData.hotelList;
+  List<HotelListData> hotelList = [];
   final ScrollController _scrollController = ScrollController();
   int lanIndex = GlobalSetting.globalSetting.lanIndex;
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now().add(const Duration(days: 5));
+
+  List scenicSpots = [];
+  int spotsNum = 0;
 
   @override
   void initState() {
     animationController = AnimationController(
         duration: const Duration(milliseconds: 1000), vsync: this);
     super.initState();
+    getScenicSpots();
   }
 
   Future<bool> getData() async {
     await Future<dynamic>.delayed(const Duration(milliseconds: 200));
     return true;
+  }
+
+  getScenicSpots() async {
+    String url = "${Url.url_prefix}/getAll";
+    final res = await http.get(url, headers: {"Accept": "application/json"});
+    final data = jsonDecode(Utf8Decoder().convert(res.bodyBytes));
+    setState(() {
+      scenicSpots = data;
+      spotsNum = scenicSpots.length;
+    });
+    for (int i = 0; i < spotsNum; i++) {
+      HotelListData hotelData = HotelListData(
+        imagePath: scenicSpots[i]['image'],
+        titleTxt: scenicSpots[i]['name'],
+        subTxt: '上海交通大学, 闵行区',
+        dist: 2.0,
+        reviews: 80,
+        rating: scenicSpots[i]['rate'],
+        perNight: 180,
+      );
+      setState(() {
+        hotelList.add(hotelData);
+      });
+    }
   }
 
   @override
@@ -131,7 +163,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              Detail(spot: spots[index])));
+                                              Detail(spot: scenicSpots[index])));
                                 },
                                 hotelData: hotelList[index],
                                 animation: animation,
@@ -454,7 +486,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      lanIndex == 0 ? '找到5个结果' : '5 POI found',
+                      lanIndex == 0 ? '找到$spotsNum个结果' : '$spotsNum POI found',
                       style: TextStyle(
                         fontWeight: FontWeight.w100,
                         fontSize: 16,
