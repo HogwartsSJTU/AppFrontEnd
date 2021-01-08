@@ -1,14 +1,19 @@
 import 'dart:async';
-
-import 'package:Hogwarts/theme/hotel_app_theme.dart';
-import 'package:Hogwarts/utils/MyFloatButton.dart';
+import 'dart:convert';
+import 'package:Hogwarts/component/map_control/amap_controller.x.dart';
+import 'package:Hogwarts/pages/friend.dart';
+import 'package:decorated_flutter/decorated_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:Hogwarts/utils/MyFloatButton.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_easyrefresh/material_footer.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-
+import 'package:Hogwarts/utils/config.dart';
+import 'package:http/http.dart' as http;
+import 'package:Hogwarts/utils/StorageUtil.dart';
 import 'package:amap_map_fluttify/amap_map_fluttify.dart';
 import 'locationpickerhelper.dart';
+import 'next_latlng.dart';
 
 const _iconSize = 50.0;
 double _fabHeight = 16.0;
@@ -17,18 +22,23 @@ typedef Future<bool> RequestPermission();
 typedef Widget PoiItemBuilder(Poi poi, bool selected);
 
 class LocationPicker extends StatefulWidget {
-  const LocationPicker({
-    Key key,
-    @required this.requestPermission,
-    @required this.poiItemBuilder,
-    this.zoomLevel = 16.0,
-    this.zoomGesturesEnabled = false,
-    this.showZoomControl = false,
-    this.centerIndicator,
-    this.enableLoadMore = true,
-    this.onItemSelected,
-  })  : assert(zoomLevel != null && zoomLevel >= 3 && zoomLevel <= 19),
+  const LocationPicker(
+      {Key key,
+      @required this.requestPermission,
+      @required this.poiItemBuilder,
+      this.zoomLevel = 16.0,
+      this.zoomGesturesEnabled = true,
+      this.showZoomControl = false,
+      this.centerIndicator,
+      this.enableLoadMore = true,
+      this.onItemSelected,
+      this.fromToLocation,
+      this.isNavigate})
+      : assert(zoomLevel != null && zoomLevel >= 3 && zoomLevel <= 19),
         super(key: key);
+
+  final fromToLocation;
+  final isNavigate;
 
   /// 请求权限回调
   final RequestPermission requestPermission;
@@ -59,7 +69,11 @@ class LocationPicker extends StatefulWidget {
 }
 
 class _LocationPickerState extends State<LocationPicker>
-    with SingleTickerProviderStateMixin, _BLoCMixin, _AnimationMixin {
+    with
+        SingleTickerProviderStateMixin,
+        _BLoCMixin,
+        _AnimationMixin,
+        NextLatLng {
   // 地图控制器
   AmapController _controller;
   final PanelController _panelController = PanelController();
@@ -76,7 +90,35 @@ class _LocationPickerState extends State<LocationPicker>
   // 页数
   int _page = 1;
 
-  //定时器组队
+  //team
+  int teamId = 0;
+
+  bool isFollow = true;
+  //team invites
+  List<TeamInvite> teamInviteList = [];
+  List<UserBasic> userBasicList = [];
+  List<int> idList = [];
+  List<Position> positionList = [];
+  List<String> icons = [
+    "https://p.qqan.com/up/2020-9/2020941050205581.jpg",
+    "https://p.qqan.com/up/2020-9/202091105822767.jpg",
+    "https://p.qqan.com/up/2020-8/2020826954544309.png"
+  ];
+  List<String> names = ["xtc", "sqy", "lyb"];
+
+  @override
+  void initState() {
+    super.initState();
+//    getUser();
+//    getPosition();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _countdownTimer?.cancel();
+  }
+
   Timer _countdownTimer;
   var _countdownNum = 0;
   void getPosition() {
@@ -84,19 +126,98 @@ class _LocationPickerState extends State<LocationPicker>
       if (_countdownTimer != null) {
         return;
       }
-      _countdownTimer =
-      new Timer.periodic(new Duration(seconds: 1), (timer) {
+      _countdownTimer = new Timer.periodic(new Duration(seconds: 1), (timer) {
         setState(() {
-          _countdownNum ++;
+          _countdownNum++;
         });
+//        getUser();
       });
     });
+  }
+
+  getUser() async {
+    int uid = await StorageUtil.getIntItem('uid');
+    String url = "${Url.url_prefix}/getUser?id=" + uid.toString();
+
+    String token = await StorageUtil.getStringItem('token');
+
+    print(token);
+    final res = await http.get(url, headers: {"Authorization": "$token"});
+
+//    final data = json.decode(res.body); //中文乱码
+    var data = jsonDecode(Utf8Decoder().convert(res.bodyBytes));
+    print(data);
+    List<TeamInvite> teamInvite = [];
+    for (int j = 0; j < data['teamInvites'].length; ++j) {
+      TeamInvite ti = new TeamInvite(
+          uid: data['teamInvites'][j]['uid'],
+          tid: data['teamInvites'][j]['tid']);
+      teamInvite.add(ti);
+    }
+    print(teamInvite);
+    setState(() {
+      teamId = data['teamId'];
+      teamInviteList = teamInvite;
+    });
+    if (teamId != 0) getTeam();
+  }
+
+  getTeam() async {
+    String url = "${Url.url_prefix}/getTeam?tid=" + teamId.toString();
+    final res = await http.get(url);
+    var data = jsonDecode(Utf8Decoder().convert(res.bodyBytes));
+    List<UserBasic> uss = [];
+    List<int> ids = [];
+    List<Position> positions = [];
+    for (int j = 0; j < data['num']; ++j) {
+      int id = data['people'][j];
+      ids.add(id);
+      positions.add(new Position(
+          x: data['position'][j]['x'], y: data['position'][j]['y']));
+      UserBasic ub = await getUserBasic(id);
+      uss.add(ub);
+    }
+    setState(() {
+      userBasicList = uss;
+      idList = ids;
+      positionList = positions;
+    });
+  }
+
+  Future<UserBasic> getUserBasic(int uid) async {
+    String url = "${Url.url_prefix}/getUser?id=" + uid.toString();
+    final res = await http.get(url);
+    var data = jsonDecode(Utf8Decoder().convert(res.bodyBytes));
+    return new UserBasic(name: data['name'], url: data['icon']);
+  }
+
+  Future<void> _handleSearchRoute() async {
+    if (!widget.isNavigate) return;
+
+    final fromLat =
+        double.tryParse(widget.fromToLocation._fromLatitudeController.text);
+    final fromLng =
+        double.tryParse(widget.fromToLocation._fromLongitudeController.text);
+    final toLat =
+        double.tryParse(widget.fromToLocation._toLatitudeController.text);
+    final toLng =
+        double.tryParse(widget.fromToLocation._toLongitudeController.text);
+
+    try {
+      _controller.addDriveRoute(
+        from: LatLng(fromLat, fromLng),
+        to: LatLng(toLat, toLng),
+        trafficOption: TrafficOption(show: false),
+      );
+    } catch (e) {
+      L.d(e);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final minPanelHeight = 40.0;
-    final maxPanelHeight = MediaQuery.of(context).size.height * 0.7;
+    final maxPanelHeight = MediaQuery.of(context).size.height * 0.4;
     return SlidingUpPanel(
         controller: _panelController,
         parallaxEnabled: true,
@@ -127,12 +248,42 @@ class _LocationPickerState extends State<LocationPicker>
                       _moveByUser = true;
                       // 保存当前地图中心点数据
                       _currentCenterCoordinate = move.latLng;
+                      _handleSearchRoute();
                     },
                     onMapCreated: (controller) async {
                       _controller = controller;
                       if (await widget.requestPermission()) {
                         await _showMyLocation();
                         _search(await _controller.getLocation());
+                        _handleSearchRoute();
+                        await _controller?.addMarker(
+                          MarkerOption(
+                            latLng: getNextLatLng(),
+                            title: '北京${random.nextDouble()}',
+                            snippet: '描述${random.nextDouble()}',
+                            iconProvider: NetworkImage(
+                                "https://p.qqan.com/up/2020-8/2020826954544309.png"),
+                            infoWindowEnabled: true,
+                            object: '自定义数据${random.nextDouble()}',
+                          ),
+                        );
+//                        await _controller?.addMarkers(
+//                            [
+//                              for (int i = 0; i < 3; i++)
+//                                MarkerOption(
+//                                  latLng: getNextLatLng(),
+//                                  widget: Column(
+//                                    mainAxisSize: MainAxisSize.min,
+//                                    children: <Widget>[
+//                                      Text(names[i]),
+//                                      Image.network(icons[i]),
+//                                    ],
+//                                  ),
+//                                  title: '北京',
+//                                  snippet: '描述',
+//                                )
+//                            ],
+//                          );
                       } else {
                         debugPrint('权限请求被拒绝!');
                       }
@@ -141,44 +292,47 @@ class _LocationPickerState extends State<LocationPicker>
                   // 中心指示器
                   Center(
                     child: AnimatedBuilder(
-                      animation: _tween,
-                      builder: (context, child) {
-                        return Transform.translate(
-                          offset: Offset(
-                            _tween.value.dx,
-                            _tween.value.dy - _iconSize / 2,
-                          ),
-                          child: child,
-                        );
-                      },
-                      child: widget.centerIndicator ??
-                          Image(
-                            image: AssetImage('assets/test_icon.png'),
-                          ),
-                    ),
+                        animation: _tween,
+                        builder: (context, child) {
+                          return Transform.translate(
+                            offset: Offset(
+                              _tween.value.dx,
+                              _tween.value.dy - _iconSize / 2,
+                            ),
+                            child: child,
+                          );
+                        },
+                        child: widget.centerIndicator ??
+//                          Image(
+//                            image: AssetImage('assets/test_icon.png'),
+//                          ),
+                            Icon(
+                              Icons.location_on,
+                              size: 24,
+                              color: Colors.red,
+                            )),
                   ),
-                  // 定位按钮
-//                  Positioned(
-//                    right: 16.0,
-//                    bottom: _fabHeight + 16.0 + 40,
-//                    child: FloatingActionButton(
-//                      child: Icon(
-//                        Icons.gps_fixed,
-//                        color: Theme.of(context).primaryColor,
-//                      ),
-//                      onPressed: _showMyLocation,
-//                      backgroundColor: Colors.white,
-//                    ),
-//                  ),
+
                   Positioned(
                     right: 16.0,
-                    bottom: _fabHeight + 16.0 + 70,
-                    child: SizedBox(
-                      height: 52,
-                      width: 52,
-                      child: MyFloatButton(),
-                    )
+                    bottom: _fabHeight + 16.0 + 40 + 100,
+                    child: FloatingActionButton(
+                      child: Icon(
+                        Icons.gps_fixed,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      onPressed: _showMyLocation,
+                      backgroundColor: Colors.white,
+                    ),
                   ),
+                  Positioned(
+                      right: 12.0,
+                      bottom: _fabHeight + 16.0 + 110 + 100,
+                      child: SizedBox(
+                        height: 60,
+                        width: 60,
+                        child: MyFloatButton(),
+                      )),
 //                Positioned(
 //                  bottom: _fabHeight,
 //                  child: Container(
@@ -346,11 +500,26 @@ class _LocationPickerState extends State<LocationPicker>
   }
 
   Future<void> _showMyLocation() async {
-    _onMyLocation.add(true);
-    await _controller?.showMyLocation(MyLocationOption(
-      strokeColor: Colors.transparent,
-      fillColor: Colors.transparent,
-    ));
+//    _onMyLocation.add(true);
+//    await _controller?.showMyLocation(MyLocationOption(
+//      strokeColor: Colors.transparent,
+//      fillColor: Colors.transparent,
+//    ));
+    if (isFollow) {
+      await _controller?.showMyLocation(MyLocationOption(
+        myLocationType: MyLocationType.Rotate,
+      ));
+      setState(() {
+        isFollow = false;
+      });
+    } else {
+      await _controller?.showMyLocation(MyLocationOption(
+        myLocationType: MyLocationType.Show,
+      ));
+      setState(() {
+        isFollow = true;
+      });
+    }
   }
 
   Future<void> _setCenterCoordinate(LatLng coordinate) async {

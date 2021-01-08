@@ -85,7 +85,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
         ),
         DrawerList(
           index: DrawerIndex.Contact,
-          labelName: lanIndex == 0 ? '联系我们' : 'Contact us',
+          labelName: lanIndex == 0 ? '组队' : 'Team',
           isAssetsImage: true,
           imageName: 'assets/images/supportIcon.png',
         ),
@@ -119,7 +119,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
         ),
         DrawerList(
           index: DrawerIndex.Contact,
-          labelName: lanIndex == 0 ? '联系我们' : 'Contact us',
+          labelName: lanIndex == 0 ? '组队' : 'Team',
           isAssetsImage: true,
           imageName: 'assets/images/supportIcon.png',
         ),

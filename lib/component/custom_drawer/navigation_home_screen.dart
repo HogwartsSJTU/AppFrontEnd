@@ -65,6 +65,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
 
   void setIndex() {
     if (drawerIndex == DrawerIndex.HOME) {
+//        screenView = HomePage(isNavigate: widget.isNavigate, fromToLocation: widget.fromToLocation,);
         screenView = HomePage(isNavigate: widget.isNavigate, fromToLocation: widget.fromToLocation,);
     } else if (drawerIndex == DrawerIndex.Finder) {
         screenView = HotelHomeScreen();
@@ -90,6 +91,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
       if (drawerIndex == DrawerIndex.HOME) {
         setState(() {
           screenView = HomePage();
+//          screenView = LocationPickerScreen();
         });
       } else if (drawerIndex == DrawerIndex.Finder) {
         setState(() {
@@ -108,7 +110,8 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         });
       } else if (drawerIndex == DrawerIndex.Setting) {
         setState(() {
-          screenView = SettingsScreen();
+//          screenView = SettingsScreen();
+          screenView = DrawPointScreen();
 //          screenView = CommentScreen();
         });
       } else {
