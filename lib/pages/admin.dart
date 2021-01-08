@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 import 'package:Hogwarts/pages/userInfo.dart';
+import 'package:Hogwarts/utils/FilterStaticDataType.dart';
 import 'package:Hogwarts/utils/StorageUtil.dart';
 import 'package:flutter/material.dart';
 import 'package:Hogwarts/theme/hotel_app_theme.dart';
@@ -8,7 +9,6 @@ import 'package:Hogwarts/component/UserAdminItem.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:Hogwarts/utils/config.dart';
-
 
 //TODO 搜索、分类与过滤同时应用未实现，同一时刻只有最后的操作生效
 //TODO 移动端UI适配问题，stack覆盖和标签过长overflow
@@ -20,6 +20,7 @@ class AdminPage extends StatefulWidget {
 
 class _AdminPageState extends State<AdminPage> {
   Choice _selectedChoice = choices[0]; // The app's "state".
+  int lanIndex = GlobalSetting.globalSetting.lanIndex;
 
   void _select(Choice choice) {
     setState(() {
@@ -29,16 +30,24 @@ class _AdminPageState extends State<AdminPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    setState(() {
+      choices[0] = new Choice(
+          title: lanIndex == 0 ? '景点管理' : 'SpotAdmin', icon: Icons.desktop_mac);
+      choices[1] = new Choice(
+          title: lanIndex == 0 ? '用户管理' : 'UserAdmin', icon: Icons.group);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
-          '系统管理',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w400
-          ),
+          lanIndex == 0 ? '系统管理' : 'Admin',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
         ),
         centerTitle: true,
         flexibleSpace: Container(
@@ -78,7 +87,7 @@ class Choice {
   final IconData icon;
 }
 
-const List<Choice> choices = <Choice>[
+List<Choice> choices = <Choice>[
   Choice(title: '景点管理', icon: Icons.desktop_mac),
   Choice(title: '用户管理', icon: Icons.group),
 ];
@@ -90,11 +99,12 @@ class ChoiceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (choice.title == '景点管理')
+    if (choice.title == '景点管理'||choice.title =='SpotAdmin')
       return UserAdmin();
-    else if (choice.title == '用户管理')
+    else if (choice.title == '用户管理'||choice.title =='UserAdmin')
       return UserAdmin();
-    else return UserAdmin();
+    else
+      return UserAdmin();
   }
 }
 
@@ -631,9 +641,8 @@ class UserAdmin extends StatefulWidget {
 }
 
 class _UserAdminState extends State<UserAdmin> with TickerProviderStateMixin {
-
   AnimationController animationController;
-
+  int lanIndex= GlobalSetting.globalSetting.lanIndex;
   List<User> originUserList = [];
   List<User> userList = [];
   String searchCondition;
@@ -647,6 +656,9 @@ class _UserAdminState extends State<UserAdmin> with TickerProviderStateMixin {
     animationController = AnimationController(
         duration: const Duration(milliseconds: 1000), vsync: this);
     super.initState();
+    setState(() {
+      chooseUserRole = (lanIndex==0?'所有用户':'AllUser');
+    });
     getUsers();
   }
 
@@ -660,11 +672,19 @@ class _UserAdminState extends State<UserAdmin> with TickerProviderStateMixin {
     var response = [];
     String url = "${Url.url_prefix}/getUsers";
     String token = await StorageUtil.getStringItem('token');
-    final res = await http.get(url, headers: {"Accept": "application/json","Authorization": "$token"});
+    final res = await http.get(url,
+        headers: {"Accept": "application/json", "Authorization": "$token"});
     var data = jsonDecode(Utf8Decoder().convert(res.bodyBytes));
     response = data;
-    for(int i = 0; i < response.length; ++i){
-      users.add(User(response[i]['id'], response[i]['name'], response[i]['gender'], response[i]['phone'], response[i]['description'], response[i]['role'], response[i]['icon']));
+    for (int i = 0; i < response.length; ++i) {
+      users.add(User(
+          response[i]['id'],
+          response[i]['name'],
+          response[i]['gender'],
+          response[i]['phone'],
+          response[i]['description'],
+          response[i]['role'],
+          response[i]['icon']));
     }
     print(users.length);
     setState(() {
@@ -675,8 +695,9 @@ class _UserAdminState extends State<UserAdmin> with TickerProviderStateMixin {
 
   executeSearch() {
     List<User> users = [];
-    for(int i = 0; i < originUserList.length; ++i){
-      if(originUserList[i].name.contains(searchCondition)) users.add(originUserList[i]);
+    for (int i = 0; i < originUserList.length; ++i) {
+      if (originUserList[i].name.contains(searchCondition))
+        users.add(originUserList[i]);
     }
     setState(() {
       userList = users;
@@ -711,13 +732,13 @@ class _UserAdminState extends State<UserAdmin> with TickerProviderStateMixin {
                     return <Widget>[
                       SliverList(
                         delegate: SliverChildBuilderDelegate(
-                                (BuildContext context, int index) {
-                              return Column(
-                                children: <Widget>[
-                                  getSearchBarUI(),
-                                ],
-                              );
-                            }, childCount: 1),
+                            (BuildContext context, int index) {
+                          return Column(
+                            children: <Widget>[
+                              getSearchBarUI(),
+                            ],
+                          );
+                        }, childCount: 1),
                       ),
                       SliverPersistentHeader(
                         pinned: true,
@@ -729,47 +750,58 @@ class _UserAdminState extends State<UserAdmin> with TickerProviderStateMixin {
                     ];
                   },
                   body: Container(
-                    color:
-                    HotelAppTheme.buildLightTheme().backgroundColor,
+                    color: HotelAppTheme.buildLightTheme().backgroundColor,
                     child: ListView.builder(
                       itemCount: userList.length,
                       padding: const EdgeInsets.only(top: 8),
                       scrollDirection: Axis.vertical,
                       itemBuilder: (BuildContext context, int index) {
                         final int count =
-                        userList.length > 10 ? 10 : userList.length;
+                            userList.length > 10 ? 10 : userList.length;
                         final Animation<double> animation =
-                        Tween<double>(begin: 0.0, end: 1.0).animate(
-                            CurvedAnimation(
-                                parent: animationController,
-                                curve: Interval(
-                                    (1 / count) * index, 1.0,
-                                    curve: Curves.fastOutSlowIn)));
+                            Tween<double>(begin: 0.0, end: 1.0).animate(
+                                CurvedAnimation(
+                                    parent: animationController,
+                                    curve: Interval((1 / count) * index, 1.0,
+                                        curve: Curves.fastOutSlowIn)));
                         animationController.forward();
                         return UserAdminItem(
-                            callback: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => UserInfoPage(userId: userList[index].userId)));
-                            },
-                            toggleCallback: (value) async {
-                              String url = "${Url.url_prefix}/setUserRole?userId=" + userList[index].userId.toString() + '&role=';
-                              String token = await StorageUtil.getStringItem('token');
-                              if(value == 1){
-                                http.get(url + "-1", headers: {"Accept": "application/json","Authorization": "$token"});
-                                setState(() {
-                                  userList[index].role = -1;
-                                });
-                              }
-                              else {
-                                http.get(url + "0", headers: {"Accept": "application/json","Authorization": "$token"});
-                                setState(() {
-                                  userList[index].role = 0;
-                                });
-                              }
-                            },
-                            userData: userList[index],
-                            animation: animation,
-                            animationController: animationController,
-                            isLarge: MediaQuery.of(context).size.width > 1080,
+                          callback: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => UserInfoPage(
+                                        userId: userList[index].userId)));
+                          },
+                          toggleCallback: (value) async {
+                            String url =
+                                "${Url.url_prefix}/setUserRole?userId=" +
+                                    userList[index].userId.toString() +
+                                    '&role=';
+                            String token =
+                                await StorageUtil.getStringItem('token');
+                            if (value == 1) {
+                              http.get(url + "-1", headers: {
+                                "Accept": "application/json",
+                                "Authorization": "$token"
+                              });
+                              setState(() {
+                                userList[index].role = -1;
+                              });
+                            } else {
+                              http.get(url + "0", headers: {
+                                "Accept": "application/json",
+                                "Authorization": "$token"
+                              });
+                              setState(() {
+                                userList[index].role = 0;
+                              });
+                            }
+                          },
+                          userData: userList[index],
+                          animation: animation,
+                          animationController: animationController,
+                          isLarge: MediaQuery.of(context).size.width > 1080,
                         );
                       },
                     ),
@@ -817,7 +849,7 @@ class _UserAdminState extends State<UserAdmin> with TickerProviderStateMixin {
                     cursorColor: HexColor('#54D3C2'),
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintText: 'Search',
+                      hintText: lanIndex==0?'搜索':'Search',
                     ),
                   ),
                 ),
@@ -850,8 +882,7 @@ class _UserAdminState extends State<UserAdmin> with TickerProviderStateMixin {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Icon(Icons.search,
-                      size: 20,
-                      color: const Color(0xFFFFFFFF)),
+                      size: 20, color: const Color(0xFFFFFFFF)),
                 ),
               ),
             ),
@@ -893,14 +924,14 @@ class _UserAdminState extends State<UserAdmin> with TickerProviderStateMixin {
           ),
           child: Padding(
             padding:
-            const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 4),
+                const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 4),
             child: Row(
               children: <Widget>[
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: new Text(
-                      '${userList.length} users found',
+                      lanIndex==0?'找到${userList.length}个用户': '${userList.length} users found',
                       style: TextStyle(
                         fontWeight: FontWeight.w100,
                         fontSize: 16,
@@ -923,7 +954,10 @@ class _UserAdminState extends State<UserAdmin> with TickerProviderStateMixin {
   Widget getDropDownMenu() {
     return DropdownButton<String>(
       value: chooseUserRole,
-      icon: Icon(Icons.arrow_drop_down, color: HexColor('#54D3C2'),),
+      icon: Icon(
+        Icons.arrow_drop_down,
+        color: HexColor('#54D3C2'),
+      ),
       iconSize: 24,
       elevation: 16,
       style: TextStyle(fontWeight: FontWeight.w100, color: Colors.black),
@@ -937,7 +971,7 @@ class _UserAdminState extends State<UserAdmin> with TickerProviderStateMixin {
         });
         executeChooseUserRole();
       },
-      items: <String>['所有用户', '待核验', '已核验', '已封禁', '管理员']
+      items: (lanIndex==0?<String>['所有用户', '待核验', '已核验', '已封禁', '管理员']:<String>['AllUser', 'ToVerify', 'Verified', 'Banned', 'Admin'])
           .map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
@@ -950,33 +984,38 @@ class _UserAdminState extends State<UserAdmin> with TickerProviderStateMixin {
   executeChooseUserRole() {
     List<User> users = [];
     int role;
-    switch(chooseUserRole){
-      case '所有用户': {
-        setState(() {
-          userList = originUserList;
-        });
-        return;
-      }
-      break;
-      case '待核验': {
-        role = -2;
-      }
-      break;
-      case '已封禁': {
-        role = -1;
-      }
-      break;
-      case '已核验': {
-        role = 0;
-      }
-      break;
-      case '管理员': {
-        role = 1;
-      }
-      break;
+    switch (chooseUserRole) {
+      case '所有用户':case 'AllUser':
+        {
+          setState(() {
+            userList = originUserList;
+          });
+          return;
+        }
+        break;
+      case '待核验':case 'ToVerify':
+        {
+          role = -2;
+        }
+        break;
+      case '已封禁':case 'Banned':
+        {
+          role = -1;
+        }
+        break;
+      case '已核验':case 'Verified':
+        {
+          role = 0;
+        }
+        break;
+      case '管理员':case 'Admin':
+        {
+          role = 1;
+        }
+        break;
     }
-    for(int i = 0; i < originUserList.length; ++i){
-      if(originUserList[i].role == role) users.add(originUserList[i]);
+    for (int i = 0; i < originUserList.length; ++i) {
+      if (originUserList[i].role == role) users.add(originUserList[i]);
     }
     setState(() {
       userList = users;
@@ -986,8 +1025,9 @@ class _UserAdminState extends State<UserAdmin> with TickerProviderStateMixin {
 
 class ContestTabHeader extends SliverPersistentHeaderDelegate {
   ContestTabHeader(
-      this.searchUI,
-      );
+    this.searchUI,
+  );
+
   final Widget searchUI;
 
   @override

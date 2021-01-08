@@ -228,7 +228,7 @@ class _DiaryManageScreenState extends State<DiaryManageScreen>
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(
-                          left: 30, right: 8, top: 4, bottom: 4),
+                          left: 15, right: 4, top: 4, bottom: 4),
                       child: Container(
                           padding: EdgeInsets.symmetric(horizontal: 14.0, vertical: 8.0),
                           decoration: BoxDecoration(
