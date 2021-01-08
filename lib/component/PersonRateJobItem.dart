@@ -1,20 +1,21 @@
 import 'package:Hogwarts/theme/hotel_app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:Hogwarts/pages/diary.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class PersonRateJobItem extends StatelessWidget {
   const PersonRateJobItem(
       {Key key,
         this.jobData,
-        this.isEmployer,
+        this.watcher,
         this.animationController,
         this.animation,
         this.callback})
       : super(key: key);
 
   final VoidCallback callback;
-  final Job jobData;
-  final bool isEmployer;
+  final int watcher;
+  final Diary jobData;
   final AnimationController animationController;
   final Animation<dynamic> animation;
 
@@ -60,15 +61,9 @@ class PersonRateJobItem extends StatelessWidget {
                           crossAxisAlignment:
                           CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text(
-                              jobData.projectName,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 20,
-                              ),
-                            ),
                             Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Container(
                                   padding: const EdgeInsets.only(left: 3, right: 7.0, top: 4.0, bottom: 4.0),
@@ -85,63 +80,74 @@ class PersonRateJobItem extends StatelessWidget {
                                       Padding(
                                         padding: EdgeInsets.only(left: 3),
                                         child: Text(
-                                            jobData.finishTime,
+                                            jobData.createTime.substring(0,10),
                                             style: TextStyle(height: 1.2, fontSize: 14,)
                                         ),
                                       )
                                     ],
                                   ),
                                 ),
-                                Container(
-                                  padding: const EdgeInsets.only(left: 3, right: 7.0, top: 4.0, bottom: 4.0),
-                                  margin: const EdgeInsets.only(right: 6.0, top: 5.0, bottom: 5.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                    color: Colors.grey.withOpacity(0.3),
-                                  ),
+                                Offstage(
+                                  offstage: watcher != jobData.userId,
                                   child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    mainAxisSize: MainAxisSize.max,
                                     children: [
-                                      SmoothStarRating(
-                                          allowHalfRating: false,
-                                          onRated: (v) {},
-                                          starCount: 5,
-                                          rating: isEmployer? jobData.employeeRate : jobData.employerRate,
-                                          size: 16,
-                                          isReadOnly:true,
-                                          color: Colors.black54,
-                                          borderColor: Colors.black54,
-                                          spacing:0.0
+                                      InkWell(
+                                        //TODO
+                                        onTap: (){
+                                          Navigator.push(context,
+                                              MaterialPageRoute(builder: (context) => DiaryScreen(diary: jobData, isEdit: true,)));
+                                        },
+                                        child: Container(
+                                            padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 1.0),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(7.0),
+                                              color: Colors.blueGrey,
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.edit, color: Colors.white, size: 18,),
+                                                Text("编辑", style: TextStyle(color: Colors.white),)
+                                              ],
+                                            )
+                                        ),
                                       ),
-//                                      Padding(
-//                                        padding: EdgeInsets.only(left: 4),
-//                                        child: Text(
-//                                            jobData.employerRate.toString(),
-//                                            style: TextStyle(height: 1.2, fontSize: 14,)
-//                                        ),
-//                                      ),
-//                                      Padding(
-//                                        padding: EdgeInsets.only(left: 1),
-//                                        child: Text(
-//                                            '分',
-//                                            style: TextStyle(height: 1.2, fontSize: 13,)
-//                                        ),
-//                                      )
+                                      SizedBox(width: 16,),
+                                      InkWell(
+                                        //TODO
+                                        onTap: (){
+
+                                        },
+                                        child: Container(
+                                            padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 1.0),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(7.0),
+                                              color: Colors.blueGrey,
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.delete, color: Colors.white, size: 18,),
+                                                Text("删除", style: TextStyle(color: Colors.white),)
+                                              ],
+                                            )
+                                        ),
+                                      ),
+                                      SizedBox(width: 4,)
                                     ],
                                   ),
-                                )
+                                ),
                               ],
                             ),
                             Wrap(
                               children: <Widget>[
-                                Text(jobData.description,
+                                Text(jobData.context,
                                   softWrap: true,
                                   textAlign: TextAlign.left,
                                   overflow: TextOverflow.ellipsis,
-                                  maxLines: 2,
+                                  maxLines: 3,
                                   style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 16,
                                       color: Colors.grey
                                           .withOpacity(0.8)),
                                 ),
@@ -151,14 +157,15 @@ class PersonRateJobItem extends StatelessWidget {
                               padding:
                               const EdgeInsets.only(top: 4),
                               child: Wrap(
-                                children: jobData.skills.map((skill) => Container(
+                                children: jobData.pictures.map((skill) => Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 7.0, vertical: 4.0),
                                   margin: const EdgeInsets.only(right: 6.0, top: 4.0, bottom: 4.0),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15.0),
                                     color: Colors.black54,
                                   ),
-                                  child: Text(skill,style: TextStyle(height: 1,fontSize: 14, color: Colors.white.withOpacity(0.8)),),
+                                  child:
+                                    Image(image: AssetImage(skill),)
                                 )).toList(),
                               ),
                             ),
@@ -177,21 +184,17 @@ class PersonRateJobItem extends StatelessWidget {
   }
 }
 
-class Job {
-  Job(
-      this.projectId,         //游记id
-      this.projectName,       //游记名字
-      this.description,       //游记内容
-      this.skills,            //游记图片数组
-      this.employeeRate,
-      this.employerRate,
-      this.finishTime         //游记时间
+class Diary {
+  Diary(
+      this.diaryId,         //游记id
+      this.userId,
+      this.context,       //游记内容
+      this.pictures,            //游记图片数组
+      this.createTime         //游记时间
       );
-  final String projectId;
-  final String projectName;
-  final String description;
-  final List<String> skills;
-  final double employeeRate;
-  final double employerRate;
-  final String finishTime;
+  final int diaryId;
+  final int userId;
+  final String context;
+  final List<String> pictures;
+  final String createTime;
 }
