@@ -1,4 +1,5 @@
 import 'package:Hogwarts/pages/profile.dart';
+import 'package:Hogwarts/utils/FilterStaticDataType.dart';
 import 'package:flutter/material.dart';
 import 'package:Hogwarts/component/PersonRateJobItem.dart';
 import 'package:Hogwarts/theme/hotel_app_theme.dart';
@@ -13,7 +14,6 @@ import 'package:Hogwarts/pages/diary.dart';
 //'个人资料'、'我的资料'统一入口
 class UserInfoPage extends StatefulWidget {
   UserInfoPage({this.userId});
-
   final int userId;
 
   @override
@@ -62,6 +62,7 @@ class Person extends StatefulWidget {
 
 class _PersonState extends State<Person> with TickerProviderStateMixin {
   TabController _tabController;
+  int lanIndex = GlobalSetting.globalSetting.lanIndex;
   final List<Tab> tabs = <Tab>[
     new Tab(text: "游记"),
   ];
@@ -81,6 +82,7 @@ class _PersonState extends State<Person> with TickerProviderStateMixin {
     animationController = AnimationController(
         duration: const Duration(milliseconds: 1000), vsync: this);
     flutterToast = FlutterToast(context);
+    tabs[0] = new Tab(text: lanIndex == 0 ? "游记" : "TravelNotes");
     getUser();
     getDiary();
   }
@@ -163,7 +165,7 @@ class _PersonState extends State<Person> with TickerProviderStateMixin {
               size: 50,
             ),
             Text(
-              "已设置查阅权限",
+              lanIndex == 0 ?"已设置查阅权限":'Query permission set',
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(
@@ -186,7 +188,8 @@ class _PersonState extends State<Person> with TickerProviderStateMixin {
               width: 50,
             ),
             Text(
-              "暂无游记发布",
+              lanIndex == 0 ? "暂无游记发布":'No record of travel note',
+
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(
@@ -242,7 +245,7 @@ class _PersonState extends State<Person> with TickerProviderStateMixin {
                 child: new Icon(Icons.arrow_back_ios, color: Colors.white),
               ),
             ),
-            title: new Text("个人资料", style: new TextStyle(color: Colors.white)),
+            title: new Text(lanIndex == 0 ?"个人资料":'Personal Information', style: new TextStyle(color: Colors.white)),
             actions: <Widget>[
               !alreadyFriend
                   ? new IconButton(
@@ -252,17 +255,17 @@ class _PersonState extends State<Person> with TickerProviderStateMixin {
                         showDialog(
                             context: context,
                             builder: (context) => AlertDialog(
-                                  title: Text('申请添加朋友'),
-                                  content: Text(('确定向对方发送好友请求？')),
+                                  title: Text(lanIndex == 0 ?'申请添加朋友':'Apply to add friends'),
+                                  content: Text(lanIndex == 0 ?'确定向对方发送好友请求？':'Are you sure to send friend request to the other party?'),
                                   actions: <Widget>[
                                     new FlatButton(
-                                      child: new Text("取消"),
+                                      child: new Text(lanIndex == 0 ?"取消":'Cancel'),
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
                                     ),
                                     new FlatButton(
-                                      child: new Text("确定"),
+                                      child: new Text(lanIndex == 0 ?"确定":'OK'),
                                       onPressed: () async {
                                         String url = "${Url.url_prefix}/";
                                         String token =
@@ -344,7 +347,7 @@ class _PersonState extends State<Person> with TickerProviderStateMixin {
                                                   Colors.white.withOpacity(0.3),
                                             ),
                                             child: Text(
-                                              user.age.toString() + '岁',
+                                              user.age.toString() + (lanIndex == 0 ?'岁':''),
                                               style: TextStyle(
                                                   fontSize: 14,
                                                   color: Colors.black),
@@ -362,7 +365,7 @@ class _PersonState extends State<Person> with TickerProviderStateMixin {
                                                   Colors.white.withOpacity(0.3),
                                             ),
                                             child: Text(
-                                              user.gender == 'M' ? '男' : '女',
+                                              user.gender == 'M' ? (lanIndex == 0 ?'男':'M' ):( lanIndex == 0 ?'女':'F'),
                                               style: TextStyle(
                                                   fontSize: 14,
                                                   color: Colors.black),
@@ -398,7 +401,7 @@ class _PersonState extends State<Person> with TickerProviderStateMixin {
                     Padding(
                       padding: EdgeInsets.only(top: 16, left: 16, bottom: 4),
                       child: Text(
-                        '资料卡',
+                        lanIndex == 0 ?'资料卡':'Card',
                         style: TextStyle(
                             fontSize: 22, fontWeight: FontWeight.w600),
                       ),
@@ -492,7 +495,7 @@ class _PersonState extends State<Person> with TickerProviderStateMixin {
                           SizedBox(
                             width: 100,
                             child: Text(
-                              '游记展板',
+                              lanIndex == 0 ?'游记展板':'Travels',
                               style: TextStyle(
                                   fontSize: 22, fontWeight: FontWeight.w600),
                             ),
@@ -554,7 +557,7 @@ class _PersonState extends State<Person> with TickerProviderStateMixin {
             width: 12.0,
           ),
           Text(
-            "成功发送好友请求",
+            lanIndex == 0 ?"成功发送好友请求":'Friend request sent successfully',
             style: TextStyle(color: Colors.white),
           ),
         ],

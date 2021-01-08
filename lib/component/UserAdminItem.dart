@@ -1,9 +1,11 @@
 import 'package:Hogwarts/theme/hotel_app_theme.dart';
+import 'package:Hogwarts/utils/FilterStaticDataType.dart';
 import 'package:flutter/material.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class UserAdminItem extends StatelessWidget {
+
   const UserAdminItem(
       {Key key,
         this.userData,
@@ -173,6 +175,7 @@ class UserAdminItem extends StatelessWidget {
   }
 
   Widget getToggleSwitch() {
+    int lanIndex= GlobalSetting.globalSetting.lanIndex;
     if(userData.role == 1)
       return AbsorbPointer(
         child: ToggleSwitch(
@@ -183,7 +186,7 @@ class UserAdminItem extends StatelessWidget {
           activeBgColor: Colors.grey.withOpacity(0.5),
           inactiveBgColor: Colors.grey.withOpacity(0.5),
           inactiveFgColor: Colors.white,
-          labels: ['正常', '禁用'],
+          labels: lanIndex==0?['正常', '禁用']:['Normal','Ban'],
           activeBgColors: [Colors.blue.withOpacity(0.5), Colors.pink.withOpacity(0.5)],
         ),
       );
@@ -197,7 +200,7 @@ class UserAdminItem extends StatelessWidget {
           activeBgColor: Colors.grey,
           inactiveBgColor: Colors.grey,
           inactiveFgColor: Colors.white,
-          labels: ['正常', '禁用'],
+          labels: lanIndex==0?['正常', '禁用']:['Normal','Ban'],
           activeBgColors: [Colors.blue, Colors.pink],
           onToggle: (index) {
             toggleCallback(index);
@@ -214,7 +217,7 @@ class UserAdminItem extends StatelessWidget {
           activeBgColor: Colors.grey,
           inactiveBgColor: Colors.grey,
           inactiveFgColor: Colors.white,
-          labels: ['正常', '禁用'],
+          labels: lanIndex==0?['正常', '禁用']:['Normal','Ban'],
           activeBgColors: [Colors.blue, Colors.pink],
           onToggle: (index) {
             toggleCallback(index);
@@ -229,7 +232,7 @@ class UserAdminItem extends StatelessWidget {
         activeBgColor: Colors.grey,
         inactiveBgColor: Colors.grey,
         inactiveFgColor: Colors.white,
-        labels: ['正常', '禁用'],
+        labels: lanIndex==0?['正常', '禁用']:['Normal','Ban'],
         activeBgColors: [Colors.blue, Colors.pink],
         onToggle: (index) {
           toggleCallback(index);
@@ -266,26 +269,27 @@ class RoleCard extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    int lanIndex= GlobalSetting.globalSetting.lanIndex;
     String text;
     Color color;
     switch(role){
       case -2: {
-        text = '待核验';
+        text =(lanIndex==0? '待核验':'ToVerify');
         color = Colors.orange.withOpacity(0.6);
       }
       break;
       case -1: {
-        text = '已封禁';
+        text = (lanIndex==0? '已封禁':'Banned');
         color = Colors.red.withOpacity(0.6);
       }
       break;
       case 0: {
-        text = '已核验';
+        text = (lanIndex==0? '已核验':'Verified');
         color = Colors.green.withOpacity(0.6);
       }
       break;
       case 1: {
-        text = '管理员';
+        text = (lanIndex==0? '管理员':'Admin');
         color = Colors.cyan.withOpacity(0.6);
       }
       break;

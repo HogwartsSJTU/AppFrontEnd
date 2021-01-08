@@ -1,12 +1,11 @@
 import 'package:Hogwarts/component/chat/user_model.dart';
 
 class Message {
-  final User sender;
-  final String
-      time; // Would usually be type DateTime or Firebase Timestamp in production apps
-  final String text;
-  final bool isLiked;
-  final bool unread;
+  User sender;
+  String time; // Would usually be type DateTime or Firebase Timestamp in production apps
+  String text;
+  bool isLiked;
+  bool unread;
 
   Message({
     this.sender,
@@ -21,7 +20,7 @@ class Message {
 final User currentUser = User(
   id: 0,
   name: 'Current User',
-  imageUrl: 'assets/images/greg.jpg',
+  imageUrl: 'https://p.qqan.com/up/2020-9/2020941050205581.jpg',
 );
 
 // USERS
@@ -30,88 +29,55 @@ final User greg = User(
   name: 'Greg',
   imageUrl: 'assets/images/greg.jpg',
 );
-final User james = User(
+final User zyt = User(
   id: 2,
-  name: '童童',
-  imageUrl: 'assets/images/james.jpg',
+  name: 'zyt',
+  imageUrl: 'https://p.qqan.com/up/2020-4/2020040708065325983.jpg',
 );
-final User john = User(
+final User lyb = User(
   id: 3,
-  name: '斌斌',
-  imageUrl: 'assets/images/john.jpg',
+  name: 'lyb',
+  imageUrl: 'https://p.qqan.com/up/2020-3/2020032421312988009.jpg',
 );
-final User olivia = User(
+final User gdy = User(
   id: 4,
-  name: '郭郭',
-  imageUrl: 'assets/images/olivia.jpg',
+  name: 'gdy',
+  imageUrl: 'https://p.qqan.com/up/2020-8/2020826954544309.png',
 );
-final User sam = User(
+final User sqy = User(
   id: 5,
-  name: '筠',
-  imageUrl: 'assets/images/sam.jpg',
+  name: 'sqy',
+  imageUrl: 'https://p.qqan.com/up/2020-9/202091105822767.jpg',
 );
 final User sophia = User(
   id: 6,
   name: '林',
   imageUrl: 'assets/images/sophia.jpg',
 );
-final User steven = User(
-  id: 7,
-  name: '童童',
-  imageUrl: 'assets/images/steven.jpg',
-);
 
 // FAVORITE CONTACTS
-List<User> favorites = [sam, steven, olivia, john, greg];
+List<User> favorites = [sqy, zyt, lyb, gdy];
 
 // EXAMPLE CHATS ON HOME SCREEN
 List<Message> chats = [
   Message(
-    sender: james,
+    sender: zyt,
     time: '5:30 PM',
     text: '下周一去霍体打羽毛球吗',
     isLiked: false,
-    unread: true,
+    unread: false,
   ),
   Message(
-    sender: olivia,
+    sender: gdy,
     time: '4:30 PM',
     text: '你的作业做完了吗',
     isLiked: false,
-    unread: true,
+    unread: false,
   ),
   Message(
-    sender: john,
+    sender: lyb,
     time: '3:30 PM',
     text: '昨天的作业咋做啊',
-    isLiked: false,
-    unread: false,
-  ),
-  Message(
-    sender: sophia,
-    time: '2:30 PM',
-    text: 'Hey, how\'s it going? What did you do today?',
-    isLiked: false,
-    unread: true,
-  ),
-  Message(
-    sender: steven,
-    time: '1:30 PM',
-    text: 'Hey, how\'s it going? What did you do today?',
-    isLiked: false,
-    unread: false,
-  ),
-  Message(
-    sender: sam,
-    time: '12:30 PM',
-    text: 'Hey, how\'s it going? What did you do today?',
-    isLiked: false,
-    unread: false,
-  ),
-  Message(
-    sender: greg,
-    time: '11:30 AM',
-    text: 'Hey, how\'s it going? What did you do today?',
     isLiked: false,
     unread: false,
   ),
@@ -120,45 +86,115 @@ List<Message> chats = [
 // EXAMPLE MESSAGES IN CHAT SCREEN
 List<Message> messages = [
   Message(
-    sender: james,
+    sender: zyt,
     time: '5:30 PM',
-    text: 'Hey, how\'s it going? What did you do today?',
-    isLiked: true,
+    text: '下周一去霍体打羽毛球吗',
+    isLiked: false,
     unread: true,
   ),
   Message(
-    sender: currentUser,
+    sender: gdy,
     time: '4:30 PM',
-    text: 'Just walked my doge. She was super duper cute. The best pupper!!',
+    text: '你的作业做完了吗',
     isLiked: false,
     unread: true,
   ),
   Message(
-    sender: james,
-    time: '3:45 PM',
-    text: 'How\'s the doggo?',
+    sender: lyb,
+    time: '3:30 PM',
+    text: '昨天的作业咋做啊',
     isLiked: false,
-    unread: true,
-  ),
-  Message(
-    sender: james,
-    time: '3:15 PM',
-    text: 'All the food',
-    isLiked: true,
-    unread: true,
+    unread: false,
   ),
   Message(
     sender: currentUser,
-    time: '2:30 PM',
-    text: 'Nice! What kind of food did you eat?',
+    time: '3:00 PM',
+    text: '最近有什么安排啊',
     isLiked: false,
-    unread: true,
+    unread: false,
   ),
-  Message(
-    sender: james,
-    time: '2:00 PM',
-    text: 'I ate so much food today.',
-    isLiked: false,
-    unread: true,
-  ),
+//  Message(
+//    sender: zyt,
+//    time: '5:30 PM',
+//    text: 'Hey, how\'s it going? What did you do today?',
+//    isLiked: true,
+//    unread: true,
+//  ),
+//  Message(
+//    sender: currentUser,
+//    time: '4:30 PM',
+//    text: 'Just walked my doge. She was super duper cute. The best pupper!!',
+//    isLiked: false,
+//    unread: true,
+//  ),
+//  Message(
+//    sender: zyt,
+//    time: '3:45 PM',
+//    text: 'How\'s the doggo?',
+//    isLiked: false,
+//    unread: true,
+//  ),
+//  Message(
+//    sender: zyt,
+//    time: '3:15 PM',
+//    text: 'All the food',
+//    isLiked: true,
+//    unread: true,
+//  ),
+//  Message(
+//    sender: currentUser,
+//    time: '2:30 PM',
+//    text: 'Nice! What kind of food did you eat?',
+//    isLiked: false,
+//    unread: true,
+//  ),
+//  Message(
+//    sender: zyt,
+//    time: '2:00 PM',
+//    text: 'I ate so much food today.',
+//    isLiked: false,
+//    unread: true,
+//  ),
+//  Message(
+//    sender: zyt,
+//    time: '5:30 PM',
+//    text: 'Hey, how\'s it going? What did you do today?',
+//    isLiked: true,
+//    unread: true,
+//  ),
+//  Message(
+//    sender: currentUser,
+//    time: '4:30 PM',
+//    text: 'Just walked my doge. She was super duper cute. The best pupper!!',
+//    isLiked: false,
+//    unread: true,
+//  ),
+//  Message(
+//    sender: zyt,
+//    time: '3:45 PM',
+//    text: 'How\'s the doggo?',
+//    isLiked: false,
+//    unread: true,
+//  ),
+//  Message(
+//    sender: zyt,
+//    time: '3:15 PM',
+//    text: 'All the food',
+//    isLiked: true,
+//    unread: true,
+//  ),
+//  Message(
+//    sender: currentUser,
+//    time: '2:30 PM',
+//    text: 'Nice! What kind of food did you eat?',
+//    isLiked: false,
+//    unread: true,
+//  ),
+//  Message(
+//    sender: zyt,
+//    time: '2:00 PM',
+//    text: 'I ate so much food today.',
+//    isLiked: false,
+//    unread: true,
+//  ),
 ];
