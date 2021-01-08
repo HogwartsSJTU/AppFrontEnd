@@ -1,5 +1,7 @@
+import 'package:Hogwarts/component/PersonRateJobItem.dart';
 import 'package:Hogwarts/component/UserInfoEditModal.dart';
 import 'package:Hogwarts/component/friendApplyModal.dart';
+import 'package:Hogwarts/pages/diaryManage.dart';
 import 'package:Hogwarts/theme/hotel_app_theme.dart';
 import 'package:Hogwarts/utils/FilterStaticDataType.dart';
 import 'package:Hogwarts/utils/StorageUtil.dart';
@@ -11,6 +13,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
 import 'package:badges/badges.dart';
+
+import 'diary.dart';
 
 
 class Profile extends StatefulWidget{
@@ -35,8 +39,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
 
   User user = User(0,'',0,'','','','',true);
   List<int> friendApply = [];
-//  List<Job> employerJobList = [];
-//  List<Job> employeeJobList = [];
+  List<Diary> diaryList = [];
   // TODO 这里是空白图片
   String _image = 'http://freelancer-images.oss-cn-beijing.aliyuncs.com/blank.png';
   bool _ifImageChanged = false;
@@ -53,8 +56,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
       tabs[0]=new Tab(text:lanIndex == 0 ?"游记":"TravelNotes");
     });
     getUser();
-//    getEmployerJobs();
-//    getEmployeeJobs();
+    getDiary();
   }
 
   @override
@@ -88,6 +90,107 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
       user = u;
       friendApply = apply;
     });
+  }
+
+
+  getDiary() async {
+    List<Diary> diary = [];
+    var response = [];
+    String url =
+        '${Url.url_prefix}/displayDiary?uid=' + widget.userId.toString();
+    print("获得项目  " + widget.userId.toString());
+    String token = await StorageUtil.getStringItem('token');
+    final res = await http.get(url,
+        headers: {"Accept": "application/json", "Authorization": "$token"});
+    var data = jsonDecode(Utf8Decoder().convert(res.bodyBytes));
+    response = data;
+    for (int i = 0; i < response.length; ++i) {
+      List<String> pictures = [];
+      for (int j = 0; j < response[i]['images'].length; ++j) {
+        pictures.add(response[i]['images'][j].toString());
+      }
+      diary.add(Diary(
+        response[i]['id'],
+        response[i]['uid'],
+        response[i]['text'],
+        pictures,
+        response[i]['date'],
+      ));
+    }
+    setState(() {
+      diaryList = diary;
+    });
+  }
+
+  Widget diaList(List<Diary> jobList) {
+    if (!user.recordCanSee) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.visibility_off,
+              size: 50,
+            ),
+            Text(
+              "已设置查阅权限",
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(
+              height: 40,
+              child: Container(),
+            )
+          ],
+        ),
+      );
+    } else if (jobList.length == 0) {
+      return Padding(
+        padding: EdgeInsets.only(top: 50),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image(
+              image: AssetImage('assets/empty.png'),
+              height: 50,
+              width: 50,
+            ),
+            Text(
+              "暂无游记发布",
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(
+              height: 40,
+              child: Container(),
+            )
+          ],
+        ),
+      );
+    } else
+      return ListView.builder(
+        itemCount: jobList.length,
+        padding: const EdgeInsets.only(top: 8),
+        scrollDirection: Axis.vertical,
+        itemBuilder: (BuildContext context, int index) {
+          final int count = jobList.length > 10 ? 10 : jobList.length;
+          final Animation<double> animation =
+          Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+              parent: animationController,
+              curve: Interval((1 / count) * index, 1.0,
+                  curve: Curves.fastOutSlowIn)));
+          animationController.forward();
+          return PersonRateJobItem(
+            callback: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => DiaryScreen(diary: jobList[index], isEdit: false,)));
+            },
+            jobData: jobList[index],
+            watcher: widget.userId,
+            animation: animation,
+            animationController: animationController,
+          );
+        },
+      );
   }
 
   @override
@@ -233,7 +336,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
                       title: Text(lanIndex == 0 ?"我的游记":'My TravelNotes'),
                       trailing: Icon(Icons.keyboard_arrow_right),
                       onTap: () {
-//                        Navigator.push(context, MaterialPageRoute(builder: (context) => OnesJobManagePage(userId: user.userId,)));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => DiaryManageScreen(hotelList: diaryList,)));
                         },
                     ),
                   ],
@@ -393,12 +496,12 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
                                   children: [
                                     IconButton(
                                       onPressed: () async {
-//                                        String url = "${Url.url_prefix}/setShow?userId=" + widget.userId.toString();
-//                                        String token = await StorageUtil.getStringItem('token');
-//                                        http.post(url, headers: {"Accept": "application/json","Authorization": "$token"});
-//                                        setState(() {
-//                                          user.recordCanSee = !user.recordCanSee;
-//                                        });
+                                        String url = "${Url.url_prefix}/setShow?userId=" + widget.userId.toString();
+                                        String token = await StorageUtil.getStringItem('token');
+                                        http.post(url, headers: {"Accept": "application/json","Authorization": "$token"});
+                                        setState(() {
+                                          user.recordCanSee = !user.recordCanSee;
+                                        });
                                       },
                                       icon: user.recordCanSee? Icon(Icons.visibility) : Icon(Icons.visibility_off),
                                       color: Colors.blue,
@@ -414,29 +517,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin{
                           child: TabBarView(
                             controller: _tabController,
                             children: tabs.map((Tab tab) {
-//                              if (tab == tabs[0])
-//                                return jobList(employerJobList, true);
-//                              else
-//                                return jobList(employeeJobList, false);
-                              return Padding(
-                                padding: EdgeInsets.only(top: 50),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Image(
-                                      image: AssetImage('assets/empty.png'),
-                                      height: 50,
-                                      width: 50,
-                                    ),
-                                    Text(lanIndex == 0 ?"暂无游记":'No TravelNote', style: TextStyle(fontSize: 18),),
-                                    SizedBox(
-                                      height: 40,
-                                      child: Container(),
-                                    )
-                                  ],
-                                ),
-                              );
+                              return diaList(diaryList);
                             }).toList(),
                           ),
                         ),

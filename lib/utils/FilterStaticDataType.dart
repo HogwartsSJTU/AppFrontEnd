@@ -10,6 +10,15 @@ class GlobalSetting{
   static GlobalSetting globalSetting=GlobalSetting(lanIndex: 0);
 }
 
+class TeamIdAndState{
+  TeamIdAndState({this.teamId = 0, this.state = 0});
+
+  int teamId;
+  int state; //0: 无队伍，1:队长，2:队员，3:解散
+
+  static TeamIdAndState ts = TeamIdAndState();
+}
+
 //class PopularFilterListData {
 //  PopularFilterListData({
 //    this.titleTxt = '',

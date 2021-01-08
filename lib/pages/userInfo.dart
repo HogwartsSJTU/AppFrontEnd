@@ -71,8 +71,7 @@ class _PersonState extends State<Person> with TickerProviderStateMixin {
   bool alreadyFriend = false;
 
   User user = User(0, '', 0, '', '', '', '', true);
-  List<Job> employerJobList = [];
-//  List<Job> employeeJobList = [];
+  List<Diary> diaryList = [];
   String _image =
       'http://freelancer-images.oss-cn-beijing.aliyuncs.com/blank.png';
 
@@ -85,6 +84,7 @@ class _PersonState extends State<Person> with TickerProviderStateMixin {
     flutterToast = FlutterToast(context);
     tabs[0] = new Tab(text: lanIndex == 0 ? "游记" : "TravelNotes");
     getUser();
+    getDiary();
   }
 
   @override
@@ -125,39 +125,36 @@ class _PersonState extends State<Person> with TickerProviderStateMixin {
     _image = data['icon'];
   }
 
-  getEmployerJobs() async {
-    List<Job> jobs = [];
+  getDiary() async {
+    List<Diary> diary = [];
     var response = [];
     String url =
-        '${Url.url_prefix}/getEmployerJob?userId=' + widget.userId.toString();
-    print("个人信息页获得雇主项目  " + widget.userId.toString());
+        '${Url.url_prefix}/displayDiary?uid=' + widget.userId.toString();
+    print("获得项目  " + widget.userId.toString());
     String token = await StorageUtil.getStringItem('token');
     final res = await http.get(url,
         headers: {"Accept": "application/json", "Authorization": "$token"});
     var data = jsonDecode(Utf8Decoder().convert(res.bodyBytes));
     response = data;
     for (int i = 0; i < response.length; ++i) {
-      if (response[i]['state'] == 2) {
-        List<String> skills = [];
-        for (int j = 0; j < response[i]['skills'].length; ++j) {
-          skills.add(response[i]['skills'][j].toString());
+        List<String> pictures = [];
+        for (int j = 0; j < response[i]['images'].length; ++j) {
+          pictures.add(response[i]['images'][j].toString());
         }
-        jobs.add(Job(
+        diary.add(Diary(
             response[i]['id'],
-            response[i]['title'],
-            response[i]['description'],
-            skills,
-            response[i]['employeeRate'],
-            response[i]['employerRate'],
-            response[i]['finishTime']));
-      }
+            response[i]['uid'],
+            response[i]['text'],
+            pictures,
+            response[i]['date'],
+        ));
     }
     setState(() {
-      employerJobList = jobs;
+      diaryList = diary;
     });
   }
 
-  Widget jobList(List<Job> jobList, bool isEmployer) {
+  Widget diaList(List<Diary> jobList) {
     if (!user.recordCanSee) {
       return Center(
         child: Column(
@@ -191,7 +188,8 @@ class _PersonState extends State<Person> with TickerProviderStateMixin {
               width: 50,
             ),
             Text(
-              lanIndex == 0 ? "暂无完成记录":'No record of completion',
+              lanIndex == 0 ? "暂无游记发布":'No record of travel note',
+
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(
@@ -217,10 +215,10 @@ class _PersonState extends State<Person> with TickerProviderStateMixin {
           return PersonRateJobItem(
             callback: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => DiaryScreen()));
+                  MaterialPageRoute(builder: (context) => DiaryScreen(diary: jobList[index], isEdit: false,)));
             },
             jobData: jobList[index],
-            isEmployer: isEmployer,
+            watcher: widget.userId,
             animation: animation,
             animationController: animationController,
           );
@@ -527,7 +525,7 @@ class _PersonState extends State<Person> with TickerProviderStateMixin {
                       child: TabBarView(
                         controller: _tabController,
                         children: tabs.map((Tab tab) {
-                          return jobList(employerJobList, true);
+                          return diaList(diaryList);
                         }).toList(),
                       ),
                     ),
