@@ -14,6 +14,30 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   int lanIndex= GlobalSetting.globalSetting.lanIndex;
+  List currentMessage = [];
+  Message newMessage;
+
+  final TextEditingController _textcontroller  = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    for(int i = 0; i < messages.length; i++){
+      if(messages[i].sender.id == widget.user.id || messages[i].sender.id == currentUser.id) {
+        setState(() {
+          currentMessage.add(messages[i]);
+        });
+      }
+    }
+    newMessage = Message(
+      sender: currentUser,
+      time: '3:10 PM',
+      text: '',
+      isLiked: false,
+      unread: false,
+    );
+  }
+
   _buildMessage(Message message, bool isMe) {
     final Container msg = Container(
       margin: isMe
@@ -99,7 +123,12 @@ class _ChatScreenState extends State<ChatScreen> {
           Expanded(
             child: TextField(
               textCapitalization: TextCapitalization.sentences,
-              onChanged: (value) {},
+              controller: _textcontroller,
+              onChanged: (value) {
+                setState(() {
+                  newMessage.text = value;
+                });
+              },
               decoration: InputDecoration.collapsed(
                 hintText: lanIndex==0?'发送消息..':'Send a message...',
               ),
@@ -109,7 +138,24 @@ class _ChatScreenState extends State<ChatScreen> {
             icon: Icon(Icons.send),
             iconSize: 25.0,
             color: Theme.of(context).primaryColor,
-            onPressed: () {},
+            onPressed: () {
+              setState(() {
+                _textcontroller.clear();
+                List tmp = [];
+                tmp.add(newMessage);
+                for(int i = 0; i < currentMessage.length;i++){
+                  tmp.add(currentMessage[i]);
+                }
+                currentMessage = tmp;
+                newMessage = Message(
+                  sender: currentUser,
+                  time: '3:10 PM',
+                  text: '',
+                  isLiked: false,
+                  unread: false,
+                );
+              });
+            },
           ),
         ],
       ),
@@ -159,9 +205,9 @@ class _ChatScreenState extends State<ChatScreen> {
                   child: ListView.builder(
                     reverse: true,
                     padding: EdgeInsets.only(top: 15.0),
-                    itemCount: messages.length,
+                    itemCount: currentMessage.length,
                     itemBuilder: (BuildContext context, int index) {
-                      final Message message = messages[index];
+                      final Message message = currentMessage[index];
                       final bool isMe = message.sender.id == currentUser.id;
                       return _buildMessage(message, isMe);
                     },
