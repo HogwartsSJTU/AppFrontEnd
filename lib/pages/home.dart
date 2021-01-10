@@ -23,7 +23,7 @@ class HomePage extends StatefulWidget{
   }
 }
 
-class RecommendedPage extends State<HomePage> {
+class RecommendedPage extends State<HomePage> with NextLatLng{
   AmapController _controller;
   bool set = true;
 
@@ -31,6 +31,15 @@ class RecommendedPage extends State<HomePage> {
   void initState() {
     super.initState();
   }
+
+//  _handleMasker() {
+//    final marker = await controller.addMarker(
+//      MarkerOption(
+//        coordinate: LatLng(39.906901,116.397972),
+//        iconProvider: AssetImage('images/test_icon.png'),
+//      ),
+//    );
+//  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +74,16 @@ class RecommendedPage extends State<HomePage> {
                 ));
                 _controller?.setMapType(MapType.Standard);
                 _handleSearchRoute();
+                await _controller?.addMarker(
+                  MarkerOption(
+                    latLng: getNextLatLng(),
+                    title: '北京${random.nextDouble()}',
+                    snippet: '描述${random.nextDouble()}',
+                    iconProvider: NetworkImage("https://p.qqan.com/up/2020-8/2020826954544309.png"),
+                    infoWindowEnabled: true,
+                    object: '自定义数据${random.nextDouble()}',
+                  ),
+                );
               },
             ),
           ),

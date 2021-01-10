@@ -36,19 +36,19 @@ class _FriendPageState extends State<FriendPage> {
 
   Timer _countdownTimer;
 //  var _countdownNum = 0;
-  void getPosition(){
-    setState(() {
-      if (_countdownTimer != null) {
-        return;
-      }
-      _countdownTimer =
-      new Timer.periodic(new Duration(seconds: 1), (timer){
+    void getPosition(){
+      setState(() {
+        if (_countdownTimer != null) {
+          return;
+        }
+        _countdownTimer =
+        new Timer.periodic(new Duration(seconds: 1), (timer){
 //        setState(() {
 //          _countdownNum ++;
 //        });
-        getUser();
+          getUser();
+        });
       });
-    });
 
     /*const timeout = const Duration(seconds: 1);
   Timer.periodic(timeout, (timer) { //callback function
